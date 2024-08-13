@@ -11,6 +11,7 @@ datasource db {
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    // https://vercel.com/docs/storage/vercel-postgres/using-an-orm#prisma
     // Uses connection pooling
     url       = env("POSTGRES_PRISMA_URL")
     // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
