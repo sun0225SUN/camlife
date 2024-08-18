@@ -1,7 +1,6 @@
 {
-  "name": "camera",
-  "version": "0.1.0",
-  "private": true,
+  "name": "camlife",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "build": "next build",
@@ -18,6 +17,7 @@
     "@auth/prisma-adapter": "^1.6.0",
     "@prisma/client": "^5.14.0",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
+    "@radix-ui/react-menubar": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.50.0",
@@ -30,6 +30,7 @@
     "lucide-react": "^0.427.0",
     "next": "^14.2.4",
     "next-auth": "^4.24.7",
+    "next-intl": "^3.17.3",
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -49,10 +50,8 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.4",
     "postcss": "^8.4.39",
-    "prettier": "^3.3.2",
+    "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.5",
-    "prettier-plugin-organize-imports": "^4.0.0",
-    "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "prisma": "^5.14.0",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.5.3"

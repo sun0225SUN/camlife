@@ -1,22 +1,11 @@
-/** @type {import('prettier').Config & import('prettier-plugin-tailwindcss').PluginOptions} */
 const config = {
   semi: false,
+  singleQuote: false,
+  trailingComma: "all",
+  endOfLine: "lf",
   plugins: [
-    "prettier-plugin-tailwindcss",
-    "@ianvs/prettier-plugin-sort-imports",
-    "prettier-plugin-organize-imports",
+    "prettier-plugin-tailwindcss", // must be registered last
   ],
-  importOrder: [
-    "^react-(.*)$",
-    "",
-    "^next-(.*)$",
-    "",
-    "^~/components/ui/(.*)$",
-    "",
-    "^[./]",
-  ],
-  importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
-  importOrderTypeScriptVersion: "5.0.0",
 }
 
 export default config

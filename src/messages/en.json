@@ -1,0 +1,10 @@
+{
+  "Theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "HomePage": {
+    "title": "Hello world!"
+  }
+}
