@@ -78,13 +78,13 @@
 ::view-transition-new(root) {
   mask: url("/mask.svg") top left / 0 no-repeat;
   mask-origin: content-box;
-  animation: scale 1s;
+  animation: scale 0.8s;
   transform-origin: top left;
 }
 
 ::view-transition-old(root),
 .dark::view-transition-old(root) {
-  animation: scale 1s;
+  animation: scale 0.8s;
   transform-origin: top left;
   z-index: -1;
 }

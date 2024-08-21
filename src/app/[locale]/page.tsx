@@ -15,7 +15,11 @@ export default function Home() {
           <ModeToggle />
           <LanguageSwitch />
         </div>
-        <Logo className="text-black dark:text-white" width="100px" />
+        <Logo
+          className="text-black dark:text-white"
+          width="100px"
+          height="100px"
+        />
       </div>
     </HydrateClient>
   )

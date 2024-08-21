@@ -1,8 +1,6 @@
 {
   "Theme": {
-    "light": "Light",
-    "dark": "Dark",
-    "system": "System"
+    "tip": "Toggle theme"
   },
   "HomePage": {
     "title": "Hello world!"
