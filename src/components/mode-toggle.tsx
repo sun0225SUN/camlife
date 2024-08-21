@@ -12,8 +12,18 @@ import {
 } from "~/components/ui/dropdown-menu"
 
 export function ModeToggle() {
-  const { setTheme } = useTheme()
   const t = useTranslations("Theme")
+
+  const { setTheme } = useTheme()
+
+  const toggleTheme = (theme: string) => {
+    if (!document.startViewTransition) {
+      setTheme(theme)
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      document.startViewTransition(() => setTheme(theme))
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -25,13 +35,13 @@ export function ModeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+        <DropdownMenuItem onClick={() => toggleTheme("light")}>
           {t("light")}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
+        <DropdownMenuItem onClick={() => toggleTheme("dark")}>
           {t("dark")}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
+        <DropdownMenuItem onClick={() => toggleTheme("system")}>
           {t("system")}
         </DropdownMenuItem>
       </DropdownMenuContent>
