@@ -8,7 +8,7 @@
     "db:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start"
@@ -41,6 +41,7 @@
     "zod": "^3.23.3"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",

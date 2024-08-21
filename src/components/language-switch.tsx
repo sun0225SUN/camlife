@@ -11,7 +11,7 @@ import {
 } from "~/components/ui/menubar"
 import { locales, nameMap } from "~/i18n"
 
-function LanguageSwitch() {
+export function LanguageSwitch() {
   return (
     <Menubar>
       <MenubarMenu>
@@ -36,5 +36,3 @@ function LanguageSwitch() {
     </Menubar>
   )
 }
-
-export default LanguageSwitch

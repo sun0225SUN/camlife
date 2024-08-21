@@ -15,6 +15,6 @@ export const config = {
   matcher: [
     // Skip all paths that should not be internationalized. This example skips the
     // folders "api", "_next", "_vercel"
-    "/((?!api|_next|_vercel|assets).*)",
+    "/((?!api|_next/static|_next/image|img/|favicon.ico).*)",
   ],
 }

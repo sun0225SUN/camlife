@@ -37,7 +37,6 @@
     "**/*.cjs",
     "**/*.js",
     ".next/types/**/*.ts",
-    ".prettierrc.config.js"
   ],
   "exclude": ["node_modules"]
 }

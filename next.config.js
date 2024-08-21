@@ -9,6 +9,27 @@ await import("./src/env.js")
 const withNextIntl = createNextIntlPlugin()
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  // https://react-svgr.com/docs/next/
+  // https://github.com/vercel/next.js/issues/48177#issuecomment-1506251112
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/i,
+      use: ["@svgr/webpack"],
+    })
+    return config
+  },
+  // https://nextjs.org/docs/app/api-reference/next-config-js/turbo
+  experimental: {
+    turbo: {
+      rules: {
+        "*.svg": {
+          loaders: ["@svgr/webpack"],
+          as: "*.js",
+        },
+      },
+    },
+  },
+}
 
 export default withNextIntl(nextConfig)
