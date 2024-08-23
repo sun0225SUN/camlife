@@ -19,17 +19,6 @@ const nextConfig = {
     })
     return config
   },
-  // https://nextjs.org/docs/app/api-reference/next-config-js/turbo
-  experimental: {
-    turbo: {
-      rules: {
-        "*.svg": {
-          loaders: ["@svgr/webpack"],
-          as: "*.js",
-        },
-      },
-    },
-  },
 }
 
 export default withNextIntl(nextConfig)

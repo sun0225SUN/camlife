@@ -1,8 +1,10 @@
 import { GeistSans } from "geist/font/sans"
 import { type Metadata } from "next"
+import { SessionProvider } from "next-auth/react"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
 import { ThemeProvider } from "~/components/theme-provider"
+import { auth } from "~/server/auth"
 import "~/styles/globals.css"
 import { TRPCReactProvider } from "~/trpc/react"
 
@@ -16,8 +18,8 @@ export default async function LocaleLayout({
   children,
   params: { locale },
 }: Readonly<{ children: React.ReactNode; params: { locale: string } }>) {
+  const session = await auth()
   const messages = await getMessages()
-
   return (
     <html
       lang={locale}
@@ -25,18 +27,20 @@ export default async function LocaleLayout({
       suppressHydrationWarning
     >
       <body>
-        <NextIntlClientProvider messages={messages}>
-          <TRPCReactProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-            </ThemeProvider>
-          </TRPCReactProvider>
-        </NextIntlClientProvider>
+        <SessionProvider session={session}>
+          <NextIntlClientProvider messages={messages}>
+            <TRPCReactProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+              </ThemeProvider>
+            </TRPCReactProvider>
+          </NextIntlClientProvider>
+        </SessionProvider>
       </body>
     </html>
   )

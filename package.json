@@ -8,7 +8,7 @@
     "db:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start"
@@ -16,6 +16,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^1.6.0",
     "@prisma/client": "^5.18.0",
+    "@radix-ui/react-slot": "^1.1.0",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.52.0",
     "@theme-toggles/react": "^4.1.0",
