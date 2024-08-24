@@ -1,14 +1,19 @@
-import { signIn } from "~/server/auth"
+"use client"
+
+import { useFormState } from "react-dom"
+import { loginAction } from "~/server/auth/actions"
 
 export function Form() {
+  const [response, action] = useFormState(loginAction, undefined)
+
   return (
     <form
       className="mx-auto max-w-md rounded-lg border border-gray-300 bg-white p-6 shadow-md"
-      action={async (formData) => {
-        "use server"
-        await signIn("credentials", formData)
-      }}
+      action={action}
     >
+      {response === "CredentialsSignInError" && (
+        <div className="text-red-500">Invalid email/password</div>
+      )}
       <label className="mb-4 block">
         <span className="block text-sm font-medium text-gray-700">Email</span>
         <input

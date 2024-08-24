@@ -1,3 +1,4 @@
+export const PATH_ROOT = "/"
 export const PATH_ADMIN = "/admin"
 
 export const DEFAULT_LOGIN_REDIRECT = "/admin"
