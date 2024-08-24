@@ -1,8 +1,10 @@
 "use client"
 
+import { motion } from "framer-motion"
 import { useSession } from "next-auth/react"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
+import toast from "react-hot-toast"
 import { Button } from "~/components/ui/button"
 import { logoutAction } from "~/server/auth/actions"
 
@@ -15,22 +17,33 @@ export function LoginTip() {
       {session ? (
         <div>
           <p>{t("welcome")}</p>
-          <Button
-            className="mt-10"
-            onClick={() =>
-              logoutAction()
-                .then(() => window.location.reload())
-                .catch(console.error)
-            }
-          >
-            Sign out
-          </Button>
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <Button
+              className="mt-10"
+              onClick={() =>
+                logoutAction()
+                  .then(() => {
+                    toast.success("Logged out", {
+                      duration: 1000,
+                    })
+                    setTimeout(() => {
+                      window.location.reload()
+                    }, 1000)
+                  })
+                  .catch(console.error)
+              }
+            >
+              Sign out
+            </Button>
+          </motion.div>
         </div>
       ) : (
         <div>
           <p className="text-center">Please log in</p>
           <Link href="/login" className="flex justify-center">
-            <Button className="mt-10">Sign in</Button>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Button className="mt-10">Sign in</Button>
+            </motion.div>
           </Link>
         </div>
       )}

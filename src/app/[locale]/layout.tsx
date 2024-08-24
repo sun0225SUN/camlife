@@ -3,6 +3,7 @@ import { type Metadata } from "next"
 import { SessionProvider } from "next-auth/react"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
+import { Toaster } from "react-hot-toast"
 import { ThemeProvider } from "~/components/theme-provider"
 import { auth } from "~/server/auth"
 import "~/styles/globals.css"
@@ -37,6 +38,7 @@ export default async function LocaleLayout({
                 disableTransitionOnChange
               >
                 {children}
+                <Toaster />
               </ThemeProvider>
             </TRPCReactProvider>
           </NextIntlClientProvider>
