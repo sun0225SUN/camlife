@@ -59,6 +59,6 @@ export const config = {
     "/",
     "/(api)(.*)",
     // Skip all paths that should not be internationalized.
-    "/((?!api|_next/static|_next/image|img/|favicon.ico|mask.svg).*)",
+    "/((?!api|_next/static|_next/image|img/|favicon.ico).*)",
   ],
 }
