@@ -3,5 +3,10 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "always",
   },
-  "i18n-ally.localesPaths": ["src/messages"]
+  "i18n-ally.localesPaths": [
+    "src/messages"
+  ],
+  "cSpell.words": [
+    "clsx"
+  ]
 }
