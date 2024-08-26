@@ -1,3 +1,4 @@
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { GeistSans } from "geist/font/sans"
 import { type Metadata } from "next"
 import { SessionProvider } from "next-auth/react"
@@ -39,6 +40,7 @@ export default async function LocaleLayout({
               >
                 {children}
                 <Toaster />
+                <SpeedInsights />
               </ThemeProvider>
             </TRPCReactProvider>
           </NextIntlClientProvider>
