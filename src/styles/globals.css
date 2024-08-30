@@ -95,3 +95,8 @@
     mask-size: 350vmax;
   }
 }
+
+/* lightbox */
+#lightboxContainer:focus-visible {
+  outline: none;
+}

@@ -8,5 +8,8 @@
   ],
   "cSpell.words": [
     "clsx"
-  ]
+  ],
+  "[prisma]": {
+    "editor.formatOnSave": false
+  },
 }

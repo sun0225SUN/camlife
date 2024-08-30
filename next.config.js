@@ -19,6 +19,9 @@ const nextConfig = {
     })
     return config
   },
+  images: {
+    remotePatterns: [{ hostname: "s2.loli.net" }],
+  },
 }
 
 export default withNextIntl(nextConfig)

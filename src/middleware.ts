@@ -56,8 +56,6 @@ export default auth((req) => {
 export const config = {
   // Optionally, don't invoke Middleware on some paths
   matcher: [
-    "/",
-    "/(api)(.*)",
     // Skip all paths that should not be internationalized.
     "/((?!api|_next/static|_next/image|img/|favicon.ico).*)",
   ],
