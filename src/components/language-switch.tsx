@@ -2,7 +2,7 @@
 
 import { useClickAway } from "@uidotdev/usehooks"
 import clsx from "clsx"
-import { Languages } from "lucide-react"
+import { Globe } from "lucide-react"
 import { useCallback, useState, type RefObject } from "react"
 import Flag from "react-world-flags"
 import { locales, nameMap } from "~/i18n"
@@ -26,14 +26,17 @@ export function LanguageSwitch() {
   return (
     <div className="flex justify-center">
       <div className="relative inline-block">
-        <Languages
-          className="size-[1.3rem] cursor-pointer"
+        <Globe
+          className="cursor-pointer"
+          size={22}
+          strokeWidth={2.25}
+          absoluteStrokeWidth
           onClick={toggleList}
         />
         {showList && (
           <div
             ref={ref}
-            className="absolute right-0 z-10 mt-2 w-36 rounded-lg border border-gray-100 bg-white text-left text-sm shadow-lg dark:border-[#24242499] dark:bg-[#0f0f10]"
+            className="absolute right-0 z-10 mt-5 w-36 rounded-lg border border-gray-100 bg-white text-left text-sm shadow-lg dark:border-[#24242499] dark:bg-[#0f0f10]"
           >
             <ul>
               {locales.map((locale, index) => (

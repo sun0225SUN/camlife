@@ -17,10 +17,8 @@
   "dependencies": {
     "@auth/prisma-adapter": "^1.6.0",
     "@prisma/client": "^5.18.0",
-    "@radix-ui/react-slot": "^1.1.0",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.52.0",
-    "@theme-toggles/react": "^4.1.0",
     "@trpc/client": "11.0.0-rc.482",
     "@trpc/react-query": "11.0.0-rc.482",
     "@trpc/server": "11.0.0-rc.482",
@@ -45,7 +43,8 @@
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",

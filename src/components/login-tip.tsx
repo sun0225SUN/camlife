@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
 import toast from "react-hot-toast"
-import { Button } from "~/components/ui/button"
 import { logoutAction } from "~/server/auth/actions"
 
 export function LoginTip() {
@@ -18,7 +17,7 @@ export function LoginTip() {
         <div>
           <p>{t("welcome")}</p>
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <Button
+            <button
               className="mt-10"
               onClick={() =>
                 logoutAction()
@@ -34,7 +33,7 @@ export function LoginTip() {
               }
             >
               Sign out
-            </Button>
+            </button>
           </motion.div>
         </div>
       ) : (
@@ -42,7 +41,7 @@ export function LoginTip() {
           <p className="text-center">Please log in</p>
           <Link href="/login" className="flex justify-center">
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-              <Button className="mt-10">Sign in</Button>
+              <button className="mt-10">Sign in</button>
             </motion.div>
           </Link>
         </div>

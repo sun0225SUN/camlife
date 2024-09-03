@@ -1,5 +1,5 @@
 import { Header } from "~/components/header"
-import { Images } from "~/components/images"
+import { View } from "~/components/view"
 import { HydrateClient } from "~/trpc/server"
 
 export default function HomePage() {
@@ -7,7 +7,7 @@ export default function HomePage() {
     <HydrateClient>
       <div className="flex flex-col items-center justify-center">
         <Header />
-        <Images />
+        <View />
       </div>
     </HydrateClient>
   )
