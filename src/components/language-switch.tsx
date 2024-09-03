@@ -10,8 +10,10 @@ import { locales, nameMap } from "~/i18n"
 export function LanguageSwitch() {
   const [showList, setShowList] = useState<boolean>(false)
 
-  const ref = useClickAway(() => {
-    setShowList(false)
+  const ref = useClickAway((event: Event) => {
+    if (!(event.target as HTMLElement).closest(".globe-icon")) {
+      setShowList(false)
+    }
   }) as RefObject<HTMLDivElement>
 
   const handleLocaleChange = useCallback((locale: string) => {
@@ -20,14 +22,14 @@ export function LanguageSwitch() {
   }, [])
 
   const toggleList = useCallback(() => {
-    setShowList((prevShowList) => !prevShowList)
+    setShowList((prev) => !prev)
   }, [])
 
   return (
     <div className="flex justify-center">
       <div className="relative inline-block">
         <Globe
-          className="cursor-pointer"
+          className="globe-icon cursor-pointer"
           size={22}
           strokeWidth={2.25}
           absoluteStrokeWidth
