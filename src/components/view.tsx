@@ -35,7 +35,7 @@ const getImageStyle = (view: ViewType): string => {
 export function View() {
   const { view } = useView()
   const { theme } = useTheme()
-  const { data: photos, isLoading } = api.photos.getAllPost.useQuery()
+  const { data: photos, isLoading } = api.photos.getAllPhotos.useQuery()
 
   const lightboxTheme = theme === "dark" ? "night" : "day"
 
@@ -73,11 +73,12 @@ export function View() {
                       data-lightboxjs="lightbox"
                       src={photo.url}
                       alt={photo.title ?? "照片"}
-                      width={0}
-                      height={0}
-                      sizes="100vw"
+                      width={photo.width}
+                      height={photo.height}
                       className={getImageStyle(view)}
-                      style={{ width: "100%", height: "auto" }}
+                      placeholder="blur"
+                      blurDataURL={photo.blurData ?? ""}
+                      loading="lazy"
                     />
                   </CardItem>
                 </CardBody>
@@ -89,14 +90,12 @@ export function View() {
                 className={getImageStyle(view)}
                 src={photo.url}
                 alt={photo.title ?? "照片"}
-                width={view === "grid" ? 400 : 0}
-                height={view === "grid" ? 200 : 0}
-                sizes={view === "grid" ? "400px" : "100vw"}
-                style={
-                  view === "grid"
-                    ? { objectFit: "cover" }
-                    : { width: "100%", height: "auto" }
-                }
+                width={view === "grid" ? 400 : photo.width}
+                height={view === "grid" ? 200 : photo.height}
+                style={view === "grid" ? { objectFit: "cover" } : undefined}
+                placeholder="blur"
+                blurDataURL={photo.blurData ?? ""}
+                loading="lazy"
               />
             ),
           )}

@@ -20,7 +20,8 @@ datasource db {
 }
 
 model photos {
-    id                      String    @id @db.VarChar(8)         // 照片唯一标识符
+    uuid                    String    @id @db.VarChar(21)        // 唯一标识符
+    id                      Int       @default(autoincrement()) @db.Integer
     url                     String    @db.VarChar(255)           // 照片URL
     width                   Int       @db.Integer                // 照片宽度
     height                  Int       @db.Integer                // 照片高度

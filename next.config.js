@@ -20,7 +20,7 @@ const nextConfig = {
     return config
   },
   images: {
-    remotePatterns: [{ hostname: "s2.loli.net" }],
+    remotePatterns: [{ hostname: "*.public.blob.vercel-storage.com" }],
   },
 }
 
