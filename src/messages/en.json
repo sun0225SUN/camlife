@@ -4,5 +4,11 @@
   },
   "HomePage": {
     "welcome": "Hello world!"
+  },
+  "LoginPage": {
+    "title": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "login": "Sign in"
   }
 }

@@ -4,5 +4,11 @@
   },
   "HomePage": {
     "welcome": "你好，世界！"
+  },
+  "LoginPage": {
+    "title": "登 录",
+    "email": "邮箱",
+    "password": "密码",
+    "login": "登录"
   }
 }
