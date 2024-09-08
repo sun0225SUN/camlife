@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { GeistSans } from "geist/font/sans"
 import { type Metadata } from "next"
@@ -40,6 +41,7 @@ export default async function LocaleLayout({
               >
                 {children}
                 <Toaster />
+                <Analytics />
                 <SpeedInsights />
               </ThemeProvider>
             </TRPCReactProvider>
