@@ -1,10 +1,10 @@
 "use client"
 
-import { SlideshowLightbox } from "lightbox.js-react"
+import { SlideshowLightbox, initLightboxJS } from "lightbox.js-react"
 import "lightbox.js-react/dist/index.css"
 import { useTheme } from "next-themes"
 import Image from "next/image"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { CardBody, CardContainer, CardItem } from "~/components/ui/3d-card"
 import { useView } from "~/store/useView"
 import { api } from "~/trpc/react"
@@ -42,6 +42,11 @@ export function View() {
     () => photos?.map(({ url, title }) => ({ src: url, alt: title ?? "照片" })),
     [photos],
   )
+
+  useEffect(() => {
+    // https://www.getlightboxjs.com/nextjs/
+    initLightboxJS("6CDB-34FD-F513-A6FC", "individual")
+  })
 
   if (isLoading) return <div>加载中...</div>
 
