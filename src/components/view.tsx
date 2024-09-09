@@ -6,6 +6,7 @@ import { useTheme } from "next-themes"
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 import { ThreeDot } from "react-loading-indicators"
+import { PhotoInfo } from "~/components/photo-info"
 import { CardBody, CardContainer, CardItem } from "~/components/ui/3d-card"
 import { useView } from "~/store/useView"
 import { api } from "~/trpc/react"
@@ -19,7 +20,7 @@ const styles = {
   image: {
     grid: "w-[600px] h-[200px] object-cover transition-transform duration-300 ease-in-out hover:scale-105",
     waterfall: "md:mb-6 break-inside-avoid md:rounded-xl hover:shadow-xl",
-    default: "md:mb-8 md:rounded-xl",
+    default: "md:rounded-xl",
   },
 }
 
@@ -114,14 +115,17 @@ export function View() {
                 </CardBody>
               </CardContainer>
             ) : (
-              // eslint-disable-next-line
-              // @ts-ignore
-              <Image
-                key={photo.id}
-                {...imageProps}
-                alt={photo.title ?? ""}
-                data-lightboxjs="lightbox"
-              />
+              <>
+                {/* eslint-disable-next-line */}
+                {/* @ts-ignore */}
+                <Image
+                  key={photo.id}
+                  {...imageProps}
+                  alt={photo.title ?? ""}
+                  data-lightboxjs="lightbox"
+                />
+                {view === "feed" && <PhotoInfo {...photo} />}
+              </>
             )
           })}
         </div>
