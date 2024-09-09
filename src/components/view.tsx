@@ -4,7 +4,8 @@ import { SlideshowLightbox, initLightboxJS } from "lightbox.js-react"
 import "lightbox.js-react/dist/index.css"
 import { useTheme } from "next-themes"
 import Image from "next/image"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { ThreeDot } from "react-loading-indicators"
 import { CardBody, CardContainer, CardItem } from "~/components/ui/3d-card"
 import { useView } from "~/store/useView"
 import { api } from "~/trpc/react"
@@ -33,22 +34,33 @@ const getAdjustedDimensions = (
 
 export function View() {
   const { view } = useView()
-  const { theme } = useTheme()
-  const { data: photos, isLoading } = api.photos.getAllPhotos.useQuery()
+  const { resolvedTheme } = useTheme()
+  const [loadingColor, setLoadingColor] = useState<string | undefined>()
 
-  const lightboxTheme = theme === "dark" ? "night" : "day"
-
-  const lightboxImages = useMemo(
-    () => photos?.map(({ url, title }) => ({ src: url, alt: title ?? "照片" })),
-    [photos],
-  )
+  useEffect(() => {
+    setLoadingColor(resolvedTheme === "dark" ? "#ffffff" : "#000000")
+  }, [resolvedTheme])
 
   useEffect(() => {
     // https://www.getlightboxjs.com/nextjs/
     initLightboxJS("6CDB-34FD-F513-A6FC", "individual")
   })
 
-  if (isLoading) return <div>加载中...</div>
+  const { data: photos, isLoading } = api.photos.getAllPhotos.useQuery()
+
+  const lightboxTheme = resolvedTheme === "dark" ? "night" : "day"
+
+  const lightboxImages = useMemo(
+    () => photos?.map(({ url, title }) => ({ src: url, alt: title ?? "照片" })),
+    [photos],
+  )
+
+  if (isLoading)
+    return (
+      <div className="flex h-[60vh] w-full items-center justify-center">
+        <ThreeDot variant="pulsate" color={loadingColor} size="medium" />
+      </div>
+    )
 
   return (
     <div className="md:px-32">
@@ -75,7 +87,6 @@ export function View() {
               photo.height,
             )
             const imageProps = {
-              key: photo.id,
               className:
                 styles.image[view as keyof typeof styles.image] ||
                 styles.image.default,
@@ -97,7 +108,7 @@ export function View() {
                     <Image
                       {...imageProps}
                       alt={photo.title ?? ""}
-                      data-Lightboxjs="lightbox"
+                      data-lightboxjs="lightbox"
                     />
                   </CardItem>
                 </CardBody>
@@ -106,9 +117,10 @@ export function View() {
               // eslint-disable-next-line
               // @ts-ignore
               <Image
+                key={photo.id}
                 {...imageProps}
                 alt={photo.title ?? ""}
-                data-Lightboxjs="lightbox"
+                data-lightboxjs="lightbox"
               />
             )
           })}
