@@ -8,28 +8,27 @@ import { useMemo } from "react"
 import { CardBody, CardContainer, CardItem } from "~/components/ui/3d-card"
 import { useView } from "~/store/useView"
 import { api } from "~/trpc/react"
-import { type ViewType } from "~/types/view"
 
-const getContainerStyle = (view: ViewType): string => {
-  switch (view) {
-    case "grid":
-      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-    case "waterfall":
-      return "columns-1 sm:columns-2 md:columns-3 xl:columns-4 md:gap-6"
-    default:
-      return "flex flex-col"
-  }
+const styles = {
+  container: {
+    grid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+    waterfall: "columns-1 sm:columns-2 md:columns-3 xl:columns-4 md:gap-6",
+    default: "flex flex-col items-center",
+  },
+  image: {
+    grid: "w-[600px] h-[200px] object-cover transition-transform duration-300 ease-in-out hover:scale-105",
+    waterfall: "md:mb-6 break-inside-avoid md:rounded-xl hover:shadow-xl",
+    default: "md:mb-8 md:rounded-xl",
+  },
 }
 
-const getImageStyle = (view: ViewType): string => {
-  switch (view) {
-    case "grid":
-      return "w-[600px] h-[200px] object-cover transition-transform duration-300 ease-in-out hover:scale-105"
-    case "waterfall":
-      return "md:mb-6 break-inside-avoid md:rounded-xl hover:shadow-xl"
-    default:
-      return "w-full md:mb-8 md:rounded-xl"
-  }
+const getAdjustedDimensions = (
+  width: number,
+  height: number,
+): { width: number; height: number } => {
+  return height > width
+    ? { width: Math.floor(800 * (width / height)), height: 800 }
+    : { width, height }
 }
 
 export function View() {
@@ -40,11 +39,7 @@ export function View() {
   const lightboxTheme = theme === "dark" ? "night" : "day"
 
   const lightboxImages = useMemo(
-    () =>
-      photos?.map((photo) => ({
-        src: photo.url,
-        alt: photo.title,
-      })),
+    () => photos?.map(({ url, title }) => ({ src: url, alt: title ?? "照片" })),
     [photos],
   )
 
@@ -59,46 +54,59 @@ export function View() {
         framework="next"
         imgAnimation="fade"
         modalClose="clickOutside"
-        showThumbnails={true}
+        showThumbnails
         showControls={false}
         images={lightboxImages}
       >
-        <div className={getContainerStyle(view)}>
-          {photos?.map((photo) =>
-            view === "waterfall" ? (
+        <div
+          className={
+            styles.container[view as keyof typeof styles.container] ||
+            styles.container.default
+          }
+        >
+          {photos?.map((photo) => {
+            const { width, height } = getAdjustedDimensions(
+              photo.width,
+              photo.height,
+            )
+            const imageProps = {
+              key: photo.id,
+              className:
+                styles.image[view as keyof typeof styles.image] ||
+                styles.image.default,
+              src: photo.url,
+              width: view === "grid" ? 600 : width,
+              height: view === "grid" ? 200 : height,
+              placeholder: "blur",
+              blurDataURL: photo.blurData ?? "",
+              loading: "lazy",
+              style: view === "grid" ? { objectFit: "cover" } : undefined,
+            }
+
+            return view === "waterfall" ? (
               <CardContainer containerClassName="py-0" key={photo.id}>
                 <CardBody className="h-auto w-auto">
                   <CardItem translateZ="50">
+                    {/* eslint-disable-next-line */}
+                    {/* @ts-ignore */}
                     <Image
-                      data-lightboxjs="lightbox"
-                      src={photo.url}
-                      alt={photo.title ?? "照片"}
-                      width={photo.width}
-                      height={photo.height}
-                      className={getImageStyle(view)}
-                      placeholder="blur"
-                      blurDataURL={photo.blurData ?? ""}
-                      loading="lazy"
+                      {...imageProps}
+                      alt={photo.title ?? ""}
+                      data-Lightboxjs="lightbox"
                     />
                   </CardItem>
                 </CardBody>
               </CardContainer>
             ) : (
+              // eslint-disable-next-line
+              // @ts-ignore
               <Image
-                key={photo.id}
-                data-lightboxjs="lightbox"
-                className={getImageStyle(view)}
-                src={photo.url}
-                alt={photo.title ?? "照片"}
-                width={view === "grid" ? 400 : photo.width}
-                height={view === "grid" ? 200 : photo.height}
-                style={view === "grid" ? { objectFit: "cover" } : undefined}
-                placeholder="blur"
-                blurDataURL={photo.blurData ?? ""}
-                loading="lazy"
+                {...imageProps}
+                alt={photo.title ?? ""}
+                data-Lightboxjs="lightbox"
               />
-            ),
-          )}
+            )
+          })}
         </div>
       </SlideshowLightbox>
     </div>

@@ -54,13 +54,14 @@ async function createBlurredImage(
       channels: 4,
     },
   })
-    .jpeg({
-      overshootDeringing: true,
-      quality: 40,
+    .resize({
+      width: Math.floor(info.width / 2),
+      height: Math.floor(info.height / 2),
     })
+    .webp({ quality: 40 })
     .toBuffer()
 }
 
 function convertToBase64DataUrl(buffer: Buffer): string {
-  return `data:image/jpeg;base64,${buffer.toString("base64")}`
+  return `data:image/webp;base64,${buffer.toString("base64")}`
 }

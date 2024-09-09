@@ -5,43 +5,14 @@ import Image from "next/image"
 import { useRef, useState, type FormEvent } from "react"
 import { ExifParserFactory } from "ts-exif-parser"
 import { api } from "~/trpc/react"
-
-interface ImageMetaData {
-  url: string
-  width: number
-  height: number
-  blurData: string
-  aspectRatio: number
-  focalLength: number
-  focalLengthIn35mmFormat: number
-  fNumber: number
-  iso: number
-  exposureTime: number
-  exposureCompensation: number
-  latitude: number
-  longitude: number
-  locationName: string
-  filmSimulation: string
-  priorityOrder: number
-  takenAt: Date
-  takenAtNaive: string
-  hidden: boolean
-  extension: string
-  title: string
-  caption: string
-  semanticDescription: string
-  tags: string[]
-  make: string
-  model: string
-  lensMake: string
-  lensModel: string
-}
+import { type ImageMetaData } from "~/types/photo"
 
 export default function AvatarUploadPage() {
   const inputFileRef = useRef<HTMLInputElement>(null)
   const [imageMetaData, setImageMetaData] = useState<ImageMetaData | null>(null)
   const genBlurData = api.photos.genBlurData.useMutation()
   const createPhoto = api.photos.createPhoto.useMutation()
+  const compressImage = api.photos.compressImage.useMutation()
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -56,22 +27,34 @@ export default function AvatarUploadPage() {
       const buffer = await file.arrayBuffer()
       const exifData = ExifParserFactory.create(buffer).parse()
       const base64Data = Buffer.from(buffer).toString("base64")
-      const blurData = await genBlurData.mutateAsync({
-        data: base64Data,
-        isBase64: true,
+
+      const [blurData, compressedImage] = await Promise.all([
+        genBlurData.mutateAsync({ data: base64Data, isBase64: true }),
+        compressImage.mutateAsync({ data: base64Data }),
+      ])
+
+      const compressedImageBuffer = Buffer.from(
+        compressedImage.split(",")[1] ?? "",
+        "base64",
+      )
+      const compressedImageBlob = new Blob([compressedImageBuffer], {
+        type: "image/webp",
       })
 
-      const { url } = await upload(file.name, file, {
-        access: "public",
-        handleUploadUrl: "/api/storage/vercel-blob",
-      })
+      const { url } = await upload(
+        file.name.replace(/\.\w+$/, ".webp"),
+        compressedImageBlob,
+        {
+          access: "public",
+          handleUploadUrl: "/api/storage/vercel-blob",
+        },
+      )
 
       setImageMetaData({
         url,
         blurData,
         width: exifData.imageSize?.width ?? 0,
         height: exifData.imageSize?.height ?? 0,
-        extension: file.name.split(".").pop() ?? "",
         aspectRatio:
           (exifData.imageSize?.width ?? 0) / (exifData.imageSize?.height ?? 1),
         title: "",
@@ -113,28 +96,47 @@ export default function AvatarUploadPage() {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <input
-          name="file"
-          ref={inputFileRef}
-          type="file"
-          required
-          accept="image/*"
-        />
-        <button type="submit">解析</button>
-      </form>
+      <div className="flex w-full flex-col items-center rounded-lg p-4 dark:bg-gray-800">
+        <form
+          onSubmit={handleSubmit}
+          className="flex w-full max-w-md flex-col items-center space-y-4"
+        >
+          <input
+            name="file"
+            ref={inputFileRef}
+            type="file"
+            required
+            accept="image/*"
+            className="w-full rounded border border-gray-300 bg-white p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-white" // 添加深色模式样式
+          />
+          <button
+            type="submit"
+            className="rounded bg-blue-500 p-2 text-white transition duration-200 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
+          >
+            解析
+          </button>
+          <button
+            onClick={handleUpload}
+            className="mt-4 rounded bg-green-500 p-2 text-white transition duration-200 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
+          >
+            上传
+          </button>
+        </form>
 
-      <button onClick={handleUpload}>上传</button>
-      {imageMetaData && (
-        <Image
-          src={imageMetaData.url}
-          alt="avatar"
-          width={200}
-          height={112}
-          placeholder="blur"
-          blurDataURL={imageMetaData.blurData}
-        />
-      )}
+        {imageMetaData && (
+          <div className="mt-4">
+            <Image
+              src={imageMetaData.url}
+              alt="avatar"
+              width={200}
+              height={112}
+              placeholder="blur"
+              blurDataURL={imageMetaData.blurData}
+              className="transform rounded shadow-lg transition-transform duration-200 hover:scale-105"
+            />
+          </div>
+        )}
+      </div>
     </>
   )
 }

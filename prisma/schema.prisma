@@ -25,7 +25,6 @@ model photos {
     url                     String    @db.VarChar(255)           // 照片URL
     width                   Int       @db.Integer                // 照片宽度
     height                  Int       @db.Integer                // 照片高度
-    extension               String    @db.VarChar(255)           // 文件扩展名
     aspectRatio             Float?    @default(1.5) @db.Real     // 宽高比
     blurData                String?   @db.Text                   // 模糊数据(用于图片加载占位)
     title                   String?   @db.VarChar(255)           // 照片标题
