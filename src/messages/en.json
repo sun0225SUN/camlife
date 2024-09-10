@@ -10,5 +10,12 @@
     "email": "Email",
     "password": "Password",
     "login": "Sign in"
+  },
+  "HomeTabs": {
+    "essential": "Essential",
+    "recent": "Recent",
+    "shuffle": "Shuffle",
+    "nearby": "Nearby",
+    "faraway": "Faraway"
   }
 }

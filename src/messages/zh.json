@@ -10,5 +10,12 @@
     "email": "邮箱",
     "password": "密码",
     "login": "登录"
+  },
+  "HomeTabs": {
+    "essential": "精选",
+    "recent": "最新",
+    "shuffle": "随览",
+    "nearby": "附近",
+    "faraway": "远方"
   }
 }

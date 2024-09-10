@@ -14,12 +14,12 @@ export function SiteLogo() {
     <Link href="/">
       <div
         className={clsx(
-          "flex items-center gap-2 text-3xl font-bold text-black dark:text-white",
+          "flex h-16 items-center gap-2 text-4xl font-bold",
           fontLogo.className,
         )}
       >
-        <Logo className="size-[40px]" />
-        <div className="tracking-wide">CamLife</div>
+        <Logo className="size-[45px]" />
+        <div className="flex-shrink-0 tracking-wide">CamLife</div>
       </div>
     </Link>
   )

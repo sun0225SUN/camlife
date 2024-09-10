@@ -13,12 +13,12 @@ import { api } from "~/trpc/react"
 
 const styles = {
   container: {
-    grid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
-    waterfall: "columns-1 sm:columns-2 md:columns-3 xl:columns-4 md:gap-6",
+    grid: "grid grid-cols-3 lg:grid-cols-4",
+    waterfall: "columns-2 md:columns-3 xl:columns-4 md:gap-6 gap-0",
     default: "flex flex-col items-center",
   },
   image: {
-    grid: "w-[600px] h-[200px] object-cover transition-transform duration-300 ease-in-out hover:scale-105",
+    grid: "h-[100px] md:h-[200px] object-cover transition-transform duration-300 ease-in-out hover:scale-105",
     waterfall: "md:mb-6 break-inside-avoid md:rounded-xl hover:shadow-xl",
     default: "md:rounded-xl",
   },

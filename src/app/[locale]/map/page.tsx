@@ -38,7 +38,7 @@ export default function MapBox() {
       initialViewState={{
         longitude: 116.4,
         latitude: 39.91,
-        zoom: 2,
+        zoom: 1,
       }}
       style={{ width: "100vw", height: "100vh" }}
       mapStyle={currentMapStyle}
