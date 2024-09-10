@@ -75,60 +75,54 @@ export function View() {
         showThumbnails
         showControls={false}
         images={lightboxImages}
+        className={
+          styles.container[view as keyof typeof styles.container] ||
+          styles.container.default
+        }
       >
-        <div
-          className={
-            styles.container[view as keyof typeof styles.container] ||
-            styles.container.default
+        {photos?.map((photo) => {
+          const { width, height } = getAdjustedDimensions(
+            photo.width,
+            photo.height,
+          )
+          const imageProps = {
+            className:
+              styles.image[view as keyof typeof styles.image] ||
+              styles.image.default,
+            src: photo.url,
+            width: view === "grid" ? 600 : width,
+            height: view === "grid" ? 200 : height,
+            placeholder: "blur",
+            blurDataURL: photo.blurData ?? "",
+            loading: "lazy",
+            style: view === "grid" ? { objectFit: "cover" } : undefined,
           }
-        >
-          {photos?.map((photo) => {
-            const { width, height } = getAdjustedDimensions(
-              photo.width,
-              photo.height,
-            )
-            const imageProps = {
-              className:
-                styles.image[view as keyof typeof styles.image] ||
-                styles.image.default,
-              src: photo.url,
-              width: view === "grid" ? 600 : width,
-              height: view === "grid" ? 200 : height,
-              placeholder: "blur",
-              blurDataURL: photo.blurData ?? "",
-              loading: "lazy",
-              style: view === "grid" ? { objectFit: "cover" } : undefined,
-            }
 
-            return view === "waterfall" ? (
-              <CardContainer containerClassName="py-0" key={photo.id}>
-                <CardBody className="h-auto w-auto">
-                  <CardItem translateZ="50">
-                    {/* eslint-disable-next-line */}
-                    {/* @ts-ignore */}
-                    <Image
-                      {...imageProps}
-                      alt={photo.title ?? ""}
-                      data-lightboxjs="lightbox"
-                    />
-                  </CardItem>
-                </CardBody>
-              </CardContainer>
-            ) : (
-              <>
-                {/* eslint-disable-next-line */}
-                {/* @ts-ignore */}
-                <Image
-                  key={photo.id}
-                  {...imageProps}
-                  alt={photo.title ?? ""}
-                  data-lightboxjs="lightbox"
-                />
-                {view === "feed" && <PhotoInfo {...photo} />}
-              </>
-            )
-          })}
-        </div>
+          return view === "waterfall" ? (
+            <CardContainer containerClassName="py-0" key={photo.id}>
+              <CardBody className="h-auto w-auto">
+                <CardItem translateZ="50">
+                  {/* @ts-expect-error eslint-disable-line*/}
+                  <Image
+                    {...imageProps}
+                    alt={photo.title ?? ""}
+                    data-lightboxjs="lightbox"
+                  />
+                </CardItem>
+              </CardBody>
+            </CardContainer>
+          ) : (
+            <div key={photo.id}>
+              {/* @ts-expect-error eslint-disable-line*/}
+              <Image
+                {...imageProps}
+                alt={photo.title ?? ""}
+                data-lightboxjs="lightbox"
+              />
+              {view === "feed" && <PhotoInfo {...photo} />}
+            </div>
+          )
+        })}
       </SlideshowLightbox>
     </div>
   )

@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { createJSONStorage, persist } from "zustand/middleware"
 import { type ViewType } from "~/types/view"
 
 interface ViewStore {
@@ -15,7 +15,7 @@ export const useView = create<ViewStore>()(
     }),
     {
       name: "view-store",
-      getStorage: () => sessionStorage,
+      storage: createJSONStorage(() => sessionStorage),
     },
   ),
 )
