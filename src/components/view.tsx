@@ -68,13 +68,12 @@ export function View() {
       <SlideshowLightbox
         key={view}
         theme={lightboxTheme}
+        images={lightboxImages}
         lightboxIdentifier="lightbox"
         framework="next"
-        imgAnimation="fade"
         modalClose="clickOutside"
-        showThumbnails
         showControls={false}
-        images={lightboxImages}
+        fullScreen
         className={
           styles.container[view as keyof typeof styles.container] ||
           styles.container.default
