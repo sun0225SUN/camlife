@@ -28,10 +28,14 @@ export default function AvatarUploadPage() {
       const exifData = ExifParserFactory.create(buffer).parse()
       const base64Data = Buffer.from(buffer).toString("base64")
 
-      const [blurData, compressedImage] = await Promise.all([
-        genBlurData.mutateAsync({ data: base64Data, isBase64: true }),
-        compressImage.mutateAsync({ data: base64Data }),
-      ])
+      const compressedImage = await compressImage.mutateAsync({
+        data: base64Data,
+      })
+
+      const blurData = await genBlurData.mutateAsync({
+        data: compressedImage,
+        isBase64: true,
+      })
 
       const compressedImageBuffer = Buffer.from(
         compressedImage.split(",")[1] ?? "",
@@ -95,48 +99,49 @@ export default function AvatarUploadPage() {
   }
 
   return (
-    <>
-      <div className="flex w-full flex-col items-center rounded-lg p-4 dark:bg-gray-800">
-        <form
-          onSubmit={handleSubmit}
-          className="flex w-full max-w-md flex-col items-center space-y-4"
+    <div className="flex w-full flex-col items-center rounded-lg bg-white p-6 dark:bg-gray-800">
+      <h1 className="mb-4 text-2xl font-semibold">头像上传</h1>
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-full max-w-md flex-col items-center space-y-4"
+      >
+        <input
+          name="file"
+          ref={inputFileRef}
+          type="file"
+          required
+          accept="image/*"
+          className="w-full rounded border border-gray-300 bg-gray-100 p-3 text-black focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+        />
+        <button
+          type="submit"
+          className="w-full rounded bg-blue-500 p-3 text-white transition duration-200 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
         >
-          <input
-            name="file"
-            ref={inputFileRef}
-            type="file"
-            required
-            accept="image/*"
-            className="w-full rounded border border-gray-300 bg-white p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-white" // 添加深色模式样式
-          />
-          <button
-            type="submit"
-            className="rounded bg-blue-500 p-2 text-white transition duration-200 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
-          >
-            解析
-          </button>
-          <button
-            onClick={handleUpload}
-            className="mt-4 rounded bg-green-500 p-2 text-white transition duration-200 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
-          >
-            上传
-          </button>
-        </form>
+          解析
+        </button>
+      </form>
+      <button
+        onClick={handleUpload}
+        className="mt-4 w-full max-w-md rounded bg-green-500 p-3 text-white transition duration-200 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
+      >
+        上传
+      </button>
 
-        {imageMetaData && (
-          <div className="mt-4">
-            <Image
-              src={imageMetaData.url}
-              alt="avatar"
-              width={200}
-              height={112}
-              placeholder="blur"
-              blurDataURL={imageMetaData.blurData}
-              className="transform rounded shadow-lg transition-transform duration-200 hover:scale-105"
-            />
-          </div>
-        )}
-      </div>
-    </>
+      {imageMetaData && (
+        <div className="mt-4 w-full max-w-md">
+          <Image
+            src={imageMetaData.url}
+            alt="avatar"
+            sizes="100vw"
+            width={0}
+            height={0}
+            style={{ width: "auto", height: "auto" }}
+            placeholder="blur"
+            blurDataURL={imageMetaData.blurData}
+            className="transform rounded shadow-lg transition-transform duration-200 hover:scale-105"
+          />
+        </div>
+      )}
+    </div>
   )
 }
