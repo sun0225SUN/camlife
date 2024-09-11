@@ -11,13 +11,17 @@ import { useScroll } from "~/hooks/useScroll"
 const fontTabsZH = FontTabsZH({
   subsets: ["latin"],
   variable: "--font-tabs-zh",
-  weight: "500",
+  weight: ["500", "200", "300", "400", "600", "700", "900"],
+  display: "swap",
+  adjustFontFallback: false,
 })
 
 const fontTabsEN = FontTabsEN({
   subsets: ["latin"],
   variable: "--font-tabs-en",
-  weight: "500",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  adjustFontFallback: false,
 })
 
 export function Tabs() {
@@ -28,8 +32,10 @@ export function Tabs() {
   return (
     <div
       className={clsx(
-        "my-4 flex h-16 w-full items-center justify-between bg-white px-8 text-xl dark:bg-black md:justify-start md:gap-5 md:px-32 md:text-2xl",
-        locale === "zh" ? fontTabsZH.className : fontTabsEN.className,
+        "my-4 flex h-16 w-full items-center justify-between bg-white px-6 dark:bg-black md:justify-start md:gap-5 md:px-32",
+        locale === "zh"
+          ? fontTabsZH.className + " text-lg md:text-2xl"
+          : fontTabsEN.className + " text-sm font-normal md:text-2xl",
         isScrolled &&
           "sticky top-0 h-16 bg-opacity-60 shadow-md backdrop-blur-md transition-all duration-500 ease-in-out dark:bg-opacity-60 dark:shadow-[0_4px_6px_-1px_rgba(255,255,255,0.1)]",
       )}

@@ -7,6 +7,8 @@ const fontLogo = FontLogo({
   subsets: ["latin"],
   variable: "--font-logo",
   weight: "400",
+  display: "swap",
+  adjustFontFallback: false,
 })
 
 export function SiteLogo() {

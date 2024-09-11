@@ -89,8 +89,8 @@ export function View() {
               styles.image[view as keyof typeof styles.image] ||
               styles.image.default,
             src: photo.url,
-            width: view === "grid" ? 600 : width,
-            height: view === "grid" ? 200 : height,
+            width: width,
+            height: height,
             placeholder: "blur",
             blurDataURL: photo.blurData ?? "",
             loading: "lazy",
