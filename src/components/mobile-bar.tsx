@@ -10,9 +10,7 @@ export function MobileBar() {
   const isClient = useIsClient()
 
   if (!isClient) {
-    return (
-      <div className="h-[46px] w-[260px] rounded-l-full rounded-r-full bg-gray-100/60 dark:bg-[rgba(36,36,36)]/60 md:hidden" />
-    )
+    return null
   }
 
   return (
