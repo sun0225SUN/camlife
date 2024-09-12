@@ -19,10 +19,11 @@ export function LanguageSwitch() {
     }
   }) as RefObject<HTMLDivElement>
 
-  const handleLocaleChange = useCallback((locale: string) => {
+  const handleLocaleChange = (locale: string) => {
+    if (locale === currentLocale) return
     document.cookie = `NEXT_LOCALE=${locale};`
     window.location.reload()
-  }, [])
+  }
 
   const toggleList = useCallback(() => {
     setShowList((prev) => !prev)
