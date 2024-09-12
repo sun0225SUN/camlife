@@ -22,7 +22,7 @@ export function Tools() {
   return (
     <div
       className={clsx(
-        "z-10 hidden h-16 items-center md:flex",
+        "z-20 hidden h-16 items-center md:flex",
         isScrolled && "fixed right-32 top-0",
       )}
     >

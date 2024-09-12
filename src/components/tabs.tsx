@@ -32,7 +32,7 @@ export function Tabs() {
   return (
     <div
       className={clsx(
-        "my-4 flex h-16 w-full items-center justify-between bg-white px-6 dark:bg-black md:justify-start md:gap-5 md:px-32",
+        "z-10 my-4 flex h-16 w-full items-center justify-between bg-white px-6 dark:bg-black md:justify-start md:gap-5 md:px-32",
         locale === "zh"
           ? fontTabsZH.className + " text-lg md:text-2xl"
           : fontTabsEN.className + " text-sm font-normal md:text-2xl",
