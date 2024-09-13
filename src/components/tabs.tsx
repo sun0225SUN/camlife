@@ -72,7 +72,10 @@ export function Tabs() {
             "cursor-pointer",
             item.tab !== tab && "opacity-30 hover:opacity-80",
           )}
-          onClick={() => setTab(item.tab)}
+          onClick={() => {
+            setTab(item.tab)
+            window.scrollTo({ top: 0 })
+          }}
         >
           {item.label}
         </div>
