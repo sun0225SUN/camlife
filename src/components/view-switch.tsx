@@ -10,7 +10,10 @@ export function ViewSwitch() {
   return (
     <div className="flex items-center gap-4">
       <button
-        onClick={() => setView("feed")}
+        onClick={() => {
+          setView("feed")
+          window.scrollTo({ top: 0 })
+        }}
         className={clsx(
           view === "feed"
             ? "text-black dark:text-white"
@@ -20,7 +23,10 @@ export function ViewSwitch() {
         <GalleryThumbnails size={22} strokeWidth={2.25} absoluteStrokeWidth />
       </button>
       <button
-        onClick={() => setView("waterfall")}
+        onClick={() => {
+          setView("waterfall")
+          window.scrollTo({ top: 0 })
+        }}
         className={clsx(
           view === "waterfall"
             ? "text-black dark:text-white"
@@ -30,7 +36,10 @@ export function ViewSwitch() {
         <LayoutPanelLeft size={22} strokeWidth={2.25} absoluteStrokeWidth />
       </button>
       <button
-        onClick={() => setView("grid")}
+        onClick={() => {
+          setView("grid")
+          window.scrollTo({ top: 0 })
+        }}
         className={clsx(
           view === "grid"
             ? "text-black dark:text-white"

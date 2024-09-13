@@ -17,5 +17,13 @@
     "shuffle": "Shuffle",
     "nearby": "Nearby",
     "faraway": "Faraway"
+  },
+  "PhotoInfo": {
+    "score": "SCORE",
+    "exif": "EXIF",
+    "location": "LOCATION",
+    "camera": "CAMERA",
+    "lens": "LENS",
+    "time": "TIME"
   }
 }

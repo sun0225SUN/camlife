@@ -17,5 +17,13 @@
     "shuffle": "随览",
     "nearby": "附近",
     "faraway": "远方"
+  },
+  "PhotoInfo": {
+    "score": "评分",
+    "exif": "参数",
+    "location": "地点",
+    "camera": "相机",
+    "lens": "镜头",
+    "time": "拍摄于"
   }
 }

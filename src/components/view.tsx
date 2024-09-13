@@ -111,7 +111,7 @@ export function View() {
               </CardBody>
             </CardContainer>
           ) : (
-            <div key={photo.id}>
+            <div key={photo.id} className="flex flex-col items-center">
               {/* @ts-expect-error eslint-disable-line*/}
               <Image
                 {...imageProps}
