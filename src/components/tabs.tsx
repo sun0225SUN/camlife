@@ -7,6 +7,7 @@ import {
   Noto_Serif_SC as FontTabsZH,
 } from "next/font/google"
 import { useScroll } from "~/hooks/useScroll"
+import { useTab } from "~/store/useTab"
 
 const fontTabsZH = FontTabsZH({
   subsets: ["latin"],
@@ -28,6 +29,30 @@ export function Tabs() {
   const t = useTranslations("HomeTabs")
   const locale = useLocale()
   const isScrolled = useScroll(128)
+  const { tab, setTab } = useTab()
+
+  const tabsConfig: { tab: string; label: string }[] = [
+    {
+      tab: "essential",
+      label: t("essential"),
+    },
+    {
+      tab: "recent",
+      label: t("recent"),
+    },
+    {
+      tab: "shuffle",
+      label: t("shuffle"),
+    },
+    // {
+    //   tab: "nearby",
+    //   label: t("nearby"),
+    // },
+    // {
+    //   tab: "faraway",
+    //   label: t("faraway"),
+    // },
+  ]
 
   return (
     <div
@@ -40,11 +65,18 @@ export function Tabs() {
           "sticky top-0 h-16 bg-opacity-60 shadow-md backdrop-blur-md transition-all duration-500 ease-in-out dark:bg-opacity-60 dark:shadow-[0_4px_6px_-1px_rgba(255,255,255,0.1)]",
       )}
     >
-      <div className="cursor-pointer">{t("essential")}</div>
-      <div className="cursor-pointer">{t("recent")}</div>
-      <div className="cursor-pointer">{t("shuffle")}</div>
-      <div className="cursor-pointer">{t("nearby")}</div>
-      <div className="cursor-pointer">{t("faraway")}</div>
+      {tabsConfig.map((item) => (
+        <div
+          key={item.tab}
+          className={clsx(
+            "cursor-pointer",
+            item.tab !== tab && "opacity-30 hover:opacity-80",
+          )}
+          onClick={() => setTab(item.tab)}
+        >
+          {item.label}
+        </div>
+      ))}
     </div>
   )
 }

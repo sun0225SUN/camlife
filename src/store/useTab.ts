@@ -1,19 +1,19 @@
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 
-interface ViewStore {
-  view: string
-  setView: (view: string) => void
+interface TabStore {
+  tab: string
+  setTab: (tab: string) => void
 }
 
-export const useView = create<ViewStore>()(
+export const useTab = create<TabStore>()(
   persist(
     (set) => ({
-      view: "feed",
-      setView: (view) => set({ view }),
+      tab: "essential",
+      setTab: (tab) => set({ tab }),
     }),
     {
-      name: "view-store",
+      name: "tab-store",
       storage: createJSONStorage(() => sessionStorage),
     },
   ),

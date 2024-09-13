@@ -6,7 +6,25 @@ import { compressBase64Image } from "~/utils/compressImage"
 import { generateBlurredImageData } from "~/utils/genBlurData"
 
 export const photosRouter = createTRPCRouter({
-  getAllPhotos: publicProcedure.query(({ ctx }) => ctx.db.photos.findMany()),
+  getAllPhotos: publicProcedure
+    .input(z.object({ tab: z.string() }))
+    .query(async ({ input, ctx }) => {
+      switch (input.tab) {
+        case "essential":
+          return ctx.db.photos.findMany({})
+        case "recent":
+          return ctx.db.photos.findMany({
+            orderBy: {
+              id: "desc",
+            },
+          })
+        case "shuffle":
+          const photos = await ctx.db.photos.findMany()
+          return photos.sort(() => Math.random() - 0.5)
+        default:
+          return ctx.db.photos.findMany({})
+      }
+    }),
 
   genBlurData: publicProcedure
     .input(

@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react"
 import { ThreeDot } from "react-loading-indicators"
 import { PhotoInfo } from "~/components/photo-info"
 import { CardBody, CardContainer, CardItem } from "~/components/ui/3d-card"
+import { useTab } from "~/store/useTab"
 import { useView } from "~/store/useView"
 import { api } from "~/trpc/react"
 
@@ -37,6 +38,7 @@ export function View() {
   const { view } = useView()
   const { resolvedTheme } = useTheme()
   const [loadingColor, setLoadingColor] = useState<string | undefined>()
+  const { tab } = useTab()
 
   useEffect(() => {
     setLoadingColor(resolvedTheme === "dark" ? "#ffffff" : "#000000")
@@ -47,7 +49,9 @@ export function View() {
     initLightboxJS("6CDB-34FD-F513-A6FC", "individual")
   })
 
-  const { data: photos, isLoading } = api.photos.getAllPhotos.useQuery()
+  const { data: photos, isLoading } = api.photos.getAllPhotos.useQuery({
+    tab,
+  })
 
   const lightboxTheme = resolvedTheme === "dark" ? "night" : "day"
 

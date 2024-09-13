@@ -39,7 +39,7 @@ export function PhotoInfo({
   const t = useTranslations("PhotoInfo")
   return (
     <div className="my-4 flex justify-center gap-4 text-xs md:my-10 md:text-base">
-      <div className="scrollbar-hide flex w-[100vw] overflow-x-auto md:w-auto">
+      <div className="scrollbar-hide flex w-[100vw] gap-5 overflow-x-auto md:w-auto">
         <div className="hidden cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60 md:flex">
           <div className="text-xs">{t("score")}</div>
           <div className="flex gap-2">
