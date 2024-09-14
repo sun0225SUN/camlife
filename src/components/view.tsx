@@ -21,7 +21,7 @@ const styles = {
   image: {
     grid: "h-[100px] md:h-[200px] object-cover transition-transform duration-300 ease-in-out hover:scale-105",
     waterfall: "md:rounded-xl hover:shadow-xl",
-    default: "xl:rounded-xl",
+    default: "xl:rounded-xl xl:shadow-xl xl:shadow-outline",
   },
 }
 

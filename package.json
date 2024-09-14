@@ -38,7 +38,6 @@
     "lightbox.js-react": "^1.1.2",
     "lucide-react": "^0.427.0",
     "mapbox-gl": "^3.6.0",
-    "mini-svg-data-uri": "^1.4.4",
     "nanoid": "^5.0.7",
     "next": "^14.2.6",
     "next-auth": "5.0.0-beta.20",

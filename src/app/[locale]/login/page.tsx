@@ -19,8 +19,7 @@ export default function SignInPage() {
   }, [response])
 
   return (
-    <div className="flex h-screen items-center bg-white bg-dot-black/[0.2] dark:bg-black dark:bg-dot-white/[0.2]">
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black" />
+    <div className="flex h-screen items-center">
       <form className="z-10 mx-auto w-80 space-y-5" action={action}>
         <p className="text-center text-2xl text-black dark:text-white">
           {t("title")}
