@@ -1,3 +1,4 @@
+import { type Prisma } from "@prisma/client"
 import { nanoid } from "nanoid"
 import { z } from "zod"
 import { photoSchema } from "~/lib/zod"
@@ -6,36 +7,56 @@ import { calculateDistance } from "~/utils/calculateDistance"
 import { compressBase64Image } from "~/utils/compressImage"
 import { generateBlurredImageData } from "~/utils/genBlurData"
 
+const inputSchema = z.object({
+  tab: z.enum(["essential", "recent", "shuffle", "nearby", "faraway"]),
+  location: z.string().optional(),
+  cursor: z.string().optional(),
+  limit: z.number().default(20),
+})
+
 export const photosRouter = createTRPCRouter({
   getAllPhotos: publicProcedure
-    .input(z.object({ tab: z.string(), location: z.string().optional() }))
+    .input(inputSchema)
     .query(async ({ input, ctx }) => {
-      switch (input.tab) {
-        case "essential":
-          return ctx.db.photos.findMany({})
+      const { tab, location, cursor, limit } = input
+      let photos
+      let nextCursor: string | undefined
+
+      const baseQuery: Prisma.photosFindManyArgs = {
+        take: limit + 1,
+        cursor: cursor ? { uuid: cursor } : undefined,
+        orderBy: { createdAt: "asc" },
+      }
+
+      const fetchPhotos = async (query: Prisma.photosFindManyArgs) =>
+        ctx.db.photos.findMany(query)
+
+      switch (tab) {
         case "recent":
-          return ctx.db.photos.findMany({
-            orderBy: {
-              id: "desc",
-            },
+          photos = await fetchPhotos({
+            ...baseQuery,
+            orderBy: { takenAt: "desc" },
           })
+          break
         case "shuffle":
-          const photos = await ctx.db.photos.findMany()
-          return photos.sort(() => Math.random() - 0.5)
+          photos = await fetchPhotos(baseQuery)
+          photos.sort(() => Math.random() - 0.5)
+          break
         case "nearby":
         case "faraway":
-          if (!input.location) {
+          if (!location) {
             throw new Error("Location is required for nearby and faraway tabs")
           }
-          const [userLat, userLon] = input.location.split(",").map(Number)
-          const allPhotos = await ctx.db.photos.findMany({
+          const [userLat, userLon] = location.split(",").map(Number)
+          const allPhotos = await fetchPhotos({
+            ...baseQuery,
             where: {
               latitude: { not: 0 },
               longitude: { not: 0 },
             },
           })
 
-          const photosWithDistance = allPhotos.map((photo) => ({
+          photos = allPhotos.map((photo) => ({
             ...photo,
             distance: calculateDistance(
               userLat!,
@@ -45,32 +66,38 @@ export const photosRouter = createTRPCRouter({
             ),
           }))
 
-          photosWithDistance.sort((a, b) =>
-            input.tab === "nearby"
+          photos.sort((a, b) =>
+            tab === "nearby"
               ? a.distance - b.distance
               : b.distance - a.distance,
           )
-
-          return photosWithDistance
+          break
         default:
-          return ctx.db.photos.findMany({})
+          photos = await fetchPhotos(baseQuery)
       }
+
+      if (photos.length > limit) {
+        nextCursor = photos[limit]?.uuid
+        photos = photos.slice(0, limit)
+      }
+
+      return { items: photos, nextCursor }
     }),
 
   genBlurData: publicProcedure
     .input(
       z.object({
-        data: z.string(), // base64 data or http link
+        data: z.string(),
         isBase64: z.boolean().optional(),
       }),
     )
-    .mutation(async ({ input }) =>
+    .mutation(({ input }) =>
       generateBlurredImageData(input.data, input.isBase64 ?? false),
     ),
 
   compressImage: publicProcedure
-    .input(z.object({ data: z.string() })) // base64 data
-    .mutation(async ({ input }) => compressBase64Image(input.data)),
+    .input(z.object({ data: z.string() }))
+    .mutation(({ input }) => compressBase64Image(input.data)),
 
   createPhoto: publicProcedure
     .input(photoSchema)

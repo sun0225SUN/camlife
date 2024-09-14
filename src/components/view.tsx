@@ -1,16 +1,19 @@
 "use client"
 
+import clsx from "clsx"
 import { SlideshowLightbox, initLightboxJS } from "lightbox.js-react"
 import "lightbox.js-react/dist/index.css"
 import { useTheme } from "next-themes"
 import Image from "next/image"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { useInView } from "react-intersection-observer"
 import { ThreeDot } from "react-loading-indicators"
 import { PhotoInfo } from "~/components/photo-info"
 import { CardBody, CardContainer, CardItem } from "~/components/ui/3d-card"
 import { useTab } from "~/store/useTab"
 import { useView } from "~/store/useView"
 import { api } from "~/trpc/react"
+import { type TabType } from "~/types/tabs"
 
 const styles = {
   container: {
@@ -33,13 +36,14 @@ const getAdjustedDimensions = (width: number, height: number) =>
 export function View() {
   const { view } = useView()
   const { resolvedTheme } = useTheme()
-  const { tab } = useTab()
+  const { tab } = useTab() as { tab: TabType }
   const [loadingColor, setLoadingColor] = useState<string>()
   const [userLocation, setUserLocation] =
     useState<GeolocationCoordinates | null>(null)
   const [locationStatus, setLocationStatus] = useState<
     "pending" | "granted" | "denied" | null
   >(null)
+  const { ref, inView } = useInView()
 
   useEffect(() => {
     setLoadingColor(resolvedTheme === "dark" ? "#ffffff" : "#000000")
@@ -49,12 +53,12 @@ export function View() {
     initLightboxJS("6CDB-34FD-F513-A6FC", "individual")
   }, [])
 
-  useEffect(() => {
+  const getLocation = useCallback(() => {
     if (tab !== "nearby" && tab !== "faraway") return
 
     setLocationStatus("pending")
     if (!("geolocation" in navigator)) {
-      console.error("Geolocation is not supported by this browser")
+      console.error("该浏览器不支持地理定位")
       setLocationStatus("denied")
       return
     }
@@ -65,35 +69,55 @@ export function View() {
         setLocationStatus("granted")
       },
       (error) => {
-        console.error("Failed to get geolocation:", error.message)
+        console.error("获取地理位置失败:", error.message)
         setLocationStatus("denied")
       },
     )
   }, [tab])
 
-  const {
-    data: photos,
-    isLoading,
-    isFetching,
-  } = api.photos.getAllPhotos.useQuery(
-    {
-      tab,
-      ...((tab === "nearby" || tab === "faraway") &&
-        userLocation && {
-          location: `${userLocation.latitude},${userLocation.longitude}`,
-        }),
-    },
-    {
-      refetchOnWindowFocus: false,
-      staleTime: tab === "shuffle" ? 0 : 5 * 60 * 1000,
-      enabled:
-        (tab !== "nearby" && tab !== "faraway") || locationStatus === "granted",
-    },
+  useEffect(() => {
+    getLocation()
+  }, [getLocation])
+
+  const getLimitByView = useCallback((view: string) => {
+    const limits: Record<string, number> = { grid: 20, waterfall: 10, feed: 5 }
+    return limits[view] ?? 10
+  }, [])
+
+  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
+    api.photos.getAllPhotos.useInfiniteQuery(
+      {
+        tab,
+        ...((tab === "nearby" || tab === "faraway") &&
+          userLocation && {
+            location: `${userLocation.latitude},${userLocation.longitude}`,
+          }),
+        limit: getLimitByView(view),
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        refetchOnWindowFocus: false,
+        staleTime: tab === "shuffle" ? 0 : 5 * 60 * 1000,
+        enabled:
+          (tab !== "nearby" && tab !== "faraway") ||
+          locationStatus === "granted",
+      },
+    )
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      void fetchNextPage()
+    }
+  }, [inView, hasNextPage, fetchNextPage])
+
+  const photos = useMemo(
+    () => data?.pages.flatMap((page) => page.items) ?? [],
+    [data],
   )
 
   const isLoadingOrFetching =
     isLoading ||
-    (isFetching && tab === "shuffle") ||
+    (isFetchingNextPage && tab === "shuffle") ||
     locationStatus === "pending"
 
   const lightboxTheme = resolvedTheme === "dark" ? "night" : "day"
@@ -144,7 +168,7 @@ export function View() {
           styles.container.default
         }
       >
-        {photos?.map((photo) => {
+        {photos.map((photo) => {
           const { width, height } = getAdjustedDimensions(
             photo.width,
             photo.height,
@@ -182,6 +206,17 @@ export function View() {
           )
         })}
       </SlideshowLightbox>
+      {isFetchingNextPage && (
+        <div
+          className={clsx(
+            "mb-10 flex justify-center",
+            view !== "feed" ? "mt-10" : "mt-2",
+          )}
+        >
+          <ThreeDot variant="pulsate" color={loadingColor} size="medium" />
+        </div>
+      )}
+      <div ref={ref} className="h-1 w-full" />
     </div>
   )
 }
