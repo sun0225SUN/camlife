@@ -47,11 +47,21 @@ export function View() {
   useEffect(() => {
     // https://www.getlightboxjs.com/nextjs/
     initLightboxJS("6CDB-34FD-F513-A6FC", "individual")
-  })
+  }, [])
 
-  const { data: photos, isLoading } = api.photos.getAllPhotos.useQuery({
-    tab,
-  })
+  const {
+    data: photos,
+    isLoading,
+    isFetching,
+  } = api.photos.getAllPhotos.useQuery(
+    { tab },
+    {
+      refetchOnWindowFocus: false,
+      staleTime: tab === "shuffle" ? 0 : 5 * 60 * 1000,
+    },
+  )
+
+  const isLoadingOrFetching = isLoading || (isFetching && tab === "shuffle")
 
   const lightboxTheme = resolvedTheme === "dark" ? "night" : "day"
 
@@ -60,12 +70,13 @@ export function View() {
     [photos],
   )
 
-  if (isLoading)
+  if (isLoadingOrFetching) {
     return (
       <div className="flex h-[60vh] w-full items-center justify-center">
         <ThreeDot variant="pulsate" color={loadingColor} size="medium" />
       </div>
     )
+  }
 
   return (
     <div className="md:px-32">
@@ -76,6 +87,7 @@ export function View() {
         lightboxIdentifier="lightbox"
         framework="next"
         modalClose="clickOutside"
+        imgAnimation="imgDrag"
         showControls={false}
         fullScreen
         className={

@@ -69,8 +69,8 @@ importers:
         specifier: ^1.3.1
         version: 1.3.1(next@14.2.6(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       lightbox.js-react:
-        specifier: ^1.1.1
-        version: 1.1.1(eslint@8.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^1.1.2
+        version: 1.1.2(eslint@8.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       lucide-react:
         specifier: ^0.427.0
         version: 0.427.0(react@18.3.1)
@@ -1954,6 +1954,15 @@ packages:
       supports-color:
         optional: true
 
+  debug@4.3.7:
+    resolution: {integrity: sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+
   deep-equal@2.2.3:
     resolution: {integrity: sha512-ZIwpnevOurS8bpT4192sqAowWM76JDKSHYzMLty3BZGSswgq6pBaH3DhCSW5xVAZICZyKdOBPjwww5wfgT/6PA==}
     engines: {node: '>= 0.4'}
@@ -2703,8 +2712,8 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  lightbox.js-react@1.1.1:
-    resolution: {integrity: sha512-g0okwoGMiY/EkFFCm9/4+8Uy0mmA2olI/sEuzsRY40c3InM+krzc8MWurHLewvMCLzuxsux8VvGxP66j3hRe4g==}
+  lightbox.js-react@1.1.2:
+    resolution: {integrity: sha512-szWewAzAGE+gJjt0dnmwDD8W//qK5PDDa51iE3PtOyUsnWJmJgBxITCDasp09cSixAUg1RDVT0pyfHehCBCUXA==}
     engines: {node: '>=10'}
     peerDependencies:
       react: 15 - 18
@@ -4651,7 +4660,7 @@ snapshots:
       '@babel/parser': 7.25.6
       '@babel/template': 7.25.0
       '@babel/types': 7.25.6
-      debug: 4.3.6
+      debug: 4.3.7
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -5742,6 +5751,11 @@ snapshots:
     dependencies:
       ms: 2.1.2
 
+  debug@4.3.7:
+    dependencies:
+      ms: 2.1.3
+    optional: true
+
   deep-equal@2.2.3:
     dependencies:
       array-buffer-byte-length: 1.0.1
@@ -6646,7 +6660,7 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  lightbox.js-react@1.1.1(eslint@8.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  lightbox.js-react@1.1.2(eslint@8.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@react-hook/resize-observer': 1.2.6(react@18.3.1)
       '@types/file-saver': 2.0.7
