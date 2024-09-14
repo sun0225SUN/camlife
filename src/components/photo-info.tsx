@@ -30,6 +30,7 @@ import {
   formatDateTime,
   formatExposureTime,
 } from "~/utils/format"
+import { getPhoneName } from "~/utils/getPhoneName"
 
 interface PhotoInfoProps {
   make?: string | null
@@ -149,16 +150,22 @@ export function PhotoInfo({
           )}
           <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
             <div className="text-xs md:text-sm">{t("camera")}</div>
-            <div className="whitespace-nowrap">
-              {!!model ? model : "unknown"}
+            <div className="whitespace-nowrap uppercase">
+              {!!model
+                ? getPhoneName(model).got
+                  ? getPhoneName(model).name
+                  : model
+                : "unknown"}
             </div>
           </div>
-          <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
-            <div className="text-xs md:text-sm">{t("lens")}</div>
-            <div className="whitespace-nowrap">
-              {!!lensModel ? lensModel : "unknown"}
+          {!getPhoneName(model ?? "").got && (
+            <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
+              <div className="text-xs md:text-sm">{t("lens")}</div>
+              <div className="whitespace-nowrap">
+                {!!lensModel ? lensModel : "unknown"}
+              </div>
             </div>
-          </div>
+          )}
           <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
             <div className="text-xs md:text-sm">{t("time")}</div>
             <div className="whitespace-nowrap">

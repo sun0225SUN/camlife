@@ -24,7 +24,7 @@
     "location": "地点",
     "camera": "相机",
     "lens": "镜头",
-    "time": "拍摄于"
+    "time": "拍摄时间"
   },
   "LocationMap": {
     "latitude": "纬度",

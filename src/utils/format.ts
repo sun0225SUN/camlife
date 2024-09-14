@@ -34,15 +34,16 @@ export function formatDateTime(timestamp: string | null): string {
 }
 
 /**
- * 将完整的地址格式化为简化形式
- * @param address 完整的地址字符串
- * @returns 格式化后的地址字符串
+ * Formats a full address into a simplified form
+ * @param address The complete address string
+ * @returns The formatted address string
  */
 export function formatAddress(address: string): string {
   const parts = address.match(/(.*国)(.*省)(.*市)/)
   if (!parts) return address
   return `${parts[1]} · ${parts[2]} · ${parts[3]}`
 }
+
 /**
  * Converts a coordinate (latitude or longitude) to a formatted string
  * @param coordinate The coordinate value in decimal degrees

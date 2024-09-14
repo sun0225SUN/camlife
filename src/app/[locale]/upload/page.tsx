@@ -26,6 +26,7 @@ export default function AvatarUploadPage() {
     try {
       const buffer = await file.arrayBuffer()
       const exifData = ExifParserFactory.create(buffer).parse()
+      console.log(exifData)
       const base64Data = Buffer.from(buffer).toString("base64")
 
       const compressedImage = await compressImage.mutateAsync({
