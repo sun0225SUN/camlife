@@ -23,7 +23,7 @@ export function Tools() {
     <div
       className={clsx(
         "z-20 hidden h-16 items-center md:flex",
-        isScrolled && "fixed right-32 top-0",
+        isScrolled && "fixed top-0 md:right-12 xl:right-48",
       )}
     >
       <div className="flex items-center gap-4 rounded-l-full rounded-r-full bg-gray-100/60 px-6 py-3 backdrop-blur-sm transition-all duration-300 dark:bg-[rgba(36,36,36,0.6)]/60">

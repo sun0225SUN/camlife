@@ -20,8 +20,8 @@ const styles = {
   },
   image: {
     grid: "h-[100px] md:h-[200px] object-cover transition-transform duration-300 ease-in-out hover:scale-105",
-    waterfall: "md:mb-6 break-inside-avoid md:rounded-xl hover:shadow-xl",
-    default: "md:rounded-xl",
+    waterfall: "md:rounded-xl hover:shadow-xl",
+    default: "xl:rounded-xl",
   },
 }
 
@@ -79,7 +79,7 @@ export function View() {
   }
 
   return (
-    <div className="md:px-32">
+    <div className="min-w-full max-w-[100vw] xl:px-48">
       <SlideshowLightbox
         key={view}
         theme={lightboxTheme}
@@ -114,7 +114,7 @@ export function View() {
           }
 
           return view === "waterfall" ? (
-            <CardContainer containerClassName="py-0" key={photo.id}>
+            <CardContainer containerClassName="py-0 md:mb-6" key={photo.id}>
               <CardBody className="h-auto w-auto">
                 <CardItem translateZ="50">
                   {/* @ts-expect-error eslint-disable-line*/}
