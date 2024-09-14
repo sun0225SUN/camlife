@@ -209,8 +209,8 @@ export function View() {
       {isFetchingNextPage && (
         <div
           className={clsx(
-            "mb-10 flex justify-center",
-            view !== "feed" ? "mt-10" : "mt-2",
+            "mb-5 flex justify-center",
+            view !== "feed" && "mt-5 md:mt-10",
           )}
         >
           <ThreeDot variant="pulsate" color={loadingColor} size="medium" />
