@@ -25,5 +25,9 @@
     "camera": "CAMERA",
     "lens": "LENS",
     "time": "TIME"
+  },
+  "LocationMap": {
+    "latitude": "Latitude",
+    "longitude": "Longitude"
   }
 }

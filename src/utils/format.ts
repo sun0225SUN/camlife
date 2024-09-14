@@ -32,3 +32,66 @@ export function formatDateTime(timestamp: string | null): string {
         day: "2-digit",
       })
 }
+
+/**
+ * 将完整的地址格式化为简化形式
+ * @param address 完整的地址字符串
+ * @returns 格式化后的地址字符串
+ */
+export function formatAddress(address: string): string {
+  const parts = address.match(/(.*国)(.*省)(.*市)/)
+  if (!parts) return address
+  return `${parts[1]} · ${parts[2]} · ${parts[3]}`
+}
+/**
+ * Converts a coordinate (latitude or longitude) to a formatted string
+ * @param coordinate The coordinate value in decimal degrees
+ * @param isLatitude Boolean indicating whether the coordinate is latitude
+ * @returns Formatted coordinate string in degrees, minutes, seconds, and direction
+ */
+function convertCoordinate(coordinate: number, isLatitude: boolean): string {
+  const abs = Math.abs(coordinate)
+  const degrees = Math.floor(abs)
+  const minutes = Math.floor((abs - degrees) * 60)
+  const seconds = ((abs - degrees - minutes / 60) * 3600).toFixed(0)
+  const direction = isLatitude
+    ? coordinate < 0
+      ? "S"
+      : "N"
+    : coordinate < 0
+      ? "W"
+      : "E"
+
+  return `${degrees}°${minutes}'${seconds}"${direction}`
+}
+
+/**
+ * Formats a latitude value into a readable string
+ * @param latitude The latitude value in decimal degrees
+ * @returns Formatted latitude string
+ */
+export function formatLatitude(latitude: number): string {
+  return convertCoordinate(latitude, true)
+}
+
+/**
+ * Formats a longitude value into a readable string
+ * @param longitude The longitude value in decimal degrees
+ * @returns Formatted longitude string
+ */
+export function formatLongitude(longitude: number): string {
+  return convertCoordinate(longitude, false)
+}
+
+/**
+ * Formats both latitude and longitude into a single readable string
+ * @param latitude The latitude value in decimal degrees
+ * @param longitude The longitude value in decimal degrees
+ * @returns Formatted string containing both latitude and longitude
+ */
+export function formatLatitudeLongitude(
+  latitude: number,
+  longitude: number,
+): string {
+  return `${formatLatitude(latitude)} ${formatLongitude(longitude)}`
+}

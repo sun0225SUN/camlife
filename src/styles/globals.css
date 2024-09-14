@@ -110,3 +110,17 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* mapbox */
+.mapboxgl-ctrl-attrib-inner {
+  display: none !important;
+}
+.mapboxgl-ctrl-attrib-button {
+  display: none !important;
+}
+.mapboxgl-ctrl-logo {
+  display: none !important;
+}
+.mapboxgl-compact {
+  display: none !important;
+}

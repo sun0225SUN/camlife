@@ -1,3 +1,4 @@
+import { useMediaQuery } from "@uidotdev/usehooks"
 import {
   Aperture,
   Ellipsis,
@@ -6,9 +7,29 @@ import {
   Telescope,
   Timer,
 } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import ISO from "~/assets/images/svg/iso.svg"
-import { formatDateTime, formatExposureTime } from "~/utils/format"
+import { LocationMap } from "~/components/location-map"
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/components/ui/drawer"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover"
+import { useMapboxGeocoding } from "~/hooks/fetchPlaceName"
+import {
+  formatAddress,
+  formatDateTime,
+  formatExposureTime,
+} from "~/utils/format"
 
 interface PhotoInfoProps {
   make?: string | null
@@ -31,15 +52,25 @@ export function PhotoInfo({
   exposureTime,
   // exposureCompensation,
   model,
-  // latitude,
-  // longitude,
+  latitude,
+  longitude,
   lensModel,
   takenAtNaive,
 }: PhotoInfoProps) {
   const t = useTranslations("PhotoInfo")
+  const locale = useLocale()
+  const placeName = useMapboxGeocoding({
+    latitude,
+    longitude,
+    language: locale,
+    level: 2,
+  })
+
+  const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)")
+
   return (
     <div className="my-4 flex justify-center text-xs md:my-10 md:text-base">
-      <div className="mx-auto flex w-[100vw] justify-center gap-4 px-2 xl:w-auto">
+      <div className="mx-auto flex w-[100vw] justify-center gap-4 px-2 xl:w-auto xl:max-w-[80vw]">
         <div className="scrollbar-hide flex gap-4 overflow-x-auto">
           <div className="hidden cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60 md:flex">
             <div className="text-xs md:text-sm">{t("score")}</div>
@@ -76,14 +107,46 @@ export function PhotoInfo({
               </div>
             </div>
           </div>
-          <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
-            <div className="text-xs md:text-sm">{t("location")}</div>
-            <div className="whitespace-nowrap">
-              unknown
-              {/* {latitude}
-          {longitude} */}
-            </div>
-          </div>
+          {!isSmallDevice ? (
+            <Popover>
+              <PopoverTrigger>
+                <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
+                  <div className="text-xs md:text-sm">{t("location")}</div>
+                  <div className="whitespace-nowrap">
+                    {placeName !== "" ? formatAddress(placeName) : "unknown"}
+                  </div>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="hidden w-auto rounded-2xl bg-white/80 backdrop-blur-sm dark:bg-black/80 md:block">
+                <LocationMap
+                  latitude={latitude ?? 0}
+                  longitude={longitude ?? 0}
+                />
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <Drawer>
+              <DrawerTrigger>
+                <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
+                  <div className="text-xs md:text-sm">{t("location")}</div>
+                  <div className="whitespace-nowrap">
+                    {placeName !== "" ? formatAddress(placeName) : "unknown"}
+                  </div>
+                </div>
+              </DrawerTrigger>
+              <DrawerContent className="p-4">
+                <DrawerHeader>
+                  <DrawerTitle>{t("location")}</DrawerTitle>
+                  <DrawerDescription />
+                </DrawerHeader>
+                <LocationMap
+                  latitude={latitude ?? 0}
+                  longitude={longitude ?? 0}
+                />
+                <DrawerFooter />
+              </DrawerContent>
+            </Drawer>
+          )}
           <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
             <div className="text-xs md:text-sm">{t("camera")}</div>
             <div className="whitespace-nowrap">
