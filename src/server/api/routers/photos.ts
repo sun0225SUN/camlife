@@ -2,12 +2,13 @@ import { nanoid } from "nanoid"
 import { z } from "zod"
 import { photoSchema } from "~/lib/zod"
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc"
+import { calculateDistance } from "~/utils/calculateDistance"
 import { compressBase64Image } from "~/utils/compressImage"
 import { generateBlurredImageData } from "~/utils/genBlurData"
 
 export const photosRouter = createTRPCRouter({
   getAllPhotos: publicProcedure
-    .input(z.object({ tab: z.string() }))
+    .input(z.object({ tab: z.string(), location: z.string().optional() }))
     .query(async ({ input, ctx }) => {
       switch (input.tab) {
         case "essential":
@@ -21,6 +22,36 @@ export const photosRouter = createTRPCRouter({
         case "shuffle":
           const photos = await ctx.db.photos.findMany()
           return photos.sort(() => Math.random() - 0.5)
+        case "nearby":
+        case "faraway":
+          if (!input.location) {
+            throw new Error("Location is required for nearby and faraway tabs")
+          }
+          const [userLat, userLon] = input.location.split(",").map(Number)
+          const allPhotos = await ctx.db.photos.findMany({
+            where: {
+              latitude: { not: 0 },
+              longitude: { not: 0 },
+            },
+          })
+
+          const photosWithDistance = allPhotos.map((photo) => ({
+            ...photo,
+            distance: calculateDistance(
+              userLat!,
+              userLon!,
+              photo.latitude!,
+              photo.longitude!,
+            ),
+          }))
+
+          photosWithDistance.sort((a, b) =>
+            input.tab === "nearby"
+              ? a.distance - b.distance
+              : b.distance - a.distance,
+          )
+
+          return photosWithDistance
         default:
           return ctx.db.photos.findMany({})
       }

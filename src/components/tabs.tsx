@@ -44,14 +44,14 @@ export function Tabs() {
       tab: "shuffle",
       label: t("shuffle"),
     },
-    // {
-    //   tab: "nearby",
-    //   label: t("nearby"),
-    // },
-    // {
-    //   tab: "faraway",
-    //   label: t("faraway"),
-    // },
+    {
+      tab: "nearby",
+      label: t("nearby"),
+    },
+    {
+      tab: "faraway",
+      label: t("faraway"),
+    },
   ]
 
   return (
