@@ -10,12 +10,27 @@ export function useDrawerState() {
     setDrawerState((prev) => ({ ...prev, [drawer]: !prev[drawer] }))
   }, [])
 
+  const setOverflowUnset = useCallback(() => {
+    document.body.style.overflow = "unset"
+  }, [])
+
+  useEffect(() => {
+    const handleResize = () => {
+      setOverflowUnset()
+      setDrawerState({ exif: false, location: false })
+    }
+
+    window.addEventListener("resize", handleResize)
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+      setOverflowUnset()
+    }
+  }, [setOverflowUnset])
+
   useEffect(() => {
     document.body.style.overflow =
       drawerState.exif || drawerState.location ? "hidden" : "unset"
-    return () => {
-      document.body.style.overflow = "unset"
-    }
   }, [drawerState])
 
   return { drawerState, toggleDrawer }
