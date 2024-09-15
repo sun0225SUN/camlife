@@ -1,6 +1,7 @@
 import { Rating as ReactRating } from "@smastrom/react-rating"
 import "@smastrom/react-rating/style.css"
 import { useMediaQuery } from "@uidotdev/usehooks"
+import clsx from "clsx"
 import { Aperture, Ellipsis, Telescope, Timer } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
@@ -101,13 +102,18 @@ const InfoItem = ({
   title,
   children,
   onClick,
+  className,
 }: {
-  title: string
+  title?: string
   children: React.ReactNode
+  className?: string
   onClick?: () => void
 }) => (
   <div
-    className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60"
+    className={clsx(
+      "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60",
+      className,
+    )}
     onClick={onClick}
   >
     <div className="text-xs md:text-sm">{title}</div>
@@ -154,7 +160,7 @@ export function PhotoInfo({
   }, [model])
 
   const renderExifContent = () => (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid w-full grid-cols-2 gap-4">
       <ExifCard
         title={t("focalLength")}
         value={
@@ -275,9 +281,60 @@ export function PhotoInfo({
             </div>
           </InfoItem>
         </div>
-        <div className="flex cursor-pointer flex-col items-center justify-end gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
-          <Ellipsis />
-        </div>
+        {!isSmallDevice ? (
+          <Popover>
+            <PopoverTrigger>
+              <InfoItem className="!h-[68px] !justify-end">
+                <Ellipsis />
+              </InfoItem>
+            </PopoverTrigger>
+            <PopoverContent className="scrollbar-hide hidden h-[500px] w-auto flex-col gap-4 overflow-auto rounded-2xl bg-white/80 backdrop-blur-sm dark:bg-black/80 md:flex">
+              <div className="flex flex-col items-center justify-between gap-4">
+                <div className="text-lg font-medium">{t("location")}</div>
+                <LocationMap
+                  latitude={latitude ?? 0}
+                  longitude={longitude ?? 0}
+                />
+              </div>
+              <div className="flex flex-col items-center justify-between gap-4">
+                <div className="text-lg font-medium">{t("exif")}</div>
+                {renderExifContent()}
+              </div>
+            </PopoverContent>
+          </Popover>
+        ) : (
+          <>
+            <InfoItem
+              className="!h-[68px] !justify-end !px-0 hover:!bg-transparent"
+              onClick={() => toggleDrawer("all")}
+            >
+              <Ellipsis />
+            </InfoItem>
+            <Drawer
+              overlayOpacity={0.6}
+              open={drawerState.all}
+              onClose={() => toggleDrawer("all")}
+              direction="bottom"
+              className="!h-[70vh] w-full overflow-auto rounded-t-xl bg-white p-5 dark:!bg-black"
+            >
+              <div className="flex flex-col gap-4">
+                <div className="text-center text-lg font-medium">
+                  {t("location")}
+                </div>
+                <LocationMap
+                  latitude={latitude ?? 0}
+                  longitude={longitude ?? 0}
+                />
+              </div>
+              <div className="mt-4 flex flex-col gap-4">
+                <div className="text-center text-lg font-medium">
+                  {t("exif")}
+                </div>
+                {renderExifContent()}
+              </div>
+            </Drawer>
+          </>
+        )}
       </div>
     </div>
   )

@@ -28,7 +28,7 @@
     "focalLength": "焦距",
     "aperture": "光圈",
     "exposureTime": "快门",
-    "iso": "ISO"
+    "iso": "感光度"
   },
   "LocationMap": {
     "latitude": "纬度",

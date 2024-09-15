@@ -4,9 +4,10 @@ export function useDrawerState() {
   const [drawerState, setDrawerState] = useState({
     exif: false,
     location: false,
+    all: false,
   })
 
-  const toggleDrawer = useCallback((drawer: "exif" | "location") => {
+  const toggleDrawer = useCallback((drawer: keyof typeof drawerState) => {
     setDrawerState((prev) => ({ ...prev, [drawer]: !prev[drawer] }))
   }, [])
 
@@ -17,7 +18,7 @@ export function useDrawerState() {
   useEffect(() => {
     const handleResize = () => {
       setOverflowUnset()
-      setDrawerState({ exif: false, location: false })
+      setDrawerState({ exif: false, location: false, all: false })
     }
 
     window.addEventListener("resize", handleResize)
@@ -29,8 +30,9 @@ export function useDrawerState() {
   }, [setOverflowUnset])
 
   useEffect(() => {
-    document.body.style.overflow =
-      drawerState.exif || drawerState.location ? "hidden" : "unset"
+    document.body.style.overflow = Object.values(drawerState).some(Boolean)
+      ? "hidden"
+      : "unset"
   }, [drawerState])
 
   return { drawerState, toggleDrawer }
