@@ -58,7 +58,7 @@ export function View() {
 
     setLocationStatus("pending")
     if (!("geolocation" in navigator)) {
-      console.error("该浏览器不支持地理定位")
+      console.error("This browser does not support geolocation")
       setLocationStatus("denied")
       return
     }
@@ -69,7 +69,7 @@ export function View() {
         setLocationStatus("granted")
       },
       (error) => {
-        console.error("获取地理位置失败:", error.message)
+        console.error("Failed to get geolocation:", error.message)
         setLocationStatus("denied")
       },
     )

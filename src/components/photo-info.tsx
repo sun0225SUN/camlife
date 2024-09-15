@@ -141,7 +141,7 @@ export function PhotoInfo({
     level: 2,
   })
   const { drawerState, toggleDrawer } = useDrawerState()
-  const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)")
+  const isMobile = useMediaQuery("only screen and (max-width : 768px)")
   const [rating, setRating] = useState(3)
   const { resolvedTheme } = useTheme()
 
@@ -207,7 +207,7 @@ export function PhotoInfo({
               }}
             />
           </div>
-          {!isSmallDevice ? (
+          {!isMobile ? (
             <>
               <Popover>
                 <PopoverTrigger>
@@ -281,7 +281,7 @@ export function PhotoInfo({
             </div>
           </InfoItem>
         </div>
-        {!isSmallDevice ? (
+        {!isMobile ? (
           <Popover>
             <PopoverTrigger>
               <InfoItem className="!h-[68px] !justify-end">

@@ -1,4 +1,5 @@
 import { type Prisma } from "@prisma/client"
+import "mapbox-gl/dist/mapbox-gl.css"
 import { nanoid } from "nanoid"
 import { z } from "zod"
 import { photoSchema } from "~/lib/zod"
@@ -109,4 +110,24 @@ export const photosRouter = createTRPCRouter({
         },
       })
     }),
+  getAllCoordinates: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db.photos.findMany({
+      select: {
+        width: true,
+        height: true,
+        latitude: true,
+        longitude: true,
+        url: true,
+        blurData: true,
+      },
+      where: {
+        width: { not: 0 },
+        height: { not: 0 },
+        latitude: { not: 0 },
+        longitude: { not: 0 },
+        url: { not: "" },
+        blurData: { not: "" },
+      },
+    })
+  }),
 })

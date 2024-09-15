@@ -1,5 +1,4 @@
 import { Header } from "~/components/header"
-import { MobileBar } from "~/components/mobile-bar"
 import { Tabs } from "~/components/tabs"
 import { View } from "~/components/view"
 import { HydrateClient } from "~/trpc/server"
@@ -12,7 +11,6 @@ export default function HomePage() {
         <Tabs />
         <View />
       </div>
-      <MobileBar />
     </HydrateClient>
   )
 }

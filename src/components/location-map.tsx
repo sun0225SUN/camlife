@@ -22,7 +22,7 @@ export function LocationMap({ latitude, longitude }: LocationMapProps) {
   const { resolvedTheme } = useTheme()
   const locale = useLocale()
   const t = useTranslations("LocationMap")
-  const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)")
+  const isMobile = useMediaQuery("only screen and (max-width : 768px)")
 
   const mapRef = useCallback(
     (ref: MapRef) => {
@@ -80,10 +80,40 @@ export function LocationMap({ latitude, longitude }: LocationMapProps) {
           mapStyle={mapStyle}
           mapboxAccessToken={mapboxToken}
           ref={mapRef}
-          style={{ width: isSmallDevice ? "auto" : "300px", height: "120px" }}
+          style={{ width: isMobile ? "auto" : "300px", height: "120px" }}
         >
           <FullscreenControl position="bottom-right" />
-          <Marker longitude={longitude} latitude={latitude} />
+          <Marker longitude={longitude} latitude={latitude}>
+            <div style={{ position: "relative" }}>
+              <div
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  borderRadius: "50%",
+                  backgroundColor: "#FF9900",
+                  opacity: 0.4,
+                  filter: "blur(4px)",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              />
+              <div
+                style={{
+                  width: "12px",
+                  height: "12px",
+                  borderRadius: "50%",
+                  backgroundColor: "#FF6600",
+                  border: "2px solid #FFFFFF",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              />
+            </div>
+          </Marker>
         </Map>
         <div className="my-4 flex items-center justify-center p-2">
           <div className="w-full max-w-[280px] break-words text-center text-sm">
