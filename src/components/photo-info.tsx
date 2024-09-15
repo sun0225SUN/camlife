@@ -8,10 +8,11 @@ import {
   Timer,
 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
+import { useMemo } from "react"
 import Drawer from "react-modern-drawer"
 import "react-modern-drawer/dist/index.css"
 import ISO from "~/assets/images/svg/iso.svg"
+import { ExifCard } from "~/components/exif-card"
 import { LocationMap } from "~/components/location-map"
 import {
   Popover,
@@ -19,6 +20,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover"
 import { useMapboxGeocoding } from "~/hooks/fetchPlaceName"
+import { useDrawerState } from "~/hooks/useDrawerState"
 import {
   formatAddress,
   formatDateTime,
@@ -40,12 +42,87 @@ interface PhotoInfoProps {
   takenAtNaive?: string | null
 }
 
+interface PhotoInfoProps {
+  make?: string | null
+  model?: string | null
+  lensModel?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  focalLengthIn35mmFormat?: number | null
+  fNumber?: number | null
+  iso?: number | null
+  exposureTime?: number | null
+  exposureCompensation?: number | null
+  takenAtNaive?: string | null
+}
+
+const ExifItem = ({
+  icon,
+  value,
+}: {
+  icon: React.ReactNode
+  value: string
+}) => (
+  <div className="flex items-center gap-1">
+    {icon}
+    {value}
+  </div>
+)
+
+const ExifInfo = ({
+  focalLengthIn35mmFormat,
+  fNumber,
+  exposureTime,
+  iso,
+}: Pick<
+  PhotoInfoProps,
+  "focalLengthIn35mmFormat" | "fNumber" | "exposureTime" | "iso"
+>) => (
+  <div className="flex gap-4">
+    <ExifItem
+      icon={<Telescope size={18} strokeWidth={2} />}
+      value={
+        focalLengthIn35mmFormat ? `${focalLengthIn35mmFormat}mm` : "unknown"
+      }
+    />
+    <ExifItem
+      icon={<Aperture size={18} strokeWidth={2} />}
+      value={fNumber ? `ƒ/${fNumber}` : "unknown"}
+    />
+    <ExifItem
+      icon={<Timer size={18} strokeWidth={2.2} absoluteStrokeWidth />}
+      value={exposureTime ? formatExposureTime(exposureTime) : "unknown"}
+    />
+    <ExifItem
+      icon={<ISO className="size-6 text-black dark:text-white" />}
+      value={iso?.toString() ?? "unknown"}
+    />
+  </div>
+)
+
+const InfoItem = ({
+  title,
+  children,
+  onClick,
+}: {
+  title: string
+  children: React.ReactNode
+  onClick?: () => void
+}) => (
+  <div
+    className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60"
+    onClick={onClick}
+  >
+    <div className="text-xs md:text-sm">{title}</div>
+    {children}
+  </div>
+)
+
 export function PhotoInfo({
   focalLengthIn35mmFormat,
   fNumber,
   iso,
   exposureTime,
-  // exposureCompensation,
   model,
   latitude,
   longitude,
@@ -60,22 +137,49 @@ export function PhotoInfo({
     language: locale,
     level: 2,
   })
-  const [isOpen, setIsOpen] = useState(false)
-  const toggleDrawer = () => setIsOpen((prev) => !prev)
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "unset"
-    }
-
-    return () => {
-      document.body.style.overflow = "unset"
-    }
-  }, [isOpen])
-
+  const { drawerState, toggleDrawer } = useDrawerState()
   const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)")
+
+  const exifProps = useMemo(
+    () => ({ focalLengthIn35mmFormat, fNumber, exposureTime, iso }),
+    [focalLengthIn35mmFormat, fNumber, exposureTime, iso],
+  )
+  const locationValue = useMemo(
+    () => (placeName !== "" ? formatAddress(placeName) : "unknown"),
+    [placeName],
+  )
+  const cameraInfo = useMemo(() => {
+    if (!model) return "unknown"
+    const phoneName = getPhoneName(model)
+    return phoneName.got ? phoneName.name : model
+  }, [model])
+
+  const renderExifContent = () => (
+    <div className="grid grid-cols-2 gap-4">
+      <ExifCard
+        title={t("focalLength")}
+        value={
+          focalLengthIn35mmFormat ? `${focalLengthIn35mmFormat}mm` : "unknown"
+        }
+        icon={<Telescope size={30} strokeWidth={2} />}
+      />
+      <ExifCard
+        title={t("aperture")}
+        value={fNumber ? `ƒ/${fNumber}` : "unknown"}
+        icon={<Aperture size={30} strokeWidth={2} />}
+      />
+      <ExifCard
+        title={t("exposureTime")}
+        value={exposureTime ? formatExposureTime(exposureTime) : "unknown"}
+        icon={<Timer size={30} strokeWidth={3} absoluteStrokeWidth />}
+      />
+      <ExifCard
+        title={t("iso")}
+        value={iso?.toString() ?? "unknown"}
+        icon={<ISO className="size-10 text-black dark:text-white" />}
+      />
+    </div>
+  )
 
   return (
     <div className="my-4 flex justify-center text-xs md:my-10 md:text-base">
@@ -88,66 +192,60 @@ export function PhotoInfo({
               <Star size={20} strokeWidth={2} />
               <Star size={20} strokeWidth={2} />
               <Star size={20} strokeWidth={2} />
+              <Star size={20} strokeWidth={2} />
               <StarHalf size={20} strokeWidth={2} />
             </div>
           </div>
-          <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
-            <div className="text-xs md:text-sm">{t("exif")}</div>
-            <div className="flex gap-4">
-              <div className="flex items-center gap-1">
-                <Telescope size={18} strokeWidth={2} />
-                {!!focalLengthIn35mmFormat
-                  ? focalLengthIn35mmFormat + "mm"
-                  : "unknown"}
-              </div>
-              <div className="flex items-center gap-1">
-                <Aperture size={18} strokeWidth={2} />
-                {!!fNumber ? "ƒ/" + fNumber : "unknown"}
-              </div>
-              <div className="flex items-center gap-1">
-                <Timer size={18} strokeWidth={2.2} absoluteStrokeWidth />
-                {!!exposureTime
-                  ? formatExposureTime(exposureTime ?? null)
-                  : "unknown"}
-              </div>
-              <div className="flex items-center gap-1">
-                <ISO className="size-6 text-black dark:text-white" />
-                {!!iso ? iso : "unknown"}
-              </div>
-            </div>
-          </div>
           {!isSmallDevice ? (
-            <Popover>
-              <PopoverTrigger>
-                <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
-                  <div className="text-xs md:text-sm">{t("location")}</div>
-                  <div className="whitespace-nowrap">
-                    {placeName !== "" ? formatAddress(placeName) : "unknown"}
-                  </div>
-                </div>
-              </PopoverTrigger>
-              <PopoverContent className="hidden w-auto rounded-2xl bg-white/80 backdrop-blur-sm dark:bg-black/80 md:block">
-                <LocationMap
-                  latitude={latitude ?? 0}
-                  longitude={longitude ?? 0}
-                />
-              </PopoverContent>
-            </Popover>
+            <>
+              <Popover>
+                <PopoverTrigger>
+                  <InfoItem title={t("exif")}>
+                    <ExifInfo {...exifProps} />
+                  </InfoItem>
+                </PopoverTrigger>
+                <PopoverContent className="hidden w-auto rounded-2xl bg-white/80 backdrop-blur-sm dark:bg-black/80 md:block">
+                  {renderExifContent()}
+                </PopoverContent>
+              </Popover>
+              <Popover>
+                <PopoverTrigger>
+                  <InfoItem title={t("location")}>
+                    <div className="whitespace-nowrap">{locationValue}</div>
+                  </InfoItem>
+                </PopoverTrigger>
+                <PopoverContent className="hidden w-auto rounded-2xl bg-white/80 backdrop-blur-sm dark:bg-black/80 md:block">
+                  <LocationMap
+                    latitude={latitude ?? 0}
+                    longitude={longitude ?? 0}
+                  />
+                </PopoverContent>
+              </Popover>
+            </>
           ) : (
             <>
-              <div
-                onClick={toggleDrawer}
-                className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60"
+              <InfoItem title={t("exif")} onClick={() => toggleDrawer("exif")}>
+                <ExifInfo {...exifProps} />
+              </InfoItem>
+              <InfoItem
+                title={t("location")}
+                onClick={() => toggleDrawer("location")}
               >
-                <div className="text-xs md:text-sm">{t("location")}</div>
-                <div className="whitespace-nowrap">
-                  {placeName !== "" ? formatAddress(placeName) : "unknown"}
-                </div>
-              </div>
+                <div className="whitespace-nowrap">{locationValue}</div>
+              </InfoItem>
               <Drawer
                 overlayOpacity={0.6}
-                open={isOpen}
-                onClose={toggleDrawer}
+                open={drawerState.exif}
+                onClose={() => toggleDrawer("exif")}
+                direction="bottom"
+                className="!h-auto overflow-auto rounded-t-xl bg-white p-5 dark:!bg-black"
+              >
+                {renderExifContent()}
+              </Drawer>
+              <Drawer
+                overlayOpacity={0.6}
+                open={drawerState.location}
+                onClose={() => toggleDrawer("location")}
                 direction="bottom"
                 className="!h-auto overflow-auto rounded-t-xl bg-white p-5 dark:!bg-black"
               >
@@ -158,30 +256,19 @@ export function PhotoInfo({
               </Drawer>
             </>
           )}
-          <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
-            <div className="text-xs md:text-sm">{t("camera")}</div>
-            <div className="whitespace-nowrap uppercase">
-              {!!model
-                ? getPhoneName(model).got
-                  ? getPhoneName(model).name
-                  : model
-                : "unknown"}
-            </div>
-          </div>
+          <InfoItem title={t("camera")}>
+            <div className="whitespace-nowrap uppercase">{cameraInfo}</div>
+          </InfoItem>
           {!getPhoneName(model ?? "").got && (
-            <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
-              <div className="text-xs md:text-sm">{t("lens")}</div>
-              <div className="whitespace-nowrap">
-                {!!lensModel ? lensModel : "unknown"}
-              </div>
-            </div>
+            <InfoItem title={t("lens")}>
+              <div className="whitespace-nowrap">{lensModel ?? "unknown"}</div>
+            </InfoItem>
           )}
-          <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
-            <div className="text-xs md:text-sm">{t("time")}</div>
+          <InfoItem title={t("time")}>
             <div className="whitespace-nowrap">
               {takenAtNaive ? formatDateTime(takenAtNaive) : "unknown"}
             </div>
-          </div>
+          </InfoItem>
         </div>
         <div className="flex cursor-pointer flex-col items-center justify-end gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
           <Ellipsis />

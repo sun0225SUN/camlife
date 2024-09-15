@@ -34,7 +34,7 @@ export function MobileBar() {
 
   return (
     <div
-      className="fixed left-1/2 z-10 h-16 -translate-x-1/2 transform transition-all duration-150 ease-out md:hidden"
+      className="z-999] fixed left-1/2 h-16 -translate-x-1/2 transform transition-all duration-150 ease-out md:hidden"
       style={{
         bottom: `${-scrollPosition}px`,
         opacity: 1 - scrollPosition / 64,

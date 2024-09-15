@@ -24,7 +24,11 @@
     "location": "LOCATION",
     "camera": "CAMERA",
     "lens": "LENS",
-    "time": "TIME"
+    "time": "TIME",
+    "focalLength": "Focal Length",
+    "aperture": "Aperture",
+    "exposureTime": "Exposure Time",
+    "iso": "ISO"
   },
   "LocationMap": {
     "latitude": "Latitude",

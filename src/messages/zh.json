@@ -24,7 +24,11 @@
     "location": "地点",
     "camera": "相机",
     "lens": "镜头",
-    "time": "拍摄时间"
+    "time": "拍摄时间",
+    "focalLength": "焦距",
+    "aperture": "光圈",
+    "exposureTime": "快门",
+    "iso": "ISO"
   },
   "LocationMap": {
     "latitude": "纬度",
