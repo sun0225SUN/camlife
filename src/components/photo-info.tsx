@@ -8,17 +8,11 @@ import {
   Timer,
 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
+import { useEffect, useState } from "react"
+import Drawer from "react-modern-drawer"
+import "react-modern-drawer/dist/index.css"
 import ISO from "~/assets/images/svg/iso.svg"
 import { LocationMap } from "~/components/location-map"
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "~/components/ui/drawer"
 import {
   Popover,
   PopoverContent,
@@ -66,6 +60,20 @@ export function PhotoInfo({
     language: locale,
     level: 2,
   })
+  const [isOpen, setIsOpen] = useState(false)
+  const toggleDrawer = () => setIsOpen((prev) => !prev)
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [isOpen])
 
   const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)")
 
@@ -126,27 +134,29 @@ export function PhotoInfo({
               </PopoverContent>
             </Popover>
           ) : (
-            <Drawer>
-              <DrawerTrigger>
-                <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
-                  <div className="text-xs md:text-sm">{t("location")}</div>
-                  <div className="whitespace-nowrap">
-                    {placeName !== "" ? formatAddress(placeName) : "unknown"}
-                  </div>
+            <>
+              <div
+                onClick={toggleDrawer}
+                className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60"
+              >
+                <div className="text-xs md:text-sm">{t("location")}</div>
+                <div className="whitespace-nowrap">
+                  {placeName !== "" ? formatAddress(placeName) : "unknown"}
                 </div>
-              </DrawerTrigger>
-              <DrawerContent className="p-4">
-                <DrawerHeader>
-                  <DrawerTitle>{t("location")}</DrawerTitle>
-                  <DrawerDescription />
-                </DrawerHeader>
+              </div>
+              <Drawer
+                overlayOpacity={0.6}
+                open={isOpen}
+                onClose={toggleDrawer}
+                direction="bottom"
+                className="!h-auto overflow-auto rounded-t-xl bg-white p-5 dark:!bg-black"
+              >
                 <LocationMap
                   latitude={latitude ?? 0}
                   longitude={longitude ?? 0}
                 />
-                <DrawerFooter />
-              </DrawerContent>
-            </Drawer>
+              </Drawer>
+            </>
           )}
           <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60">
             <div className="text-xs md:text-sm">{t("camera")}</div>
