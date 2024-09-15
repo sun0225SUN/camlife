@@ -21,6 +21,7 @@
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.0",
+    "@smastrom/react-rating": "^1.5.0",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.52.0",
     "@tanstack/react-query-devtools": "^5.55.4",

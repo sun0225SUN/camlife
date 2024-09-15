@@ -1,17 +1,14 @@
+import { Rating as ReactRating } from "@smastrom/react-rating"
+import "@smastrom/react-rating/style.css"
 import { useMediaQuery } from "@uidotdev/usehooks"
-import {
-  Aperture,
-  Ellipsis,
-  Star,
-  StarHalf,
-  Telescope,
-  Timer,
-} from "lucide-react"
+import { Aperture, Ellipsis, Telescope, Timer } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
-import { useMemo } from "react"
+import { useTheme } from "next-themes"
+import { useMemo, useState } from "react"
 import Drawer from "react-modern-drawer"
 import "react-modern-drawer/dist/index.css"
 import ISO from "~/assets/images/svg/iso.svg"
+import Star from "~/assets/images/svg/star.svg"
 import { ExifCard } from "~/components/exif-card"
 import { LocationMap } from "~/components/location-map"
 import {
@@ -139,6 +136,8 @@ export function PhotoInfo({
   })
   const { drawerState, toggleDrawer } = useDrawerState()
   const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)")
+  const [rating, setRating] = useState(3)
+  const { resolvedTheme } = useTheme()
 
   const exifProps = useMemo(
     () => ({ focalLengthIn35mmFormat, fNumber, exposureTime, iso }),
@@ -187,14 +186,20 @@ export function PhotoInfo({
         <div className="scrollbar-hide flex gap-4 overflow-x-auto">
           <div className="hidden cursor-pointer flex-col items-center justify-center gap-2 rounded-md px-4 py-2 hover:bg-gray-100 dark:hover:bg-[rgba(36,36,36,0.6)]/60 md:flex">
             <div className="text-xs md:text-sm">{t("score")}</div>
-            <div className="flex gap-2">
-              <Star size={20} strokeWidth={2} />
-              <Star size={20} strokeWidth={2} />
-              <Star size={20} strokeWidth={2} />
-              <Star size={20} strokeWidth={2} />
-              <Star size={20} strokeWidth={2} />
-              <StarHalf size={20} strokeWidth={2} />
-            </div>
+            <ReactRating
+              style={{
+                maxWidth: 150,
+              }}
+              value={rating}
+              onChange={setRating}
+              spaceBetween="medium"
+              itemStyles={{
+                itemShapes: <Star />,
+                activeFillColor: resolvedTheme === "dark" ? "#fff" : "#242424",
+                inactiveFillColor:
+                  resolvedTheme === "dark" ? "#4A4A4A" : "#D3D3D3",
+              }}
+            />
           </div>
           {!isSmallDevice ? (
             <>
