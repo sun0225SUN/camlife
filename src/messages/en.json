@@ -28,9 +28,7 @@
     "focalLength": "Focal Length",
     "aperture": "Aperture",
     "exposureTime": "Exposure Time",
-    "iso": "ISO"
-  },
-  "LocationMap": {
+    "iso": "ISO",
     "latitude": "Latitude",
     "longitude": "Longitude"
   }

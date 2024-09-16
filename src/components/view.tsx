@@ -7,7 +7,7 @@ import { useTheme } from "next-themes"
 import Image from "next/image"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useInView } from "react-intersection-observer"
-import { ThreeDot } from "react-loading-indicators"
+import { Loading } from "~/components/loading"
 import { PhotoInfo } from "~/components/photo-info"
 import { CardBody, CardContainer, CardItem } from "~/components/ui/3d-card"
 import { useTab } from "~/store/useTab"
@@ -37,17 +37,12 @@ export function View() {
   const { view } = useView()
   const { resolvedTheme } = useTheme()
   const { tab } = useTab() as { tab: TabType }
-  const [loadingColor, setLoadingColor] = useState<string>()
   const [userLocation, setUserLocation] =
     useState<GeolocationCoordinates | null>(null)
   const [locationStatus, setLocationStatus] = useState<
     "pending" | "granted" | "denied" | null
   >(null)
   const { ref, inView } = useInView()
-
-  useEffect(() => {
-    setLoadingColor(resolvedTheme === "dark" ? "#ffffff" : "#000000")
-  }, [resolvedTheme])
 
   useEffect(() => {
     initLightboxJS("6CDB-34FD-F513-A6FC", "individual")
@@ -130,7 +125,7 @@ export function View() {
   if (isLoadingOrFetching) {
     return (
       <div className="flex h-[60vh] w-full items-center justify-center">
-        <ThreeDot variant="pulsate" color={loadingColor} size="medium" />
+        <Loading />
       </div>
     )
   }
@@ -213,7 +208,7 @@ export function View() {
             view !== "feed" && "mt-5 md:mt-10",
           )}
         >
-          <ThreeDot variant="pulsate" color={loadingColor} size="medium" />
+          <Loading />
         </div>
       )}
       <div ref={ref} className="h-1 w-full" />

@@ -8,32 +8,34 @@ export function useDrawerState() {
   })
 
   const toggleDrawer = useCallback((drawer: keyof typeof drawerState) => {
-    setDrawerState((prev) => ({ ...prev, [drawer]: !prev[drawer] }))
+    setDrawerState((prev) => {
+      const newState = { ...prev, [drawer]: !prev[drawer] }
+      if (newState[drawer]) {
+        Object.keys(newState).forEach((key) => {
+          if (key !== drawer) {
+            newState[key as keyof typeof drawerState] = false
+          }
+        })
+      }
+      return newState
+    })
+  }, [])
+
+  const closeAllDrawers = useCallback(() => {
+    setDrawerState({ exif: false, location: false, all: false })
   }, [])
 
   const setOverflowUnset = useCallback(() => {
-    document.body.style.overflow = "unset"
+    document.body.style.removeProperty("overflow")
   }, [])
 
   useEffect(() => {
-    const handleResize = () => {
-      setOverflowUnset()
-      setDrawerState({ exif: false, location: false, all: false })
-    }
-
-    window.addEventListener("resize", handleResize)
-
-    return () => {
-      window.removeEventListener("resize", handleResize)
+    if (Object.values(drawerState).some(Boolean)) {
+      document.body.style.overflow = "hidden"
+    } else {
       setOverflowUnset()
     }
-  }, [setOverflowUnset])
+  }, [drawerState, setOverflowUnset])
 
-  useEffect(() => {
-    document.body.style.overflow = Object.values(drawerState).some(Boolean)
-      ? "hidden"
-      : "unset"
-  }, [drawerState])
-
-  return { drawerState, toggleDrawer }
+  return { drawerState, toggleDrawer, closeAllDrawers }
 }
