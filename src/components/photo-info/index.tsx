@@ -3,7 +3,6 @@ import { useLocale, useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
 import { useMemo, useState } from "react"
 import { useMapboxGeocoding } from "~/hooks/fetchPlaceName"
-import { useDrawerState } from "~/hooks/useDrawerState"
 import { type PhotoInfoProps } from "~/types/photo"
 import { formatAddress, formatDateTime } from "~/utils/format"
 import { getPhoneName } from "~/utils/getPhoneName"
@@ -32,7 +31,6 @@ export function PhotoInfo({
     language: locale,
     level: 2,
   })
-  const { drawerState, toggleDrawer } = useDrawerState()
   const isMobile = useMediaQuery("only screen and (max-width : 768px)")
   const [rating, setRating] = useState(3)
   const { resolvedTheme } = useTheme()
@@ -74,8 +72,6 @@ export function PhotoInfo({
               locationValue={locationValue}
               latitude={latitude ?? 0}
               longitude={longitude ?? 0}
-              drawerState={drawerState}
-              toggleDrawer={toggleDrawer}
               placeName={placeName}
             />
           )}
@@ -99,8 +95,6 @@ export function PhotoInfo({
           latitude={latitude ?? 0}
           longitude={longitude ?? 0}
           exifProps={exifProps}
-          drawerState={drawerState}
-          toggleDrawer={() => toggleDrawer("all")}
         />
       </div>
     </div>

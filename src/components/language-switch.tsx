@@ -30,7 +30,7 @@ export function LanguageSwitch() {
           absoluteStrokeWidth
         />
       </PopoverTrigger>
-      <PopoverContent className="z-[99] mb-5 flex w-36 flex-col rounded-lg border-none bg-white/20 p-0 text-sm shadow-lg backdrop-blur-md dark:bg-black/20 md:mt-5">
+      <PopoverContent className="z-[49] mb-5 flex w-36 flex-col rounded-lg border-none bg-white/20 p-0 text-sm shadow-lg backdrop-blur-md dark:bg-black/20 md:mt-5">
         {locales.map((locale, index) => (
           <div
             key={locale}

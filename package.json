@@ -52,7 +52,6 @@
     "react-intersection-observer": "^9.13.1",
     "react-loading-indicators": "^1.0.0",
     "react-map-gl": "^7.1.7",
-    "react-modern-drawer": "^1.4.0",
     "react-world-flags": "^1.6.0",
     "server-only": "^0.0.1",
     "sharp": "^0.33.5",
@@ -60,6 +59,7 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "ts-exif-parser": "^0.2.2",
+    "vaul": "^0.9.3",
     "zod": "^3.23.8",
     "zustand": "^4.5.5"
   },

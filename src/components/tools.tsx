@@ -42,7 +42,7 @@ export function Tools() {
     <>
       <div
         className={clsx(
-          "z-[99] hidden h-16 items-center md:flex",
+          "z-[49] hidden h-16 items-center md:flex",
           isScrolled && "fixed top-0 md:right-12 xl:right-48",
         )}
       >
@@ -62,7 +62,7 @@ export function Tools() {
       </div>
 
       <div
-        className="fixed left-1/2 z-[99] h-16 -translate-x-1/2 transform transition-all duration-150 ease-out md:hidden"
+        className="fixed left-1/2 z-[49] h-16 -translate-x-1/2 transform transition-all duration-150 ease-out md:hidden"
         style={{
           bottom: `${-scrollPosition}px`,
           opacity: 1 - scrollPosition / 64,

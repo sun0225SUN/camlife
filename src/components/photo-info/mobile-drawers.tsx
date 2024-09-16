@@ -1,6 +1,12 @@
 import { useTranslations } from "next-intl"
-import Drawer from "react-modern-drawer"
-import "react-modern-drawer/dist/index.css"
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/components/ui/drawer"
 import { type PhotoInfoProps } from "~/types/photo"
 import { ExifDisplay } from "./exif-display"
 import { ExifInfo } from "./exif-info"
@@ -15,8 +21,6 @@ interface MobileDrawersProps {
   locationValue: string
   latitude: number | null
   longitude: number | null
-  drawerState: { exif: boolean; location: boolean; all: boolean }
-  toggleDrawer: (drawer: "exif" | "location" | "all") => void
   placeName: string
 }
 
@@ -25,43 +29,46 @@ export const MobileDrawers = ({
   locationValue,
   latitude,
   longitude,
-  drawerState,
-  toggleDrawer,
   placeName,
 }: MobileDrawersProps) => {
   const t = useTranslations("PhotoInfo")
 
   return (
     <>
-      <InfoItem title={t("exif")} onClick={() => toggleDrawer("exif")}>
-        <ExifInfo {...exifProps} />
-      </InfoItem>
-      <InfoItem title={t("location")} onClick={() => toggleDrawer("location")}>
-        <div className="whitespace-nowrap">{locationValue}</div>
-      </InfoItem>
-      <Drawer
-        overlayOpacity={0.6}
-        open={drawerState.exif}
-        onClose={() => toggleDrawer("exif")}
-        direction="bottom"
-        className="!h-auto overflow-auto rounded-t-xl bg-white p-5 dark:!bg-black"
-      >
-        <ExifDisplay {...exifProps} />
+      <Drawer shouldScaleBackground={false}>
+        <DrawerTrigger>
+          <InfoItem title={t("exif")}>
+            <ExifInfo {...exifProps} />
+          </InfoItem>
+        </DrawerTrigger>
+        <DrawerContent className="z-[100] px-4 pb-4">
+          <DrawerHeader>
+            <DrawerTitle>{t("exif")}</DrawerTitle>
+            <DrawerDescription />
+          </DrawerHeader>
+          <ExifDisplay {...exifProps} />
+        </DrawerContent>
       </Drawer>
-      <Drawer
-        overlayOpacity={0.6}
-        open={drawerState.location}
-        onClose={() => toggleDrawer("location")}
-        direction="bottom"
-        className="!h-auto overflow-auto rounded-t-xl bg-white p-5 dark:!bg-black"
-      >
-        {drawerState.location && (
-          <LocationDisplay
-            latitude={latitude ?? 0}
-            longitude={longitude ?? 0}
-            placeName={placeName}
-          />
-        )}
+
+      <Drawer shouldScaleBackground={false}>
+        <DrawerTrigger>
+          <InfoItem title={t("location")}>
+            <div className="whitespace-nowrap">{locationValue}</div>
+          </InfoItem>
+        </DrawerTrigger>
+        <DrawerContent className="z-[100] px-4 pb-4">
+          <DrawerHeader>
+            <DrawerTitle>{t("location")}</DrawerTitle>
+            <DrawerDescription />
+          </DrawerHeader>
+          <div data-vaul-no-drag>
+            <LocationDisplay
+              latitude={latitude ?? 0}
+              longitude={longitude ?? 0}
+              placeName={placeName}
+            />
+          </div>
+        </DrawerContent>
       </Drawer>
     </>
   )

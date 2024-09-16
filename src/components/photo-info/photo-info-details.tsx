@@ -1,6 +1,13 @@
 import { Ellipsis } from "lucide-react"
 import { useTranslations } from "next-intl"
-import Drawer from "react-modern-drawer"
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/components/ui/drawer"
 import {
   Popover,
   PopoverContent,
@@ -20,8 +27,6 @@ interface PhotoInfoDetailsProps {
     PhotoInfoProps,
     "focalLengthIn35mmFormat" | "fNumber" | "exposureTime" | "iso"
   >
-  drawerState: { all: boolean }
-  toggleDrawer: (type: string) => void
 }
 
 export function PhotoInfoDetails({
@@ -30,23 +35,22 @@ export function PhotoInfoDetails({
   latitude,
   longitude,
   exifProps,
-  drawerState,
-  toggleDrawer,
 }: PhotoInfoDetailsProps) {
   const t = useTranslations("PhotoInfo")
+
   const content = (
     <>
-      <div className="my-4 text-center text-lg font-medium md:my-0">
+      <div className="mb-4 text-center text-lg font-medium">
         {t("location")}
       </div>
-      <LocationDisplay
-        placeName={placeName}
-        latitude={latitude ?? 0}
-        longitude={longitude ?? 0}
-      />
-      <div className="my-4 text-center text-lg font-medium md:my-0">
-        {t("exif")}
+      <div data-vaul-no-drag>
+        <LocationDisplay
+          placeName={placeName}
+          latitude={latitude ?? 0}
+          longitude={longitude ?? 0}
+        />
       </div>
+      <div className="my-4 text-center text-lg font-medium">{t("exif")}</div>
       <ExifDisplay {...exifProps} />
     </>
   )
@@ -64,20 +68,19 @@ export function PhotoInfoDetails({
     </Popover>
   ) : (
     <>
-      <InfoItem
-        className="!h-[68px] !justify-end !px-0 hover:!bg-transparent"
-        onClick={() => toggleDrawer("all")}
-      >
-        <Ellipsis />
-      </InfoItem>
-      <Drawer
-        overlayOpacity={0.6}
-        open={drawerState.all}
-        onClose={() => toggleDrawer("all")}
-        direction="bottom"
-        className="!h-[70vh] w-full overflow-auto rounded-t-xl bg-white p-5 dark:!bg-black"
-      >
-        {content}
+      <Drawer shouldScaleBackground={false}>
+        <DrawerTrigger>
+          <InfoItem className="!h-[68px] !justify-end hover:!bg-transparent">
+            <Ellipsis />
+          </InfoItem>
+        </DrawerTrigger>
+        <DrawerContent className="z-[100] max-h-[80vh] px-4 pb-4">
+          <DrawerHeader>
+            <DrawerTitle />
+            <DrawerDescription />
+          </DrawerHeader>
+          <div className="scrollbar-hide h-full overflow-auto">{content}</div>
+        </DrawerContent>
       </Drawer>
     </>
   )
