@@ -54,7 +54,7 @@ export function PhotoInfo({
   return (
     <div className="my-4 flex justify-center text-xs md:my-10 md:text-base">
       <div className="mx-auto flex w-[100vw] justify-center gap-4 px-2 xl:w-auto xl:max-w-[80vw]">
-        <div className="scrollbar-hide flex gap-4 overflow-x-auto">
+        <div className="scrollbar-hide flex overflow-x-auto md:gap-4">
           <RatingDisplay
             rating={rating}
             setRating={setRating}
