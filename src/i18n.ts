@@ -3,6 +3,8 @@ import { notFound } from "next/navigation"
 
 export const locales: string[] = ["zh", "en"]
 
+export type Locale = (typeof locales)[number]
+
 export const defaultLocale = "zh"
 
 export const nameMap: Record<string, string> = {

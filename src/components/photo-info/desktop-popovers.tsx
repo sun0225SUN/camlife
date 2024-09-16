@@ -44,16 +44,20 @@ export const DesktopPopovers = ({
       <Popover>
         <PopoverTrigger>
           <InfoItem title={t("location")}>
-            <div className="whitespace-nowrap">{locationValue}</div>
+            <div className="max-w-72 overflow-hidden text-ellipsis whitespace-nowrap">
+              {locationValue}
+            </div>
           </InfoItem>
         </PopoverTrigger>
-        <PopoverContent className="hidden w-auto gap-4 rounded-2xl bg-white/80 backdrop-blur-sm dark:bg-black/80 md:flex">
-          <LocationDisplay
-            latitude={latitude ?? 0}
-            longitude={longitude ?? 0}
-            placeName={placeName}
-          />
-        </PopoverContent>
+        {!!latitude && !!longitude && (
+          <PopoverContent className="hidden w-auto gap-4 rounded-2xl bg-white/80 backdrop-blur-sm dark:bg-black/80 md:flex">
+            <LocationDisplay
+              latitude={latitude ?? 0}
+              longitude={longitude ?? 0}
+              placeName={placeName}
+            />
+          </PopoverContent>
+        )}
       </Popover>
     </>
   )

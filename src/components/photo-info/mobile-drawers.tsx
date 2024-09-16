@@ -41,6 +41,7 @@ export const MobileDrawers = ({
             <ExifInfo {...exifProps} />
           </InfoItem>
         </DrawerTrigger>
+
         <DrawerContent className="z-[100] px-4 pb-4">
           <DrawerHeader>
             <DrawerTitle>{t("exif")}</DrawerTitle>
@@ -56,19 +57,21 @@ export const MobileDrawers = ({
             <div className="whitespace-nowrap">{locationValue}</div>
           </InfoItem>
         </DrawerTrigger>
-        <DrawerContent className="z-[100] px-4 pb-4">
-          <DrawerHeader>
-            <DrawerTitle>{t("location")}</DrawerTitle>
-            <DrawerDescription />
-          </DrawerHeader>
-          <div data-vaul-no-drag>
-            <LocationDisplay
-              latitude={latitude ?? 0}
-              longitude={longitude ?? 0}
-              placeName={placeName}
-            />
-          </div>
-        </DrawerContent>
+        {!!latitude && !!longitude && (
+          <DrawerContent className="z-[100] px-4 pb-4">
+            <DrawerHeader>
+              <DrawerTitle>{t("location")}</DrawerTitle>
+              <DrawerDescription />
+            </DrawerHeader>
+            <div data-vaul-no-drag>
+              <LocationDisplay
+                latitude={latitude ?? 0}
+                longitude={longitude ?? 0}
+                placeName={placeName}
+              />
+            </div>
+          </DrawerContent>
+        )}
       </Drawer>
     </>
   )

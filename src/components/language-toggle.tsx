@@ -3,6 +3,7 @@
 import clsx from "clsx"
 import { Check, Globe } from "lucide-react"
 import { useLocale } from "next-intl"
+import { useRouter } from "next/navigation"
 import Flag from "react-world-flags"
 import {
   Popover,
@@ -10,14 +11,20 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover"
 import { locales, nameMap } from "~/i18n"
+import { setUserLocale } from "~/server/locale"
 
 export function LanguageSwitch() {
   const currentLocale = useLocale()
+  const router = useRouter()
 
   const handleLocaleChange = (locale: string) => {
-    if (locale === currentLocale) return
-    document.cookie = `NEXT_LOCALE=${locale};`
-    window.location.reload()
+    setUserLocale(locale)
+      .then(() => {
+        router.refresh()
+      })
+      .catch(() => {
+        console.error("Failed to set user locale")
+      })
   }
 
   return (
@@ -30,7 +37,7 @@ export function LanguageSwitch() {
           absoluteStrokeWidth
         />
       </PopoverTrigger>
-      <PopoverContent className="z-[49] mb-5 flex w-36 flex-col rounded-lg border-none bg-white/20 p-0 text-sm shadow-lg backdrop-blur-md dark:bg-black/20 md:mt-5">
+      <PopoverContent className="z-[49] mb-5 flex w-36 flex-col rounded-lg border-none bg-white/50 p-0 text-sm shadow-lg backdrop-blur-md dark:bg-black/50 md:mt-5">
         {locales.map((locale, index) => (
           <div
             key={locale}

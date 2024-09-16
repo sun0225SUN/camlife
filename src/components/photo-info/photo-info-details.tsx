@@ -40,16 +40,20 @@ export function PhotoInfoDetails({
 
   const content = (
     <>
-      <div className="mb-4 text-center text-lg font-medium">
-        {t("location")}
-      </div>
-      <div data-vaul-no-drag>
-        <LocationDisplay
-          placeName={placeName}
-          latitude={latitude ?? 0}
-          longitude={longitude ?? 0}
-        />
-      </div>
+      {!!latitude && !!longitude && (
+        <>
+          <div className="mb-4 text-center text-lg font-medium">
+            {t("location")}
+          </div>
+          <div data-vaul-no-drag>
+            <LocationDisplay
+              placeName={placeName}
+              latitude={latitude ?? 0}
+              longitude={longitude ?? 0}
+            />
+          </div>
+        </>
+      )}
       <div className="my-4 text-center text-lg font-medium">{t("exif")}</div>
       <ExifDisplay {...exifProps} />
     </>
@@ -62,7 +66,7 @@ export function PhotoInfoDetails({
           <Ellipsis />
         </InfoItem>
       </PopoverTrigger>
-      <PopoverContent className="scrollbar-hide hidden h-[500px] w-auto flex-col gap-4 overflow-auto rounded-2xl bg-white/80 backdrop-blur-sm dark:bg-black/80 md:flex">
+      <PopoverContent className="scrollbar-hide hidden max-h-[500px] w-auto flex-col gap-4 overflow-auto rounded-2xl bg-white/80 backdrop-blur-sm dark:bg-black/80 md:flex">
         {content}
       </PopoverContent>
     </Popover>

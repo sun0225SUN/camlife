@@ -2,7 +2,7 @@
 
 import { GalleryVertical } from "lucide-react"
 import Link from "next/link"
-import { LanguageSwitch } from "~/components/language-switch"
+import { LanguageSwitch } from "~/components/language-toggle"
 import { ModeToggle } from "~/components/mode-toggle"
 import { useIsClient } from "~/hooks/useClient"
 

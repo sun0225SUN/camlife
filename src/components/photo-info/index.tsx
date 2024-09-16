@@ -40,11 +40,11 @@ export function PhotoInfo({
     [focalLengthIn35mmFormat, fNumber, exposureTime, iso],
   )
   const locationValue = useMemo(
-    () => (placeName !== "" ? formatAddress(placeName) : "unknown"),
+    () => (placeName !== "" ? formatAddress(placeName) : "UNKNOWN"),
     [placeName],
   )
   const cameraInfo = useMemo(() => {
-    if (!model) return "unknown"
+    if (!model) return "UNKNOWN"
     const phoneName = getPhoneName(model)
     return phoneName.got ? phoneName.name : model
   }, [model])
@@ -80,7 +80,9 @@ export function PhotoInfo({
           </InfoItem>
           {!getPhoneName(model ?? "").got && (
             <InfoItem title={t("lens")}>
-              <div className="whitespace-nowrap">{lensModel ?? "unknown"}</div>
+              <div className="whitespace-nowrap uppercase">
+                {!!lensModel ? lensModel : "unknown"}
+              </div>
             </InfoItem>
           )}
           <InfoItem title={t("time")}>

@@ -147,7 +147,7 @@ export function View() {
   }
 
   return (
-    <div className="min-w-full max-w-[100vw] xl:px-48">
+    <div className="max-w-[100vw] xl:px-48">
       <SlideshowLightbox
         key={view}
         theme={lightboxTheme}

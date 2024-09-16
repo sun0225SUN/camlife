@@ -34,14 +34,12 @@ export const CardContainer = ({
     containerRef.current.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`
   }
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log(e)
+  const handleMouseEnter = () => {
     setIsMouseEntered(true)
     if (!containerRef.current) return
   }
 
-  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log(e)
+  const handleMouseLeave = () => {
     if (!containerRef.current) return
     setIsMouseEntered(false)
     containerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`

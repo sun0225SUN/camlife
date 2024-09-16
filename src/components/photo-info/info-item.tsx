@@ -22,6 +22,6 @@ export const InfoItem = ({
     onClick={onClick}
   >
     <div className="text-xs md:text-sm">{title}</div>
-    {children}
+    <div className="text-sm md:text-base">{children}</div>
   </div>
 )

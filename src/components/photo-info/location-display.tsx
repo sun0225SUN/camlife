@@ -62,7 +62,7 @@ export const LocationDisplay = ({
           longitude={longitude ?? 0}
         />
         <div className="my-4 flex items-center justify-center p-2">
-          <div className="w-full max-w-[280px] break-words text-center text-sm">
+          <div className="w-full max-w-[280px] break-words text-center text-base">
             {placeName}
           </div>
         </div>
