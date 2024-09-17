@@ -5,7 +5,7 @@ import {
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
-  protectedRoutes,
+  protectedRoute,
 } from "~/routes"
 import authConfig from "~/server/auth/config"
 
@@ -26,7 +26,7 @@ export default auth((req) => {
 
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
-  const isProtectedRoute = protectedRoutes(nextUrl.pathname)
+  const isProtectedRoute = protectedRoute(nextUrl.pathname)
 
   // Skip API routes
   if (isApiAuthRoute) return null

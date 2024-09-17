@@ -3,7 +3,11 @@ import "mapbox-gl/dist/mapbox-gl.css"
 import { nanoid } from "nanoid"
 import { z } from "zod"
 import { photoSchema } from "~/lib/zod"
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc"
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc"
 import { calculateDistance } from "~/utils/calculateDistance"
 import { compressBase64Image } from "~/utils/compressImage"
 import { generateBlurredImageData } from "~/utils/genBlurData"
@@ -100,7 +104,7 @@ export const photosRouter = createTRPCRouter({
     .input(z.object({ data: z.string() }))
     .mutation(({ input }) => compressBase64Image(input.data)),
 
-  createPhoto: publicProcedure
+  createPhoto: protectedProcedure
     .input(photoSchema)
     .mutation(async ({ input, ctx }) => {
       return ctx.db.photos.create({
