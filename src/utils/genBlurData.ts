@@ -1,47 +1,53 @@
 import { decode, encode } from "blurhash"
 import sharp from "sharp"
 
+const MAX_DIMENSION = 32
+
 /**
- * Generates a blurred, compressed version of an input image
- * @param input The input image (either a base64 string or a URL)
- * @param isBase64 Whether the input is a base64 string
+ * Generates a blurred, compressed version of an input image using Blurhash
+ * @param imageBuffer The input image buffer
+ * @param quality The quality of the output image, default is 30
  * @returns A Promise that resolves to a base64-encoded WebP image string
  */
-export async function generateBlurredImageData(
-  input: string,
-  isBase64: boolean,
+export async function generateBlurData(
+  imageBuffer: Buffer,
+  quality = 30,
 ): Promise<string> {
-  // Fetch the image and convert it to a buffer
-  const originalBuffer = isBase64
-    ? Buffer.from(input.replace(/^data:image\/webp;base64,/, ""), "base64")
-    : Buffer.from(await (await fetch(input)).arrayBuffer())
+  try {
+    // Resize the image to speed up Blurhash encoding
+    const resizedBuffer = await sharp(imageBuffer)
+      .resize(MAX_DIMENSION, MAX_DIMENSION, {
+        fit: "inside",
+      })
+      .raw()
+      .ensureAlpha()
+      .toBuffer({ resolveWithObject: true })
 
-  // Get the image data and info
-  const { data, info } = await sharp(originalBuffer)
-    .ensureAlpha()
-    .raw()
-    .toBuffer({ resolveWithObject: true })
+    // Encode the resized image to Blurhash
+    const blurhash = encode(
+      new Uint8ClampedArray(resizedBuffer.data),
+      resizedBuffer.info.width,
+      resizedBuffer.info.height,
+      4,
+      3,
+    )
 
-  // Encode the image to blurhash
-  const blurhash = encode(
-    new Uint8ClampedArray(data),
-    info.width,
-    info.height,
-    4,
-    3,
-  )
+    // Decode the Blurhash to a larger size for better quality
+    const decodedWidth = resizedBuffer.info.width * 2
+    const decodedHeight = resizedBuffer.info.height * 2
+    const pixels = decode(blurhash, decodedWidth, decodedHeight)
 
-  // Decode the blurhash to get the image data
-  const decodedData = decode(blurhash, info.width, info.height)
+    // Convert decoded pixels to WebP
+    const blurredImageBuffer = await sharp(Buffer.from(pixels), {
+      raw: { width: decodedWidth, height: decodedHeight, channels: 4 },
+    })
+      .webp({ quality })
+      .toBuffer()
 
-  // Compress the image to 40% quality and resize to half the size
-  const blurredImageBuffer = await sharp(Buffer.from(decodedData), {
-    raw: { width: info.width, height: info.height, channels: 4 },
-  })
-    .resize(Math.floor(info.width / 2), Math.floor(info.height / 2))
-    .webp({ quality: 40 })
-    .toBuffer()
-
-  // Return the blurred image as a base64-encoded WebP string
-  return `data:image/webp;base64,${blurredImageBuffer.toString("base64")}`
+    // Return the blurred image as a base64-encoded WebP string
+    return `data:image/webp;base64,${blurredImageBuffer.toString("base64")}`
+  } catch (error) {
+    console.error("Error generating blur data:", error)
+    throw error
+  }
 }

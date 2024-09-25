@@ -1,38 +1,26 @@
 import sharp from "sharp"
 
 /**
- * Compresses a base64-encoded image.
- *
- * This function takes a base64-encoded image string, decodes it, compresses the image,
- * and returns a new base64-encoded string of the compressed image in WebP format.
- *
- * @param base64Data - The base64-encoded string of the original image.
- * @returns A Promise that resolves to a base64-encoded string of the compressed image.
- *
- * @remarks
- * The compression process includes:
- * 1. Removing the base64 prefix (if present)
- * 2. Resizing the image to half its original width
- * 3. Converting the image to WebP format with 80% quality
- *
- * @throws Will throw an error if the input is not a valid base64-encoded image or if Sharp encounters any issues during processing.
+ * Compresses an image by resizing it and converting it to WebP format.
+ * @param buffer - The input image buffer.
+ * @param quality - The WebP compression quality (0-100). Default is 80.
+ * @param resizeRatio - The ratio to resize the image. Default is 0.5 (half size).
+ * @returns A Promise that resolves to the compressed image buffer.
  */
-export async function compressBase64Image(base64Data: string): Promise<string> {
-  // Remove base64 prefix if present
-  const buffer = Buffer.from(
-    base64Data.replace(/^data:image\/\w+;base64,/, ""),
-    "base64",
-  )
+export async function compressImage(
+  buffer: Buffer,
+  quality = 80,
+  resizeRatio = 0.5,
+): Promise<Buffer> {
+  // Get the metadata of the input image
+  const { width = 0, height = 0 } = await sharp(buffer).metadata()
 
-  // Get the original width of the image
-  const { width } = await sharp(buffer).metadata()
-
-  // Compress the image
-  const compressedBuffer = await sharp(buffer)
-    .resize({ width: Math.floor(width! / 2) })
-    .toFormat("webp", { quality: 80 })
+  // Process the image: resize and convert to WebP
+  return sharp(buffer)
+    .resize({
+      width: Math.floor(width * resizeRatio),
+      height: Math.floor(height * resizeRatio),
+    })
+    .webp({ quality })
     .toBuffer()
-
-  // Return the compressed image as a base64-encoded string
-  return `data:image/webp;base64,${compressedBuffer.toString("base64")}`
 }

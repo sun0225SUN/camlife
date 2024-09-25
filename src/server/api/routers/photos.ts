@@ -1,27 +1,31 @@
 import { type Prisma } from "@prisma/client"
+import { put } from "@vercel/blob"
+import fs from "fs/promises"
 import "mapbox-gl/dist/mapbox-gl.css"
 import { nanoid } from "nanoid"
+import os from "os"
+import path from "path"
 import { z } from "zod"
-import { photoSchema } from "~/lib/zod"
+import { createPhotoSchema } from "~/lib/zod"
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc"
 import { calculateDistance } from "~/utils/calculateDistance"
-import { compressBase64Image } from "~/utils/compressImage"
-import { generateBlurredImageData } from "~/utils/genBlurData"
-
-const inputSchema = z.object({
-  tab: z.enum(["essential", "recent", "shuffle", "nearby", "faraway"]),
-  location: z.string().optional(),
-  cursor: z.string().optional(),
-  limit: z.number().default(20),
-})
+import { compressImage } from "~/utils/compressImage"
+import { generateBlurData } from "~/utils/genBlurData"
 
 export const photosRouter = createTRPCRouter({
   getAllPhotos: publicProcedure
-    .input(inputSchema)
+    .input(
+      z.object({
+        tab: z.enum(["essential", "recent", "shuffle", "nearby", "faraway"]),
+        location: z.string().optional(),
+        cursor: z.string().optional(),
+        limit: z.number().default(20),
+      }),
+    )
     .query(async ({ input, ctx }) => {
       const { tab, location, cursor, limit } = input
       let photos
@@ -89,31 +93,6 @@ export const photosRouter = createTRPCRouter({
       return { items: photos, nextCursor }
     }),
 
-  genBlurData: publicProcedure
-    .input(
-      z.object({
-        data: z.string(),
-        isBase64: z.boolean().optional(),
-      }),
-    )
-    .mutation(({ input }) =>
-      generateBlurredImageData(input.data, input.isBase64 ?? false),
-    ),
-
-  compressImage: publicProcedure
-    .input(z.object({ data: z.string() }))
-    .mutation(({ input }) => compressBase64Image(input.data)),
-
-  createPhoto: protectedProcedure
-    .input(photoSchema)
-    .mutation(async ({ input, ctx }) => {
-      return ctx.db.photos.create({
-        data: {
-          ...input,
-          uuid: nanoid(10),
-        },
-      })
-    }),
   getAllCoordinates: publicProcedure.query(async ({ ctx }) => {
     return ctx.db.photos.findMany({
       select: {
@@ -134,4 +113,75 @@ export const photosRouter = createTRPCRouter({
       },
     })
   }),
+
+  uploadChunk: publicProcedure
+    .input(
+      z.object({
+        uploadId: z.string(),
+        chunkIndex: z.number(),
+        chunk: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { uploadId, chunkIndex, chunk } = input
+      const chunkBuffer = Buffer.from(chunk, "base64")
+      const tempDir = path.join(os.tmpdir(), uploadId)
+      await fs.mkdir(tempDir, { recursive: true })
+      await fs.writeFile(path.join(tempDir, `chunk_${chunkIndex}`), chunkBuffer)
+      return { success: true }
+    }),
+
+  finalizeUpload: publicProcedure
+    .input(z.object({ uploadId: z.string() }))
+    .mutation(async ({ input }) => {
+      const { uploadId } = input
+      const tempDir = path.join(os.tmpdir(), uploadId)
+
+      try {
+        const chunks = await fs.readdir(tempDir)
+        chunks.sort(
+          (a, b) =>
+            parseInt(a.split("_")[1] ?? "0") - parseInt(b.split("_")[1] ?? "0"),
+        )
+
+        const finalBuffer = Buffer.concat(
+          await Promise.all(
+            chunks.map((chunk) => fs.readFile(path.join(tempDir, chunk))),
+          ),
+        )
+
+        const compressedBuffer = await compressImage(finalBuffer, 80, 0.5)
+
+        const blurData = await generateBlurData(compressedBuffer)
+
+        const blob = await put(`${uploadId}.webp`, compressedBuffer, {
+          access: "public",
+        })
+
+        await fs.rm(tempDir, { recursive: true, force: true })
+
+        return {
+          success: true,
+          url: blob.url,
+          blurData,
+        }
+      } catch (error) {
+        console.error("Error processing upload:", error)
+        await fs
+          .rm(tempDir, { recursive: true, force: true })
+          .catch(console.error)
+        throw error
+      }
+    }),
+
+  createPhoto: protectedProcedure
+    .input(createPhotoSchema)
+    .mutation(async ({ input, ctx }) => {
+      return ctx.db.photos.create({
+        data: {
+          ...input,
+          uuid: nanoid(10),
+        },
+      })
+    }),
 })

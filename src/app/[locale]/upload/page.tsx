@@ -1,59 +1,53 @@
 "use client"
 
-import { upload } from "@vercel/blob/client"
+import { nanoid } from "nanoid"
 import Image from "next/image"
 import { useRef, useState, type FormEvent } from "react"
 import { ExifParserFactory } from "ts-exif-parser"
 import { api } from "~/trpc/react"
 import { type ImageMetaData } from "~/types/photo"
 
+const CHUNK_SIZE = 3 * 1024 * 1024 // 3MB
+
 export default function AvatarUploadPage() {
   const inputFileRef = useRef<HTMLInputElement>(null)
   const [imageMetaData, setImageMetaData] = useState<ImageMetaData | null>(null)
-  const genBlurData = api.photos.genBlurData.useMutation()
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const uploadChunk = api.photos.uploadChunk.useMutation()
+  const finalizeUpload = api.photos.finalizeUpload.useMutation()
   const createPhoto = api.photos.createPhoto.useMutation()
-  const compressImage = api.photos.compressImage.useMutation()
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const file = inputFileRef.current?.files?.[0]
     if (!file) {
-      console.error("未选择文件")
+      console.error("No file selected")
       return
     }
 
     try {
       const buffer = await file.arrayBuffer()
       const exifData = ExifParserFactory.create(buffer).parse()
-      console.log(exifData)
-      const base64Data = Buffer.from(buffer).toString("base64")
 
-      const compressedImage = await compressImage.mutateAsync({
-        data: base64Data,
-      })
+      const totalChunks = Math.ceil(buffer.byteLength / CHUNK_SIZE)
 
-      const blurData = await genBlurData.mutateAsync({
-        data: compressedImage,
-        isBase64: true,
-      })
+      const uploadId = nanoid()
 
-      const compressedImageBuffer = Buffer.from(
-        compressedImage.split(",")[1] ?? "",
-        "base64",
-      )
-      const compressedImageBlob = new Blob([compressedImageBuffer], {
-        type: "image/webp",
-      })
+      for (let i = 0; i < totalChunks; i++) {
+        const chunk = buffer.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE)
+        const chunkBase64 = Buffer.from(chunk).toString("base64")
 
-      const { url } = await upload(
-        file.name.replace(/\.\w+$/, ".webp"),
-        compressedImageBlob,
-        {
-          access: "public",
-          handleUploadUrl: "/api/storage/vercel-blob",
-        },
-      )
+        await uploadChunk.mutateAsync({
+          uploadId,
+          chunkIndex: i,
+          chunk: chunkBase64,
+        })
+
+        setUploadProgress(((i + 1) / totalChunks) * 100)
+      }
+
+      const { url, blurData } = await finalizeUpload.mutateAsync({ uploadId })
 
       setImageMetaData({
         url,
@@ -87,7 +81,8 @@ export default function AvatarUploadPage() {
         hidden: false,
       })
     } catch (error) {
-      console.error("文件处理错误:", error)
+      console.error("File processing error:", error)
+      setUploadProgress(0)
     }
   }
 
@@ -95,13 +90,13 @@ export default function AvatarUploadPage() {
     if (imageMetaData) {
       await createPhoto.mutateAsync(imageMetaData)
     } else {
-      console.error("imageMetaData 为空，无法上传")
+      console.error("imageMetaData is empty, cannot upload")
     }
   }
 
   return (
     <div className="flex w-full flex-col items-center rounded-lg bg-white p-6 dark:bg-gray-800">
-      <h1 className="mb-4 text-2xl font-semibold">头像上传</h1>
+      <h1 className="mb-4 text-2xl font-semibold">Avatar Upload</h1>
       <form
         onSubmit={handleSubmit}
         className="flex w-full max-w-md flex-col items-center space-y-4"
@@ -118,14 +113,14 @@ export default function AvatarUploadPage() {
           type="submit"
           className="w-full rounded bg-blue-500 p-3 text-white transition duration-200 hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
         >
-          解析
+          Parse
         </button>
       </form>
       <button
         onClick={handleUpload}
         className="mt-4 w-full max-w-md rounded bg-green-500 p-3 text-white transition duration-200 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-500"
       >
-        上传
+        Upload
       </button>
 
       {imageMetaData && (
@@ -141,6 +136,13 @@ export default function AvatarUploadPage() {
             blurDataURL={imageMetaData.blurData}
             className="transform rounded shadow-lg transition-transform duration-200 hover:scale-105"
           />
+        </div>
+      )}
+
+      {uploadProgress > 0 && uploadProgress < 100 && (
+        <div className="mt-4 w-full max-w-md">
+          <progress value={uploadProgress} max="100" className="w-full" />
+          <p>{Math.round(uploadProgress)}% Uploaded</p>
         </div>
       )}
     </div>
