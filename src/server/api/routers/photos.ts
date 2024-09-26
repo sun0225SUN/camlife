@@ -6,7 +6,6 @@ import { nanoid } from "nanoid"
 import os from "os"
 import path from "path"
 import { z } from "zod"
-import { createPhotoSchema } from "~/lib/zod"
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -44,7 +43,7 @@ export const photosRouter = createTRPCRouter({
         case "recent":
           photos = await fetchPhotos({
             ...baseQuery,
-            orderBy: { takenAt: "desc" },
+            orderBy: { takenAtNaive: "desc" },
           })
           break
         case "shuffle":
@@ -175,13 +174,39 @@ export const photosRouter = createTRPCRouter({
     }),
 
   createPhoto: protectedProcedure
-    .input(createPhotoSchema)
+    .input(
+      z.object({
+        url: z.string().max(255),
+        width: z.number(),
+        height: z.number(),
+        blurData: z.string(),
+        model: z.string().max(255),
+        lensModel: z.string().max(255),
+        focalLengthIn35mmFormat: z.number(),
+        fNumber: z.number(),
+        iso: z.number(),
+        exposureTime: z.number(),
+        latitude: z.number(),
+        longitude: z.number(),
+        takenAtNaive: z.string().max(255),
+        hidden: z.boolean(),
+      }),
+    )
     .mutation(async ({ input, ctx }) => {
-      return ctx.db.photos.create({
-        data: {
-          ...input,
-          uuid: nanoid(10),
-        },
-      })
+      try {
+        await ctx.db.photos.create({
+          data: {
+            ...input,
+            uuid: nanoid(10),
+          },
+        })
+        return { success: true }
+      } catch (error) {
+        console.error("Failed to create photo:", error)
+        return {
+          success: false,
+          error: "An error occurred while creating the photo",
+        }
+      }
     }),
 })

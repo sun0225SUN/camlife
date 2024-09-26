@@ -118,7 +118,7 @@ export function View() {
   const lightboxTheme = resolvedTheme === "dark" ? "night" : "day"
 
   const lightboxImages = useMemo(
-    () => photos?.map(({ url, title }) => ({ src: url, alt: title ?? "照片" })),
+    () => photos?.map(({ url }) => ({ src: url })),
     [photos],
   )
 
@@ -184,18 +184,18 @@ export function View() {
           }
 
           return view === "waterfall" ? (
-            <CardContainer containerClassName="py-0 md:mb-6" key={photo.id}>
+            <CardContainer containerClassName="py-0 md:mb-6" key={photo.uuid}>
               <CardBody className="h-auto w-auto">
                 <CardItem translateZ="50">
                   {/* @ts-expect-error eslint-disable-line*/}
-                  <Image {...imageProps} alt={photo.title ?? ""} />
+                  <Image {...imageProps} alt={photo.uuid} />
                 </CardItem>
               </CardBody>
             </CardContainer>
           ) : (
-            <div key={photo.id} className="flex flex-col items-center">
+            <div key={photo.uuid} className="flex flex-col items-center">
               {/* @ts-expect-error eslint-disable-line*/}
-              <Image {...imageProps} alt={photo.title ?? ""} />
+              <Image {...imageProps} alt={photo.uuid} />
               {view === "feed" && <PhotoInfo {...photo} />}
             </div>
           )

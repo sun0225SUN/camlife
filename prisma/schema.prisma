@@ -1,54 +1,29 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider  = "postgresql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    // https://vercel.com/docs/storage/vercel-postgres/using-an-orm#prisma
-    // Uses connection pooling
-    url       = env("POSTGRES_PRISMA_URL")
-    // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
-    // or you'll have dangling databases from migrations
-    directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model photos {
-    uuid                    String    @id @db.VarChar(21)        // 唯一标识符
-    id                      Int       @default(autoincrement()) @db.Integer
-    url                     String    @db.VarChar(255)           // 照片URL
-    width                   Int       @db.Integer                // 照片宽度
-    height                  Int       @db.Integer                // 照片高度
-    aspectRatio             Float?    @default(1.5) @db.Real     // 宽高比
-    blurData                String?   @db.Text                   // 模糊数据(用于图片加载占位)
-    title                   String?   @db.VarChar(255)           // 照片标题
-    caption                 String?   @db.Text                   // 照片说明
-    semanticDescription     String?   @db.Text                   // 语义描述
-    tags                    String[]                             // 标签列表
-    make                    String?   @db.VarChar(255)           // 相机制造商
-    model                   String?   @db.VarChar(255)           // 相机型号
-    focalLength             Int?      @db.SmallInt               // 焦距
-    focalLengthIn35mmFormat Int?      @db.SmallInt               // 35mm等效焦距
-    lensMake                String?   @db.VarChar(255)           // 镜头制造商
-    lensModel               String?   @db.VarChar(255)           // 镜头型号
-    fNumber                 Float?    @db.Real                   // 光圈值
-    iso                     Int?      @db.SmallInt               // ISO感光度
-    exposureTime            Float?    @db.DoublePrecision        // 曝光时间
-    exposureCompensation    Float?    @db.Real                   // 曝光补偿
-    locationName            String?   @db.VarChar(255)           // 地点名称
-    latitude                Float?    @db.DoublePrecision        // 纬度
-    longitude               Float?    @db.DoublePrecision        // 经度
-    filmSimulation          String?   @db.VarChar(255)           // 胶片模拟
-    priorityOrder           Float?    @db.Real                   // 优先顺序
-    takenAt                 DateTime  @db.Timestamptz            // 拍摄时间(带时区)
-    takenAtNaive            String    @db.VarChar(255)           // 拍摄时间(原始字符串)
-    hidden                  Boolean?                             // 是否隐藏
-    updatedAt               DateTime? @default(now()) @db.Timestamptz // 更新时间
-    createdAt               DateTime? @default(now()) @db.Timestamptz // 创建时间
+  uuid                    String    @id
+  url                     String    @db.VarChar(255)
+  width                   Int
+  height                  Int
+  blurData                String?
+  model                   String?   @db.VarChar(255)
+  lensModel               String?   @db.VarChar(255)
+  focalLengthIn35mmFormat Int?      @db.SmallInt
+  fNumber                 Float?    @db.Real
+  iso                     Int?      @db.SmallInt
+  exposureTime            Float?
+  latitude                Float?
+  longitude               Float?
+  takenAtNaive            String    @db.VarChar(255)
+  hidden                  Boolean?  @default(false)
+  updatedAt               DateTime? @default(now()) @db.Timestamptz(6)
+  createdAt               DateTime? @default(now()) @db.Timestamptz(6)
 }

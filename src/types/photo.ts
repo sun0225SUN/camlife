@@ -3,28 +3,15 @@ export interface ImageMetaData {
   width: number
   height: number
   blurData: string
-  aspectRatio: number
-  focalLength: number
   focalLengthIn35mmFormat: number
   fNumber: number
   iso: number
   exposureTime: number
-  exposureCompensation: number
   latitude: number
   longitude: number
-  locationName: string
-  filmSimulation: string
-  priorityOrder: number
-  takenAt: Date
   takenAtNaive: string
   hidden: boolean
-  title: string
-  caption: string
-  semanticDescription: string
-  tags: string[]
-  make: string
   model: string
-  lensMake: string
   lensModel: string
 }
 
