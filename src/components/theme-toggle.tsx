@@ -3,7 +3,7 @@
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
-export function ModeToggle() {
+export function ThemeToggle() {
   const { setTheme, resolvedTheme } = useTheme()
 
   const toggleTheme = () => {

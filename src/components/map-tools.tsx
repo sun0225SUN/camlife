@@ -3,8 +3,8 @@
 import { House } from "lucide-react"
 import Link from "next/link"
 import { LanguageSwitch } from "~/components/language-toggle"
-import { ModeToggle } from "~/components/mode-toggle"
 import { RotateControl } from "~/components/rotate-control"
+import { ThemeToggle } from "~/components/theme-toggle"
 import { useIsClient } from "~/hooks/useClient"
 
 interface MapToolsProps {
@@ -36,7 +36,7 @@ export function MapTools({ isRotating, setIsRotating }: MapToolsProps) {
             />
           </Link>
           <LanguageSwitch />
-          <ModeToggle />
+          <ThemeToggle />
         </div>
       </div>
 
@@ -55,7 +55,7 @@ export function MapTools({ isRotating, setIsRotating }: MapToolsProps) {
             />
           </Link>
           <LanguageSwitch />
-          <ModeToggle />
+          <ThemeToggle />
         </div>
       </div>
     </>

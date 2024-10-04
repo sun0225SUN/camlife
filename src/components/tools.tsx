@@ -5,7 +5,7 @@ import { Map } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import { LanguageSwitch } from "~/components/language-toggle"
-import { ModeToggle } from "~/components/mode-toggle"
+import { ThemeToggle } from "~/components/theme-toggle"
 import { ViewSwitch } from "~/components/view-toggle"
 import { useIsClient } from "~/hooks/useClient"
 import { useScroll } from "~/hooks/useScroll"
@@ -57,7 +57,7 @@ export function Tools() {
             />
           </Link>
           <LanguageSwitch />
-          <ModeToggle />
+          <ThemeToggle />
         </div>
       </div>
 
@@ -79,7 +79,7 @@ export function Tools() {
             />
           </Link>
           <LanguageSwitch />
-          <ModeToggle />
+          <ThemeToggle />
         </div>
       </div>
     </>
