@@ -21,7 +21,11 @@ import { env } from "~/env"
 import "~/styles/popup.css"
 import { api } from "~/trpc/react"
 
-export default function MapBox() {
+interface mapProps {
+  hideControls: boolean
+}
+
+export default function MapBox({ hideControls }: mapProps) {
   const mapboxToken = env.NEXT_PUBLIC_MAPBOX_TOKEN
   const { resolvedTheme } = useTheme()
   const locale = useLocale()
@@ -153,7 +157,9 @@ export default function MapBox() {
 
   return (
     <>
-      <MapTools isRotating={isRotating} setIsRotating={setIsRotating} />
+      {!hideControls && (
+        <MapTools isRotating={isRotating} setIsRotating={setIsRotating} />
+      )}
       <Map
         // @ts-expect-error eslint-disable-line
         mapLib={mapboxgl}
@@ -243,7 +249,7 @@ export default function MapBox() {
             />
           </Source>
         )}
-        {popupInfo && (
+        {!hideControls && popupInfo && (
           <Popup
             longitude={popupInfo.longitude}
             latitude={popupInfo.latitude}
@@ -265,18 +271,24 @@ export default function MapBox() {
             </div>
           </Popup>
         )}
-        <NavigationControl
-          position="bottom-right"
-          style={
-            isMobile
-              ? { marginBottom: "80px", marginRight: "20px" }
-              : { marginBottom: "80px", marginRight: "50px" }
-          }
-        />
-        <GeolocateControl
-          position="bottom-right"
-          style={isMobile ? { marginRight: "20px" } : { marginRight: "50px" }}
-        />
+        {!hideControls && (
+          <>
+            <NavigationControl
+              position="bottom-right"
+              style={
+                isMobile
+                  ? { marginBottom: "80px", marginRight: "20px" }
+                  : { marginBottom: "80px", marginRight: "50px" }
+              }
+            />
+            <GeolocateControl
+              position="bottom-right"
+              style={
+                isMobile ? { marginRight: "20px" } : { marginRight: "50px" }
+              }
+            />
+          </>
+        )}
       </Map>
     </>
   )
