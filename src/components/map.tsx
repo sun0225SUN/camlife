@@ -88,8 +88,8 @@ export default function MapBox({ hideControls }: mapProps) {
 
   const mapStyle = useMemo(() => {
     const styles = {
-      light: "mapbox://styles/mapbox/light-v11",
-      dark: "mapbox://styles/mapbox/dark-v11",
+      light: "mapbox://styles/sunguoqi/cm1xkfhra014901qr0td1a0mz",
+      dark: "mapbox://styles/sunguoqi/cm1xkp4hc000i01nthigphlmh",
     }
     return styles[resolvedTheme as keyof typeof styles] || styles.light
   }, [resolvedTheme])
@@ -97,25 +97,6 @@ export default function MapBox({ hideControls }: mapProps) {
   const isMobile = useMediaQuery("only screen and (max-width : 768px)")
 
   const mapZoom = useMemo(() => (isMobile ? 1 : 2), [isMobile])
-
-  useEffect(() => {
-    const root = document.documentElement
-    const originalBackground = root.style.getPropertyValue("--background")
-    const originalForeground = root.style.getPropertyValue("--foreground")
-
-    if (resolvedTheme === "dark") {
-      root.style.setProperty("--background", "#333333")
-      root.style.setProperty("--foreground", "#f0f0f0")
-    } else {
-      root.style.setProperty("--background", "#f5f5f5")
-      root.style.setProperty("--foreground", "#333333")
-    }
-
-    return () => {
-      root.style.setProperty("--background", originalBackground)
-      root.style.setProperty("--foreground", originalForeground)
-    }
-  }, [resolvedTheme])
 
   const geojsonData = useMemo(() => {
     if (!coordinates) return null
@@ -257,9 +238,8 @@ export default function MapBox({ hideControls }: mapProps) {
             onClose={() => setPopupInfo(null)}
             closeOnClick={false}
             offset={[0, -15]}
-            className="custom-popup"
           >
-            <div style={{ maxWidth: 300, maxHeight: 400, overflow: "hidden" }}>
+            <div className="rounded-md p-2 dark:bg-[#333333]">
               <Image
                 src={popupInfo.url}
                 placeholder="blur"
