@@ -18,21 +18,18 @@ export function ThemeToggle() {
 
   return (
     <button onClick={toggleTheme}>
-      {resolvedTheme === "light" ? (
-        <Sun
-          className="cursor-pointer"
-          size={22}
-          strokeWidth={2.25}
-          absoluteStrokeWidth
-        />
-      ) : (
-        <Moon
-          className="cursor-pointer"
-          size={22}
-          strokeWidth={2.25}
-          absoluteStrokeWidth
-        />
-      )}
+      <Sun
+        className="dark:hidden"
+        size={22}
+        strokeWidth={2.25}
+        absoluteStrokeWidth
+      />
+      <Moon
+        className="hidden dark:block"
+        size={22}
+        strokeWidth={2.25}
+        absoluteStrokeWidth
+      />
     </button>
   )
 }
