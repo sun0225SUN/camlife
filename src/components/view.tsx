@@ -15,19 +15,6 @@ import { useView } from "~/store/useView"
 import { api } from "~/trpc/react"
 import { type TabType } from "~/types/tabs"
 
-const styles = {
-  container: {
-    grid: "grid grid-cols-3 lg:grid-cols-4",
-    waterfall: "columns-2 md:columns-3 xl:columns-4 md:gap-6 gap-0",
-    default: "flex flex-col items-center",
-  },
-  image: {
-    grid: "h-[100px] md:h-[200px] object-cover transition-transform duration-300 ease-in-out hover:scale-105",
-    waterfall: "md:rounded-xl hover:shadow-xl",
-    default: "xl:rounded-xl xl:shadow-xl xl:shadow-outline",
-  },
-}
-
 const getAdjustedDimensions = (width: number, height: number) =>
   height > width
     ? { width: Math.floor(800 * (width / height)), height: 800 }
@@ -158,20 +145,26 @@ export function View() {
         imgAnimation="imgDrag"
         showControls={false}
         fullScreen
-        className={
-          styles.container[view as keyof typeof styles.container] ||
-          styles.container.default
-        }
+        className={clsx({
+          "grid grid-cols-3 lg:grid-cols-4": view === "grid",
+          "columns-2 gap-0 md:columns-3 md:gap-6 xl:columns-4":
+            view === "waterfall",
+          "flex flex-col items-center": view === "feed",
+        })}
       >
         {photos.map((photo) => {
           const { width, height } = getAdjustedDimensions(
             photo.width,
             photo.height,
           )
+
           const imageProps = {
-            className:
-              styles.image[view as keyof typeof styles.image] ||
-              styles.image.default,
+            className: clsx({
+              "h-[100px] md:h-[200px] object-cover transition-transform duration-300 ease-in-out hover:scale-105":
+                view === "grid",
+              "md:rounded-xl hover:shadow-xl": view === "waterfall",
+              "xl:rounded-xl xl:shadow-xl xl:shadow-outline": view === "feed",
+            }),
             src: photo.url,
             width,
             height,
