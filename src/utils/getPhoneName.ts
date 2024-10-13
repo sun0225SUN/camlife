@@ -12,24 +12,12 @@
 export function getPhoneName(code: string) {
   switch (code) {
     case "2304FPN6DC":
-      return {
-        name: "Xiaomi 13 Ultra",
-        got: true,
-      }
+      return "Xiaomi 13 Ultra"
     case "2203121C":
-      return {
-        name: "Xiaomi 12S Ultra",
-        got: true,
-      }
+      return "Xiaomi 12S Ultra"
     case "M2002J9E":
-      return {
-        name: "Xiaomi Mi 10 Youth",
-        got: true,
-      }
+      return "Xiaomi Mi 10 Youth"
     default:
-      return {
-        name: code,
-        got: false,
-      }
+      return null
   }
 }

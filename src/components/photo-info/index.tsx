@@ -43,11 +43,6 @@ export function PhotoInfo({
     () => (placeName !== "" ? formatAddress(placeName) : "UNKNOWN"),
     [placeName],
   )
-  const cameraInfo = useMemo(() => {
-    if (!model) return "UNKNOWN"
-    const phoneName = getPhoneName(model)
-    return phoneName.got ? phoneName.name : model
-  }, [model])
 
   return (
     <div className="my-4 flex justify-center text-xs md:my-10 md:text-base">
@@ -58,6 +53,7 @@ export function PhotoInfo({
             setRating={setRating}
             resolvedTheme={resolvedTheme!}
           />
+
           {!isMobile ? (
             <DesktopPopovers
               exifProps={exifProps}
@@ -75,22 +71,28 @@ export function PhotoInfo({
               placeName={placeName}
             />
           )}
-          <InfoItem title={t("camera")}>
-            <div className="whitespace-nowrap uppercase">{cameraInfo}</div>
-          </InfoItem>
-          {!getPhoneName(model ?? "").got && (
+
+          {!getPhoneName(model ?? "") ? (
             <InfoItem title={t("lens")}>
               <div className="whitespace-nowrap uppercase">
                 {!!lensModel ? lensModel : "unknown"}
               </div>
             </InfoItem>
+          ) : (
+            <InfoItem title={t("camera")}>
+              <div className="whitespace-nowrap uppercase">
+                {getPhoneName(model ?? "") ?? model ?? "UNKNOWN"}
+              </div>
+            </InfoItem>
           )}
+
           <InfoItem title={t("time")}>
             <div className="whitespace-nowrap">
               {takenAtNaive ? formatDateTime(takenAtNaive) : "unknown"}
             </div>
           </InfoItem>
         </div>
+
         <PhotoInfoDetails
           isMobile={isMobile}
           placeName={placeName}
