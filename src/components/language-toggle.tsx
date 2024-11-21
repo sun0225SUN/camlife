@@ -10,8 +10,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover"
-import { locales, nameMap } from "~/i18n"
-import { setUserLocale } from "~/server/locale"
+import { setUserLocale } from "~/i18n/locale"
+import { locales, nameMap } from "~/i18n/routing"
 
 export function LanguageSwitch() {
   const currentLocale = useLocale()

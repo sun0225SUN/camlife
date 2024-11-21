@@ -51,13 +51,11 @@ export default function MapBox({ hideControls, lang }: mapProps) {
       if (ref) {
         mapInstanceRef.current = ref.getMap()
         if (lang) {
-          console.log("lang", lang)
           const language = lang === "zh" ? "zh-Hans" : "en"
           ref
             .getMap()
             .addControl(new MapboxLanguage({ defaultLanguage: language }))
         } else if (locale === "zh") {
-          console.log("zh")
           ref
             .getMap()
             .addControl(new MapboxLanguage({ defaultLanguage: "zh-Hans" }))

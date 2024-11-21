@@ -5,8 +5,10 @@ import { type Metadata } from "next"
 import { SessionProvider } from "next-auth/react"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
+import { notFound } from "next/navigation"
 import { Toaster } from "react-hot-toast"
 import { ThemeProvider } from "~/components/theme-provider"
+import { routing } from "~/i18n/routing"
 import { auth } from "~/server/auth"
 import "~/styles/globals.css"
 import { TRPCReactProvider } from "~/trpc/react"
@@ -23,6 +25,13 @@ export default async function LocaleLayout({
 }: Readonly<{ children: React.ReactNode; params: { locale: string } }>) {
   const session = await auth()
   const messages = await getMessages()
+
+  // Ensure that the incoming `locale` is valid
+  // eslint-disable-next-line
+  if (!routing.locales.includes(locale as any)) {
+    notFound()
+  }
+
   return (
     <html
       lang={locale}

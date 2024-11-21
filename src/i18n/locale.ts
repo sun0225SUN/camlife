@@ -1,7 +1,7 @@
 "use server"
 
 import { cookies } from "next/headers"
-import { type Locale, defaultLocale } from "~/i18n"
+import { type Locale, defaultLocale } from "~/i18n/routing"
 
 const COOKIE_NAME = "NEXT_LOCALE"
 
