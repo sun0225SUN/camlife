@@ -10,6 +10,7 @@ const Map = dynamic(() => import("~/components/map"), {
 export default function MapPage() {
   const params = useSearchParams()
   const hideControls = params.get("hide_controls") === "true"
+  const lang = params?.get("lang")
 
-  return <Map hideControls={hideControls} />
+  return <Map hideControls={hideControls} lang={lang} />
 }

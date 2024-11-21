@@ -22,14 +22,18 @@ import "~/styles/popup.css"
 import { api } from "~/trpc/react"
 
 interface mapProps {
+  lang: string | null
   hideControls: boolean
 }
 
-export default function MapBox({ hideControls }: mapProps) {
+export default function MapBox({ hideControls, lang }: mapProps) {
   const mapboxToken = env.NEXT_PUBLIC_MAPBOX_TOKEN
   const { resolvedTheme } = useTheme()
+
   const locale = useLocale()
+
   const { data: coordinates } = api.photos.getAllCoordinates.useQuery()
+
   const [popupInfo, setPopupInfo] = useState<{
     longitude: number
     latitude: number
@@ -46,7 +50,14 @@ export default function MapBox({ hideControls }: mapProps) {
     (ref: MapRef) => {
       if (ref) {
         mapInstanceRef.current = ref.getMap()
-        if (locale === "zh") {
+        if (lang) {
+          console.log("lang", lang)
+          const language = lang === "zh" ? "zh-Hans" : "en"
+          ref
+            .getMap()
+            .addControl(new MapboxLanguage({ defaultLanguage: language }))
+        } else if (locale === "zh") {
+          console.log("zh")
           ref
             .getMap()
             .addControl(new MapboxLanguage({ defaultLanguage: "zh-Hans" }))
@@ -56,7 +67,7 @@ export default function MapBox({ hideControls }: mapProps) {
         })
       }
     },
-    [locale],
+    [locale, lang],
   )
 
   const rotate = useCallback(() => {
