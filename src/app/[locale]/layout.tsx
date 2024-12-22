@@ -38,6 +38,15 @@ export default async function LocaleLayout({
       className={`${GeistSans.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          defer
+          src="https://umami.guoqi.dev/script.js"
+          data-website-id="e3df813a-bc42-4da9-af6d-664b0b56250d"
+          data-domains="camlife.app"
+        />
+      </head>
+
       <body>
         <SessionProvider session={session}>
           <NextIntlClientProvider messages={messages}>
