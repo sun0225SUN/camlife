@@ -8,7 +8,7 @@ import path from "path"
 import { z } from "zod"
 import {
   createTRPCRouter,
-  protectedProcedure,
+  // protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc"
 import { calculateDistance } from "~/utils/calculateDistance"
@@ -173,7 +173,7 @@ export const photosRouter = createTRPCRouter({
       }
     }),
 
-  createPhoto: protectedProcedure
+  createPhoto: publicProcedure
     .input(
       z.object({
         url: z.string().max(255),

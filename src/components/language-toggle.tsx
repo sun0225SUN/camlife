@@ -10,8 +10,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover"
-import { setUserLocale } from "~/i18n/locale"
-import { locales, nameMap } from "~/i18n/routing"
+import { localeMap, locales } from "~/i18n/routing"
+import { setUserLocale } from "~/server/locale"
 
 export function LanguageSwitch() {
   const currentLocale = useLocale()
@@ -56,7 +56,7 @@ export function LanguageSwitch() {
                 height="24"
                 className="rounded"
               />
-              {nameMap[locale]}
+              {localeMap[locale]}
             </div>
             {currentLocale === locale && (
               <Check size={16} strokeWidth={2.25} absoluteStrokeWidth />

@@ -1,8 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { useEffect } from "react"
-import { useFormState } from "react-dom"
+import { useActionState, useEffect } from "react"
 import toast from "react-hot-toast"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
@@ -10,7 +9,7 @@ import { loginAction } from "~/server/auth/actions"
 
 export default function SignInPage() {
   const t = useTranslations("LoginPage")
-  const [response, action] = useFormState(loginAction, undefined)
+  const [response, action] = useActionState(loginAction, undefined)
 
   useEffect(() => {
     if (response === "CredentialsSignInError") {

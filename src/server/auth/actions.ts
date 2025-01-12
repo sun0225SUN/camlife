@@ -40,4 +40,4 @@ export const logoutAction = async () => {
   await signOut()
 }
 
-export const getAuthAction = () => auth()
+export const getAuthAction = async () => await auth()

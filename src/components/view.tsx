@@ -2,7 +2,6 @@
 
 import clsx from "clsx"
 import { SlideshowLightbox, initLightboxJS } from "lightbox.js-react"
-import "lightbox.js-react/dist/index.css"
 import { useTheme } from "next-themes"
 import Image from "next/image"
 import { useCallback, useEffect, useMemo, useState } from "react"
