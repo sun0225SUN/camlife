@@ -8,5 +8,5 @@ export default {
 	dbCredentials: {
 		url: env.DATABASE_URL,
 	},
-	tablesFilter: ["camlife_dev_*"],
+	tablesFilter: ["camlife_*"],
 } satisfies Config;

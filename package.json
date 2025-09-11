@@ -1,10 +1,11 @@
 {
-	"name": "camlife_dev",
+	"name": "camlife",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
 		"build": "next build",
+		"postbuild": "drizzle-kit migrate",
 		"check": "biome check .",
 		"check:unsafe": "biome check --write --unsafe .",
 		"check:write": "biome check --write .",
@@ -18,32 +19,29 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@t3-oss/env-nextjs": "^0.12.0",
-		"@tanstack/react-query": "^5.69.0",
-		"@trpc/client": "^11.0.0",
-		"@trpc/react-query": "^11.0.0",
-		"@trpc/server": "^11.0.0",
-		"drizzle-orm": "^0.41.0",
-		"next": "^15.2.3",
-		"postgres": "^3.4.4",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0",
+		"@t3-oss/env-nextjs": "^0.13.8",
+		"@tanstack/react-query": "^5.87.4",
+		"@trpc/client": "^11.5.1",
+		"@trpc/react-query": "^11.5.1",
+		"@trpc/server": "^11.5.1",
+		"drizzle-orm": "^0.44.5",
+		"next": "^15.5.3",
+		"postgres": "^3.4.7",
+		"react": "^19.1.1",
+		"react-dom": "^19.1.1",
 		"server-only": "^0.0.1",
-		"superjson": "^2.2.1",
-		"zod": "^3.24.2"
+		"superjson": "^2.2.2",
+		"zod": "^4.1.7"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@tailwindcss/postcss": "^4.0.15",
-		"@types/node": "^20.14.10",
-		"@types/react": "^19.0.0",
-		"@types/react-dom": "^19.0.0",
-		"drizzle-kit": "^0.30.5",
-		"postcss": "^8.5.3",
-		"tailwindcss": "^4.0.15",
-		"typescript": "^5.8.2"
-	},
-	"ct3aMetadata": {
-		"initVersion": "7.39.3"
+		"@biomejs/biome": "2.2.4",
+		"@tailwindcss/postcss": "^4.1.13",
+		"@types/node": "^24.3.1",
+		"@types/react": "^19.1.12",
+		"@types/react-dom": "^19.1.9",
+		"drizzle-kit": "^0.31.4",
+		"postcss": "^8.5.6",
+		"tailwindcss": "^4.1.13",
+		"typescript": "^5.9.2"
 	}
 }
