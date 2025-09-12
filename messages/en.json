@@ -1,0 +1,9 @@
+{
+  "HomePage": {
+    "title": "Hello world!"
+  },
+  "Language": {
+    "en": "English",
+    "zh": "简体中文"
+  }
+}
