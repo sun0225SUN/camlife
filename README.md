@@ -79,8 +79,6 @@ NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=
 # You can generate a random secret using `openssl rand -base64 32`
 BETTER_AUTH_SECRET=
 BETTER_AUTH_URL=http://localhost:3000
-
-NEXT_PUBLIC_APP_URL='http://localhost:3000'
 ```
 
 3. Install dependencies
