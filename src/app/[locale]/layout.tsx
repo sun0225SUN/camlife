@@ -32,7 +32,7 @@ export default async function RootLayout({ children, params }: Props) {
 
   return (
     <html
-      lang='en'
+      lang={locale}
       className={`${geist.variable}`}
       suppressHydrationWarning
     >

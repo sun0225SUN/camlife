@@ -5,5 +5,32 @@
   "Language": {
     "en": "English",
     "zh": "简体中文"
+  },
+  "Auth": {
+    "sign-in": "登 录",
+    "sign-up": "注册",
+    "username": "用户名",
+    "email": "邮箱",
+    "password": "密码",
+    "usernamePlaceholder": "您的用户名",
+    "emailPlaceholder": "您的邮箱地址",
+    "passwordPlaceholder": "您的密码",
+    "usernameRequired": "请输入用户名",
+    "emailInvalid": "请输入有效的邮箱地址",
+    "passwordRequired": "请输入密码",
+    "signInError": "登录失败，请检查邮箱和密码",
+    "networkError": "网络错误，请稍后重试",
+    "passwordRequirements": {
+      "length": "密码至少需要8个字符",
+      "uppercase": "密码需要包含至少一个大写字母",
+      "lowercase": "密码需要包含至少一个小写字母",
+      "number": "密码需要包含至少一个数字"
+    },
+    "confirmPassword": "确认密码",
+    "confirmPasswordPlaceholder": "请确认您的密码",
+    "passwordsDoNotMatch": "两次输入的密码不一致",
+    "signUpError": "注册失败，请检查输入信息",
+    "signOut": "退出登录",
+    "signingOut": "正在退出..."
   }
 }

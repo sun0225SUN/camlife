@@ -5,7 +5,10 @@
     "clientKind": "git",
     "useIgnoreFile": true
   },
-  "files": { "ignoreUnknown": false, "includes": ["**"] },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": ["**", "!src/components/ui"]
+  },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
@@ -21,6 +24,12 @@
       },
       "suspicious": {
         "noUnknownAtRules": "off"
+      },
+      "correctness": {
+        "noUnknownTypeSelector": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
       },
       "recommended": true
     }

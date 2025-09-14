@@ -5,5 +5,32 @@
   "Language": {
     "en": "English",
     "zh": "简体中文"
+  },
+  "Auth": {
+    "sign-in": "Sign in",
+    "sign-up": "Sign up",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "usernamePlaceholder": "Your username",
+    "emailPlaceholder": "Your email address",
+    "passwordPlaceholder": "Your password",
+    "usernameRequired": "Please enter your username",
+    "emailInvalid": "Please enter a valid email address",
+    "passwordRequired": "Please enter your password",
+    "signInError": "Login failed, please check your email and password",
+    "networkError": "Network error, please try again later",
+    "passwordRequirements": {
+      "length": "Password must be at least 8 characters",
+      "uppercase": "Password must contain at least one uppercase letter",
+      "lowercase": "Password must contain at least one lowercase letter",
+      "number": "Password must contain at least one number"
+    },
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "signUpError": "Registration failed, please check your input",
+    "signOut": "Sign Out",
+    "signingOut": "Signing Out..."
   }
 }
