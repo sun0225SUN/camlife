@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Logo } from '@/components/logo'
+import { LogoWithConfetti } from '@/components/logo'
 import { Card, CardContent } from '@/components/ui/card'
 import { DotPattern } from '@/components/ui/dot-pattern'
 import { GlowingEffect } from '@/components/ui/glowing-effect'
@@ -20,7 +20,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       />
       <div className='flex h-screen flex-col items-center justify-center pb-20'>
         <div className='w-full max-w-sm space-y-6'>
-          <Logo className='flex flex-col items-center' />
+          <LogoWithConfetti className='flex flex-col items-center' />
 
           <Card className='relative border-none p-10'>
             <CardContent className='px-0!'>{children}</CardContent>

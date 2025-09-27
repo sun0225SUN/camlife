@@ -1,7 +1,8 @@
 'use client'
 
 import confetti from 'canvas-confetti'
-import LogoIcon from '@/assets/images/logo.svg'
+import { Abril_Fatface as FontLogo } from 'next/font/google'
+import CamlifeLogo from '@/assets/images/logo.svg'
 import { Pointer } from '@/components/ui/pointer'
 import { cn } from '@/lib/utils'
 
@@ -9,7 +10,26 @@ interface LogoProps {
   className?: string
 }
 
-export function Logo({ className }: LogoProps) {
+const fontLogo = FontLogo({
+  subsets: ['latin'],
+  variable: '--font-logo',
+  weight: '400',
+  display: 'swap',
+  adjustFontFallback: false,
+})
+
+export function Logo({ className }: { className?: string }) {
+  return (
+    <div className='flex h-16 items-center gap-2 font-bold text-4xl'>
+      <CamlifeLogo className={className} />
+      <div className={cn(fontLogo.className, 'flex-shrink-0 tracking-wide')}>
+        CamLife
+      </div>
+    </div>
+  )
+}
+
+export function LogoWithConfetti({ className }: LogoProps) {
   const handleClick = () => {
     const duration = 5 * 1000
     const animationEnd = Date.now() + duration
@@ -44,7 +64,7 @@ export function Logo({ className }: LogoProps) {
       <Pointer>
         <div className='text-2xl'>👆</div>
       </Pointer>
-      <LogoIcon
+      <CamlifeLogo
         className='size-16 transition-all duration-300 hover:rotate-45 hover:scale-105'
         onClick={handleClick}
       />
