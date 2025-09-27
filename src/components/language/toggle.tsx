@@ -1,8 +1,6 @@
 'use client'
 
-import { useParams } from 'next/navigation'
-import { type Locale, useLocale, useTranslations } from 'next-intl'
-import { useTransition } from 'react'
+import { useTranslations } from 'next-intl'
 import {
   Select,
   SelectContent,
@@ -10,31 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { usePathname, useRouter } from '@/i18n/navigation'
+import { useLanguageToggle } from '@/hooks/use-language-toggle'
 import { routing } from '@/i18n/routing'
 
 export function LanguageToggle() {
   const t = useTranslations('Language')
-
-  const locale = useLocale()
-
-  const router = useRouter()
-  const [, startTransition] = useTransition()
-  const pathname = usePathname()
-
-  const params = useParams()
-
-  const onSelectChange = (locale: Locale) => {
-    startTransition(() => {
-      router.replace(
-        // @ts-expect-error -- TypeScript will validate that only known `params`
-        // are used in combination with a given `pathname`. Since the two will
-        // always match for the current route, we can skip runtime checks.
-        { pathname, params },
-        { locale },
-      )
-    })
-  }
+  const { locale, onSelectChange } = useLanguageToggle()
 
   return (
     <Select

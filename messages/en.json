@@ -4,7 +4,16 @@
   },
   "Language": {
     "en": "English",
-    "zh": "简体中文"
+    "zh": "简体中文",
+    "language": "Language"
+  },
+  "Theme": {
+    "preferences": "Preferences",
+    "language": "Language",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   },
   "Auth": {
     "sign-in": "Sign in",
@@ -30,7 +39,6 @@
     "confirmPasswordPlaceholder": "Confirm your password",
     "passwordsDoNotMatch": "Passwords do not match",
     "signUpError": "Registration failed, please check your input",
-    "signOut": "Sign Out",
-    "signingOut": "Signing Out..."
+    "signOut": "Sign Out"
   }
 }
