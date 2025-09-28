@@ -65,7 +65,7 @@ export function LogoWithConfetti({ className }: LogoProps) {
         <div className='text-2xl'>👆</div>
       </Pointer>
       <CamlifeLogo
-        className='size-16 transition-all duration-300 hover:rotate-45 hover:scale-105'
+        className='size-14 transition-all duration-300 hover:rotate-45 hover:scale-105'
         onClick={handleClick}
       />
     </div>

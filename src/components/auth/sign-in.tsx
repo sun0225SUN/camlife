@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -16,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { GlowingEffect } from '@/components/ui/glowing-effect'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { signIn } from '@/lib/auth-client'
@@ -69,78 +71,89 @@ export function SignIn() {
   }
 
   return (
-    <div className='space-y-6'>
-      <div className='text-center'>
-        <p className='font-bold text-2xl'>{t('sign-in')}</p>
-      </div>
+    <>
+      <p className='text-center font-bold text-2xl'>{t('sign-in')}</p>
 
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className='space-y-6'
-          autoComplete='on'
-        >
-          <FormField
-            control={form.control}
-            name='email'
-            render={({ field }) => (
-              <FormItem className='flex flex-col gap-3'>
-                <FormLabel className='font-medium text-sm'>
-                  {t('email')}
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type='email'
-                    placeholder={t('emailPlaceholder')}
-                    className='h-10'
-                    autoComplete='email'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <Card className='relative border-none p-10'>
+        <CardContent className='px-0!'>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className='space-y-6'
+              autoComplete='on'
+            >
+              <FormField
+                control={form.control}
+                name='email'
+                render={({ field }) => (
+                  <FormItem className='flex flex-col gap-3'>
+                    <FormLabel className='font-medium text-sm'>
+                      {t('email')}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type='email'
+                        placeholder={t('emailPlaceholder')}
+                        className='h-10'
+                        autoComplete='email'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name='password'
-            render={({ field }) => (
-              <FormItem className='flex flex-col gap-3'>
-                <FormLabel className='font-medium text-sm'>
-                  {t('password')}
-                </FormLabel>
-                <FormControl>
-                  <PasswordInput
-                    placeholder={t('passwordPlaceholder')}
-                    autoComplete='current-password'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name='password'
+                render={({ field }) => (
+                  <FormItem className='flex flex-col gap-3'>
+                    <FormLabel className='font-medium text-sm'>
+                      {t('password')}
+                    </FormLabel>
+                    <FormControl>
+                      <PasswordInput
+                        placeholder={t('passwordPlaceholder')}
+                        autoComplete='current-password'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          {form.formState.errors.root && (
-            <p className='text-destructive text-sm'>
-              {form.formState.errors.root.message}
-            </p>
-          )}
+              {form.formState.errors.root && (
+                <p className='text-destructive text-sm'>
+                  {form.formState.errors.root.message}
+                </p>
+              )}
 
-          <Button
-            type='submit'
-            className='mt-4 h-10 w-full cursor-pointer'
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader2Icon className='animate-spin' />
-            ) : (
-              t('sign-in')
-            )}
-          </Button>
-        </form>
-      </Form>
-    </div>
+              <Button
+                type='submit'
+                className='mt-4 h-10 w-full cursor-pointer'
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <Loader2Icon className='animate-spin' />
+                ) : (
+                  t('sign-in')
+                )}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+
+        <GlowingEffect
+          spread={40}
+          glow={true}
+          disabled={false}
+          proximity={64}
+          inactiveZone={0.01}
+          className='z-10'
+        />
+      </Card>
+    </>
   )
 }
