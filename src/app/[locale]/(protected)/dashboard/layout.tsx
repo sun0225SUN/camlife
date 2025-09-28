@@ -1,4 +1,4 @@
-import { headers } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { AppSidebar } from '@/components/dashboard/sidebar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
@@ -18,8 +18,11 @@ export default async function DashboardLayout({
     redirect(SIGN_IN_PAGE)
   }
 
+  const cookieStore = await cookies()
+  const defaultOpen = cookieStore.get('sidebar_state')?.value === 'true'
+
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar session={session} />
       <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>
