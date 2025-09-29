@@ -3,9 +3,14 @@
  * for Docker builds.
  */
 import './src/env.js'
+import bundleAnalyzer from '@next/bundle-analyzer'
 import createNextIntlPlugin from 'next-intl/plugin'
 
 const withNextIntl = createNextIntlPlugin()
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -27,4 +32,4 @@ const config = {
   },
 }
 
-export default withNextIntl(config)
+export default withNextIntl(withBundleAnalyzer(config))
