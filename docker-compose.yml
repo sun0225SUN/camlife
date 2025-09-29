@@ -1,0 +1,67 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:latest
+    container_name: camlife-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: camlife
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - camlife_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Database Migration Service
+  migration:
+    build:
+      context: .
+      dockerfile: docker/migrations/Dockerfile
+    image: camlife-migration
+    environment:
+      DATABASE_URL: "postgresql://postgres:password@postgres:5432/camlife"
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - camlife_network
+    restart: "no"
+
+  # Next.js Web Application
+  web:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+    image: camlife-web
+    container_name: camlife-web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:password@postgres:5432/camlife"
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migration:
+        condition: service_completed_successfully
+    networks:
+      - camlife_network
+
+volumes:
+  postgres_data:
+
+networks:
+  camlife_network:
+    driver: bridge

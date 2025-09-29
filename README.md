@@ -37,19 +37,62 @@
 - 🧹 Formatter and Linter - [Biome](https://biomejs.dev)
 - 🪝 Git hooks - [Lefthook](https://lefthook.dev)
 
-## 💡 Inspired Projects
-
-- [Camarts](https://camarts.app)
-- [exif-photo-blog](https://github.com/sambecker/exif-photo-blog)
-- [photography-website](https://github.com/ECarry/photography-website)
-- [PicImpact](https://github.com/besscroft/PicImpact)
-- [Afilmory](https://github.com/Afilmory/afilmory)
-- [chronoframe](https://github.com/HoshinoSuzumi/chronoframe)
-- [running_page](https://github.com/yihong0618/running_page)
-
 ## 🚀 Getting Started
 
+> [!IMPORTANT]
+> Environment Variables
+
+```bash
+# Database
+DATABASE_URL=your_database_url
+
+# Storage
+STORAGE_PROVIDER=s3
+STORAGE_PROVIDER_S3_ENDPOINT=
+STORAGE_PROVIDER_S3_BUCKET=
+STORAGE_PROVIDER_S3_REGION=auto
+STORAGE_PROVIDER_S3_ACCESS_KEY_ID=
+STORAGE_PROVIDER_S3_SECRET_ACCESS_KEY=
+STORAGE_PROVIDER_S3_PREFIX=camlife
+
+# Mapbox
+NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=
+
+# Auth
+# You can generate a random secret using `openssl rand -base64 32`
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=http://localhost:3000
+```
+
+
+| Variable                                | Description                                                      | Default                 | Required                   |
+| :-------------------------------------- | :--------------------------------------------------------------- | :---------------------- | :------------------------- |
+| `DATABASE_URL`                          | PostgreSQL database connection URL                               | None                    | Yes                        |
+| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN`       | Mapbox map service access token                                  | None                    | Yes                        |
+| `BETTER_AUTH_SECRET`                    | Better Auth secret key (generate with `openssl rand -base64 32`) | None                    | Yes                        |
+| `BETTER_AUTH_URL`                       | Application base URL                                             | `http://localhost:3000` | Yes                        |
+| `STORAGE_PROVIDER`                      | Storage provider (Vercel Blob、Cloudflare R2、AWS S3)            | s3                      | Yes                        |
+| `STORAGE_PROVIDER_S3_ENDPOINT`          | S3 endpoint                                                      | None                    | Required if provider is s3 |
+| `STORAGE_PROVIDER_S3_BUCKET`            | S3 bucket name                                                   | None                    | Required if provider is s3 |
+| `STORAGE_PROVIDER_S3_REGION`            | S3 bucket region                                                 | auto                    | Required if provider is s3 |
+| `STORAGE_PROVIDER_S3_ACCESS_KEY_ID`     | S3 access key ID                                                 | None                    | Required if provider is s3 |
+| `STORAGE_PROVIDER_S3_SECRET_ACCESS_KEY` | S3 secret access key                                             | None                    | Required if provider is s3 |
+| `STORAGE_PROVIDER_S3_PREFIX`            | S3 object prefix                                                 | camlife                 | Required if provider is s3 |
+
+
+### Vercel
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/sun0225SUN/camlife)
+
+#### Docker
+
+1. Create a `.env` file in the root directory
+
+2. Docker Compose
+
+```bash
+docker-compose up -d
+```
 
 ## 💻  Local development
 
@@ -62,26 +105,6 @@ cd camlife
 ```
 
 2. Create a `.env` file in the root directory
-
-```bash
-# Database
-DATABASE_URL=your_database_url
-
-# Cloudflare R2
-CLOUDFLARE_R2_ENDPOINT=
-CLOUDFLARE_R2_ACCESS_KEY_ID=
-CLOUDFLARE_R2_SECRET_ACCESS_KEY=
-CLOUDFLARE_R2_BUCKET_NAME=
-CLOUDFLARE_R2_PUBLIC_URL=
-
-# Mapbox
-NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=
-
-# Auth
-# You can generate a random secret using `openssl rand -base64 32`
-BETTER_AUTH_SECRET=
-BETTER_AUTH_URL=http://localhost:3000
-```
 
 3. Install dependencies
 
@@ -102,6 +125,16 @@ bun run dev
 ```
 
 Open: `http://localhost:3000` to see your application.
+
+## 💡 Inspired Projects
+
+- [Camarts](https://camarts.app)
+- [exif-photo-blog](https://github.com/sambecker/exif-photo-blog)
+- [photography-website](https://github.com/ECarry/photography-website)
+- [PicImpact](https://github.com/besscroft/PicImpact)
+- [Afilmory](https://github.com/Afilmory/afilmory)
+- [chronoframe](https://github.com/HoshinoSuzumi/chronoframe)
+- [running_page](https://github.com/yihong0618/running_page)
 
 ## 📝 License
 
