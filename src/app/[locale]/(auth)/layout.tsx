@@ -1,27 +1,42 @@
-import type { ReactNode } from 'react'
 import { LogoWithConfetti } from '@/components/logo'
-import { DotPattern } from '@/components/ui/dot-pattern'
-import { cn } from '@/lib/utils'
+import { EtherealShadow } from '@/components/ui/ethereal-shadow'
+import { GridPattern } from '@/components/ui/grid-pattern'
 
-export default function AuthLayout({ children }: { children: ReactNode }) {
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <div className='relative'>
-      <DotPattern
-        width={20}
-        height={20}
-        cx={1}
-        cy={1}
-        cr={1}
-        className={cn(
-          '[mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]',
-        )}
-      />
-      <div className='flex h-screen flex-col items-center justify-center pb-20'>
-        <div className='w-full max-w-sm space-y-4'>
-          <LogoWithConfetti className='flex flex-col items-center' />
+    <>
+      {/* main content */}
+      <div className='flex min-h-screen flex-col items-center justify-center pb-20'>
+        <div className='w-full max-w-sm'>
+          <LogoWithConfetti />
           {children}
         </div>
       </div>
-    </div>
+
+      {/* light background */}
+      <div className='-z-10 absolute inset-0 dark:hidden'>
+        <GridPattern
+          width={20}
+          height={20}
+          x={-1}
+          y={-1}
+          className='[mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]'
+        />
+      </div>
+
+      {/* dark background */}
+      <div className='-z-10 absolute inset-0 hidden dark:block'>
+        <EtherealShadow
+          color='rgba(128, 128, 128, 1)'
+          animation={{ scale: 100, speed: 90 }}
+          noise={{ opacity: 1, scale: 1.2 }}
+          sizing='fill'
+        />
+      </div>
+    </>
   )
 }

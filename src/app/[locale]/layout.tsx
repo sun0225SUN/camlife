@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { ThemeProvider } from '@/components/theme/provider'
 import { routing } from '@/i18n/routing'
+import { cn } from '@/lib/utils'
 import { TRPCReactProvider } from '@/trpc/react'
 
 interface Props {
@@ -33,7 +34,7 @@ export default async function RootLayout({ children, params }: Props) {
   return (
     <html
       lang={locale}
-      className={`${geist.variable}`}
+      className={cn(geist.variable)}
       suppressHydrationWarning
     >
       <body>

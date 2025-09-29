@@ -6,10 +6,6 @@ import CamlifeLogo from '@/assets/images/logo.svg'
 import { Pointer } from '@/components/ui/pointer'
 import { cn } from '@/lib/utils'
 
-interface LogoProps {
-  className?: string
-}
-
 const fontLogo = FontLogo({
   subsets: ['latin'],
   variable: '--font-logo',
@@ -29,7 +25,7 @@ export function Logo({ className }: { className?: string }) {
   )
 }
 
-export function LogoWithConfetti({ className }: LogoProps) {
+export function LogoWithConfetti() {
   const handleClick = () => {
     const duration = 5 * 1000
     const animationEnd = Date.now() + duration
@@ -60,14 +56,16 @@ export function LogoWithConfetti({ className }: LogoProps) {
   }
 
   return (
-    <div className={cn('relative', className)}>
-      <Pointer>
-        <div className='text-2xl'>👆</div>
-      </Pointer>
-      <CamlifeLogo
-        className='size-14 transition-all duration-300 hover:rotate-45 hover:scale-105'
-        onClick={handleClick}
-      />
+    <div className='flex justify-center'>
+      <div className='relative'>
+        <Pointer>
+          <span className='text-2xl'>👆</span>
+        </Pointer>
+        <CamlifeLogo
+          className='size-13 transition-all duration-300 hover:rotate-45 hover:scale-105'
+          onClick={handleClick}
+        />
+      </div>
     </div>
   )
 }

@@ -1,6 +1,5 @@
 "use client"
 
-import type { ReactNode } from "react"
 import React, {
   createContext,
   forwardRef,
@@ -27,7 +26,7 @@ type Props = React.ComponentPropsWithRef<"canvas"> & {
   options?: ConfettiOptions
   globalOptions?: ConfettiGlobalOptions
   manualstart?: boolean
-  children?: ReactNode
+  children?: React.ReactNode
 }
 
 export type ConfettiRef = Api | null
