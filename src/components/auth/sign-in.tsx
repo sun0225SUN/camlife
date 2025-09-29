@@ -67,6 +67,8 @@ export function SignIn() {
       form.setError('root', {
         message: t('networkError'),
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 

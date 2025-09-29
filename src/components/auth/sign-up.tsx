@@ -95,6 +95,8 @@ export function SignUp() {
       form.setError('root', {
         message: t('networkError'),
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
