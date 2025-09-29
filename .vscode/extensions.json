@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "lokalise.i18n-ally",
+    "biomejs.biome",
+    "bradlc.vscode-tailwindcss",
+    "shardulm94.trailing-spaces",
+    "rphlmr.vscode-drizzle-orm"
+  ]
+}
