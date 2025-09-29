@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input'
 import { MagicCard } from '@/components/ui/magic-card'
 import { PasswordInput } from '@/components/ui/password-input'
 import { signIn, signUp } from '@/lib/auth-client'
-import { DASHBOARD_PAGE, SIGN_IN_PAGE } from '@/routes'
+import { DEFAULT_DASHBOARD_PAGE, SIGN_IN_PAGE } from '@/routes'
 
 export function SignUp() {
   const t = useTranslations('Auth')
@@ -88,7 +88,7 @@ export function SignUp() {
         })
 
         if (!signInError) {
-          router.push(DASHBOARD_PAGE)
+          router.push(DEFAULT_DASHBOARD_PAGE)
           router.refresh()
         } else {
           router.push(SIGN_IN_PAGE)

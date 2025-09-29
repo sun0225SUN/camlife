@@ -44,8 +44,22 @@
 
 ## 🚀 Getting Started
 
-> [!IMPORTANT]
-> Environment Variables
+### Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/sun0225SUN/camlife)
+
+### Docker
+
+1. Create a `.env` file in the root directory
+
+2. Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+> [!warning] Environment Variables
+> Please ensure that all necessary environment variables are correctly configured before running the project.
 
 ```bash
 # Database
@@ -85,20 +99,6 @@ BETTER_AUTH_URL=http://localhost:3000
 | `STORAGE_PROVIDER_S3_PREFIX`            | S3 object prefix                                                 | camlife                 | Required if provider is s3 |
 
 
-### Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/sun0225SUN/camlife)
-
-#### Docker
-
-1. Create a `.env` file in the root directory
-
-2. Docker Compose
-
-```bash
-docker-compose up -d
-```
-
 ## 💻  Local development
 
 1. Clone the repository
@@ -130,6 +130,8 @@ bun run dev
 ```
 
 Open: `http://localhost:3000` to see your application.
+
+
 
 ## 💡 Inspired Projects
 

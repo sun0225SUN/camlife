@@ -38,6 +38,7 @@
     "confirmPasswordPlaceholder": "请确认您的密码",
     "passwordsDoNotMatch": "两次输入的密码不一致",
     "signUpError": "注册失败，请检查输入信息",
-    "signOut": "退出登录"
+    "signOut": "退出登录",
+    "profile": "个人资料"
   }
 }

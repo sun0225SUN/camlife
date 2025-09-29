@@ -6,6 +6,7 @@ import {
   Languages,
   LogOut,
   Palette,
+  SquareUserRound,
   User,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -35,7 +36,7 @@ import { useRouter } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import { signOut } from '@/lib/auth-client'
 import { cn } from '@/lib/utils'
-import { SIGN_IN_PAGE } from '@/routes'
+import { DASHBOARD_PROFILE_PAGE, SIGN_IN_PAGE } from '@/routes'
 import '@/styles/view-transition.css'
 
 interface NavUserProps {
@@ -80,6 +81,11 @@ export function NavUser({ name, email }: NavUserProps) {
     }
   }
 
+  // Profile
+  const handleProfile = () => {
+    router.push(DASHBOARD_PROFILE_PAGE)
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -104,7 +110,7 @@ export function NavUser({ name, email }: NavUserProps) {
             className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
             side={isMobile ? 'bottom' : 'right'}
             align='end'
-            sideOffset={4}
+            sideOffset={12}
           >
             <DropdownMenuLabel className='p-0 font-normal'>
               <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
@@ -117,6 +123,16 @@ export function NavUser({ name, email }: NavUserProps) {
                 </div>
               </div>
             </DropdownMenuLabel>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem onClick={handleProfile}>
+              <SquareUserRound
+                size={22}
+                className='text-foreground'
+              />
+              {t('Auth.profile')}
+            </DropdownMenuItem>
 
             <DropdownMenuSeparator />
 

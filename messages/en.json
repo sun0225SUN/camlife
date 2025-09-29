@@ -39,6 +39,7 @@
     "confirmPasswordPlaceholder": "Confirm your password",
     "passwordsDoNotMatch": "Passwords do not match",
     "signUpError": "Registration failed, please check your input",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "profile": "Profile"
   }
 }

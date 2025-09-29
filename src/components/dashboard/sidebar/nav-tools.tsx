@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
 
-interface NavMainProps {
+interface NavToolsProps {
   pathname: string
   projects: {
     name: string
@@ -19,10 +19,10 @@ interface NavMainProps {
   }[]
 }
 
-export function NavMain({ pathname, projects }: NavMainProps) {
+export function NavTools({ pathname, projects }: NavToolsProps) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Menu</SidebarGroupLabel>
+      <SidebarGroupLabel>Tools</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem

@@ -26,7 +26,8 @@
         "noUnknownAtRules": "off"
       },
       "correctness": {
-        "noUnknownTypeSelector": "off"
+        "noUnknownTypeSelector": "off",
+        "useUniqueElementIds": "off"
       },
       "style": {
         "noNonNullAssertion": "off"
