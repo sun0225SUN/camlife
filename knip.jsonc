@@ -1,0 +1,19 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "project": ["**/*.{js,ts,tsx}"],
+  "ignore": [
+    "src/i18n/**",
+    "src/trpc/**",
+    "drizzle.config.ts",
+    "scripts/drizzle-migrate.ts"
+  ],
+  "ignoreDependencies": [
+    "@svgr/webpack",
+    "lefthook",
+    "server-only",
+    "tailwindcss",
+    "tw-animate-css"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "includeEntryExports": false
+}

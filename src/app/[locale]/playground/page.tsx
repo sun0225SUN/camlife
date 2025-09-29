@@ -1,4 +1,5 @@
 import { ApertureAnimation } from '@/components/playground/aperture-animation'
+import { ApertureLoader } from '@/components/playground/aperture-loader'
 import { ThemeToggle } from '@/components/theme/toggle'
 
 export default function Playground() {
@@ -12,6 +13,7 @@ export default function Playground() {
         showPercentage={true}
         className='text-center'
       />
+      <ApertureLoader />
     </div>
   )
 }
