@@ -1,36 +1,22 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from '@/components/ui/breadcrumb'
-import { Separator } from '@/components/ui/separator'
-import { SidebarTrigger } from '@/components/ui/sidebar'
+'use client'
 
-export default function DashboardMorePage() {
+import { useState } from 'react'
+import { DataTable } from '@/components/dashboard/gallery/data-table'
+import { FileUpload } from '@/components/dashboard/gallery/file-upload'
+
+export default function GalleryPage() {
+  const [_files, setFiles] = useState<File[]>([])
+  const handleFileUpload = (files: File[]) => {
+    setFiles(files)
+    console.log(files)
+  }
+
   return (
-    <>
-      <header className='flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12'>
-        <div className='flex items-center gap-2 px-4'>
-          <SidebarTrigger className='-ml-1' />
-          <Separator
-            orientation='vertical'
-            className='mr-2 data-[orientation=vertical]:h-4'
-          />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbPage>Gallery</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-      </header>
-      <div className='flex flex-1 flex-col gap-4 p-4 pt-0'>
-        <div className='flex h-full items-center justify-center font-bold text-2xl'>
-          Todo
-        </div>
+    <div className='mx-auto w-full max-w-7xl pt-25'>
+      <div className='rounded-md border'>
+        <FileUpload onChange={handleFileUpload} />
       </div>
-    </>
+      <DataTable />
+    </div>
   )
 }
