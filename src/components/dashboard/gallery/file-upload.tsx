@@ -1,5 +1,6 @@
 'use client'
 
+import ExifReader from 'exifreader'
 import { LoaderIcon, Upload } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useRef, useState } from 'react'
@@ -7,7 +8,6 @@ import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
 import { Progress } from '@/components/ui/progress'
 import { IMAGE_SIZE_LIMIT } from '@/constants'
-import { getExifData } from '@/lib/exif'
 import { uploadFileWithProgress } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 import { usePhotoStore } from '@/stores/photo'
@@ -68,13 +68,41 @@ export function FileUpload() {
       setStep('processing')
 
       // 4. get exif data and set photo info
-      const exifData = await getExifData(file)
+      const exifData = await ExifReader.load(file)
+
       console.log(exifData)
+
       setPhotoInfo({
-        name: fileName,
-        size: fileSize,
-        type: fileType,
+        fileKey: fileName,
         url: publicUrl,
+        width: exifData.ImageWidth?.value as number,
+        height: exifData.ImageLength?.value as number,
+        aspectRatio:
+          (exifData.ImageWidth?.value as number) /
+          (exifData.ImageLength?.value as number),
+        make: exifData.Make?.value as string,
+        model: exifData.Model?.value as string,
+        lensModel: exifData.LensModel?.value as string,
+        focalLength:
+          (exifData.FocalLength?.value[0] as number) /
+          (exifData.FocalLength?.value[1] as number),
+        focalLength35mm: exifData.FocalLength35efl?.value as number,
+        fNumber:
+          (exifData.FNumber?.value[0] as number) /
+          (exifData.FNumber?.value[1] as number),
+        iso: exifData.ISOSpeedRatings?.value as number,
+        exposureTime:
+          (exifData.ExposureTime?.value[0] as number) /
+          (exifData.ExposureTime?.value[1] as number),
+        exposureCompensation:
+          (exifData.ExposureBiasValue?.value[0] as number) /
+          (exifData.ExposureBiasValue?.value[1] as number),
+        latitude: Number(exifData.GPSLatitude?.description),
+        longitude: Number(exifData.GPSLongitude?.description),
+        gpsAltitude:
+          (exifData.GPSAltitude?.value[0] as number) /
+          (exifData.GPSAltitude?.value[1] as number),
+        dateTimeOriginal: exifData.DateTimeOriginal?.description as string,
       })
 
       setFile(null)
