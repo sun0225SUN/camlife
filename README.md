@@ -85,13 +85,13 @@ DATABASE_URL="your_database_url"
 # Storage
 STORAGE_PROVIDER="cloudflare_r2" # cloudflare_r2 | aws-s3 | vercel_blob
 
-CLOUDFLARE_R2_ENDPOINT=""
-CLOUDFLARE_R2_BUCKET=""
+CLOUDFLARE_R2_ENDPOINT=
+CLOUDFLARE_R2_BUCKET=
 CLOUDFLARE_R2_REGION="auto"
-CLOUDFLARE_R2_ACCESS_KEY_ID=""
-CLOUDFLARE_R2_SECRET_ACCESS_KEY=""
+CLOUDFLARE_R2_ACCESS_KEY_ID=
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=
 CLOUDFLARE_R2_PREFIX="camlife"
-CLOUDFLARE_R2_PUBLIC_URL=""
+CLOUDFLARE_R2_PUBLIC_URL=
 
 # Mapbox
 NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=
@@ -99,17 +99,27 @@ NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=
 # Auth
 # You can generate a random secret using `openssl rand -base64 32`
 BETTER_AUTH_SECRET=
-BETTER_AUTH_URL=http://localhost:3000
+BETTER_AUTH_URL="http://localhost:3000"
 ```
 
 
 | Variable                          | Description                                                      | Default                 | Required |
 | :-------------------------------- | :--------------------------------------------------------------- | :---------------------- | :------- |
 | `DATABASE_URL`                    | PostgreSQL database connection URL                               | None                    | Yes      |
+| `STORAGE_PROVIDER`                | Storage provider (cloudflare_r2, aws-s3, vercel_blob)            | cloudflare_r2           | Yes      |
+| `CLOUDFLARE_R2_ENDPOINT`          | Cloudflare R2 endpoint URL                                       | None                    | Yes*     |
+| `CLOUDFLARE_R2_BUCKET`            | Cloudflare R2 bucket name                                        | None                    | Yes*     |
+| `CLOUDFLARE_R2_REGION`            | Cloudflare R2 region                                             | auto                    | No       |
+| `CLOUDFLARE_R2_ACCESS_KEY_ID`     | Cloudflare R2 access key ID                                      | None                    | Yes*     |
+| `CLOUDFLARE_R2_SECRET_ACCESS_KEY` | Cloudflare R2 secret access key                                  | None                    | Yes*     |
+| `CLOUDFLARE_R2_PREFIX`            | Cloudflare R2 object key prefix                                  | camlife                 | No       |
+| `CLOUDFLARE_R2_PUBLIC_URL`        | Cloudflare R2 public URL for accessing files                     | None                    | Yes*     |
 | `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox map service access token                                  | None                    | Yes      |
 | `BETTER_AUTH_SECRET`              | Better Auth secret key (generate with `openssl rand -base64 32`) | None                    | Yes      |
 | `BETTER_AUTH_URL`                 | Application base URL                                             | `http://localhost:3000` | Yes      |
-| `STORAGE_PROVIDER`                | Storage provider (Cloudflare R2、AWS S3、Vercel Blob)            | cloudflare_r2           |
+
+> [!note]
+> Variables marked with `*` are required only when `STORAGE_PROVIDER` is set to `cloudflare_r2`. For other storage providers (AWS S3, Vercel Blob), different environment variables will be required.
 
 ## 💻  Local development
 
