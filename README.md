@@ -2,6 +2,13 @@
 <div align="center">
   <img src="./docs/images/logo.png" alt="screenshot" width="100" />
   <h1>Camlife</h1>
+
+  <img alt="GitHub License" src="https://img.shields.io/github/license/sun0225SUN/camlife">
+  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/sun0225SUN/camlife?style=flat">
+   <img alt="GitHub Repo forks" src="https://img.shields.io/github/forks/sun0225SUN/camlife?style=flat">
+  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/sun0225SUN/camlife">
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/sun0225SUN/camlife">
+
   <p>Camlife is a website that showcases photography works for everyone who loves photography</p>
   <img src="./docs/images/preview.png" alt="screenshot" />
 </div>
@@ -42,6 +49,16 @@
 <!-- readme: collaborators,contributors -start -->
 <!-- readme: collaborators,contributors -end -->
 
+## 💡 Inspired Projects
+
+- [Camarts](https://camarts.app)
+- [exif-photo-blog](https://github.com/sambecker/exif-photo-blog)
+- [photography-website](https://github.com/ECarry/photography-website)
+- [PicImpact](https://github.com/besscroft/PicImpact)
+- [Afilmory](https://github.com/Afilmory/afilmory)
+- [chronoframe](https://github.com/HoshinoSuzumi/chronoframe)
+- [running_page](https://github.com/yihong0618/running_page)
+
 ## 🚀 Getting Started
 
 ### Vercel
@@ -58,7 +75,7 @@
 docker-compose up -d
 ```
 
-> [!warning] Environment Variables
+> [!warning]
 > Please ensure that all necessary environment variables are correctly configured before running the project.
 
 ```bash
@@ -131,17 +148,6 @@ bun run dev
 
 Open: `http://localhost:3000` to see your application.
 
-
-
-## 💡 Inspired Projects
-
-- [Camarts](https://camarts.app)
-- [exif-photo-blog](https://github.com/sambecker/exif-photo-blog)
-- [photography-website](https://github.com/ECarry/photography-website)
-- [PicImpact](https://github.com/besscroft/PicImpact)
-- [Afilmory](https://github.com/Afilmory/afilmory)
-- [chronoframe](https://github.com/HoshinoSuzumi/chronoframe)
-- [running_page](https://github.com/yihong0618/running_page)
 
 ## 📝 License
 
