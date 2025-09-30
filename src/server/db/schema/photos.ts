@@ -1,0 +1,133 @@
+import { type InferSelectModel, relations, sql } from 'drizzle-orm'
+import {
+  boolean,
+  index,
+  integer,
+  pgEnum,
+  pgTable,
+  real,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core'
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema,
+} from 'drizzle-zod'
+import { z } from 'zod'
+
+export const photoVisibility = pgEnum('photo_visibility', ['public', 'private'])
+
+export const photos = pgTable(
+  'photos',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+
+    url: text('url').notNull(),
+    blurDataUrl: text('blur_data_url').notNull(),
+    compressedUrl: text('compressed_url'),
+
+    title: text('title').notNull(),
+    description: text('description').notNull(),
+    rating: integer('rating').default(0).notNull(),
+    isFavorite: boolean('is_favorite').default(false).notNull(),
+    visibility: photoVisibility('visibility').default('private').notNull(),
+
+    width: real('width').notNull(),
+    height: real('height').notNull(),
+    aspectRatio: real('aspect_ratio').notNull(),
+    make: varchar('make', { length: 255 }),
+    model: varchar('model', { length: 255 }),
+    lensModel: varchar('lens_model', { length: 255 }),
+    focalLength: real('focal_length'),
+    focalLength35mm: real('focal_length_35mm'),
+    fNumber: real('f_number'),
+    iso: integer('iso'),
+    exposureTime: real('exposure_time'),
+    exposureCompensation: real('exposure_compensation'),
+
+    latitude: real('latitude'),
+    longitude: real('longitude'),
+    gpsAltitude: real('gps_altitude'),
+    dateTimeOriginal: timestamp('datetime_original'),
+    country: text('country'),
+    countryCode: text('country_code'),
+    region: text('region'),
+    city: text('city'),
+    district: text('district'),
+    fullAddress: text('full_address'),
+    placeFormatted: text('place_formatted'),
+
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (t) => [
+    index('year_idx').on(sql`DATE_TRUNC('year', ${t.dateTimeOriginal})`),
+    index('city_idx').on(t.city),
+  ],
+)
+
+export const citySets = pgTable(
+  'city_sets',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    description: text('description'),
+
+    country: text('country').notNull(),
+    countryCode: text('country_code').notNull(),
+    city: text('city').notNull(),
+    photoCount: integer('photo_count').default(0).notNull(),
+    coverPhotoId: uuid('cover_photo_id')
+      .references(() => photos.id)
+      .notNull(),
+
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex('unique_city_set').on(t.country, t.city)],
+)
+
+// Soft relations
+export const citySetsRelations = relations(citySets, ({ one, many }) => ({
+  coverPhoto: one(photos, {
+    fields: [citySets.coverPhotoId],
+    references: [photos.id],
+  }),
+  photos: many(photos),
+}))
+
+export const photosRelations = relations(photos, ({ one }) => ({
+  citySet: one(citySets, {
+    fields: [photos.country, photos.city],
+    references: [citySets.country, citySets.city],
+  }),
+}))
+
+// Schema
+export const photosInsertSchema = createInsertSchema(photos).extend({
+  title: z.string().min(1, { message: 'Title is required' }),
+  description: z.string().min(1, { message: 'Description is required' }),
+})
+export const photosSelectSchema = createSelectSchema(photos)
+export const photosUpdateSchema = createUpdateSchema(photos)
+  .pick({
+    id: true,
+    title: true,
+    description: true,
+    isFavorite: true,
+    rating: true,
+    latitude: true,
+    longitude: true,
+    visibility: true,
+  })
+  .partial()
+
+// Types
+export type Photo = InferSelectModel<typeof photos>
+export type CitySet = InferSelectModel<typeof citySets>
+export type CitySetWithPhotos = CitySet & { photos: Photo[] } & {
+  coverPhoto: Photo
+}

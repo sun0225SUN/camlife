@@ -1,0 +1,8 @@
+[
+  { "id": "account", "position": { "x": 490, "y": 50 } },
+  { "id": "session", "position": { "x": 490, "y": 770 } },
+  { "id": "user", "position": { "x": 50, "y": 170 } },
+  { "id": "verification", "position": { "x": 50, "y": 1410 } },
+  { "id": "city_sets", "position": { "x": 50, "y": 1810 } },
+  { "id": "photos", "position": { "x": 490, "y": 1330 } }
+]

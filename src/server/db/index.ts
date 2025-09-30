@@ -1,11 +1,13 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
-
 import { env } from '@/env'
+
 import * as authSchema from './schema/auth'
+import * as photosSchema from './schema/photos'
 
 const schema = {
   ...authSchema,
+  ...photosSchema,
 }
 
 /**

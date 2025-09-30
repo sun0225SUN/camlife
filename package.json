@@ -49,6 +49,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.44.5",
+    "drizzle-zod": "^0.8.3",
     "exifreader": "^4.32.0",
     "gsap": "^3.13.0",
     "lefthook": "^1.13.0",

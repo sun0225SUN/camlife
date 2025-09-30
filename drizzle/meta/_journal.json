@@ -8,6 +8,13 @@
       "when": 1757865243158,
       "tag": "0000_windy_edwin_jarvis",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1759265677661,
+      "tag": "0001_wandering_norman_osborn",
+      "breakpoints": true
     }
   ]
 }
