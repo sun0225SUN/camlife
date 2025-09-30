@@ -34,7 +34,7 @@ import {
 import { useLanguageToggle } from '@/hooks/use-language-toggle'
 import { useRouter } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
-import { signOut } from '@/lib/auth-client'
+import { signOut } from '@/lib/auth/client'
 import { cn } from '@/lib/utils'
 import { DASHBOARD_PROFILE_PAGE, SIGN_IN_PAGE } from '@/routes'
 import '@/styles/view-transition.css'

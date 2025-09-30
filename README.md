@@ -80,16 +80,18 @@ docker-compose up -d
 
 ```bash
 # Database
-DATABASE_URL=your_database_url
+DATABASE_URL="your_database_url"
 
 # Storage
-STORAGE_PROVIDER=s3
-STORAGE_PROVIDER_S3_ENDPOINT=
-STORAGE_PROVIDER_S3_BUCKET=
-STORAGE_PROVIDER_S3_REGION=auto
-STORAGE_PROVIDER_S3_ACCESS_KEY_ID=
-STORAGE_PROVIDER_S3_SECRET_ACCESS_KEY=
-STORAGE_PROVIDER_S3_PREFIX=camlife
+STORAGE_PROVIDER="cloudflare_r2" # cloudflare_r2 | aws-s3 | vercel_blob
+
+CLOUDFLARE_R2_ENDPOINT=""
+CLOUDFLARE_R2_BUCKET=""
+CLOUDFLARE_R2_REGION="auto"
+CLOUDFLARE_R2_ACCESS_KEY_ID=""
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=""
+CLOUDFLARE_R2_PREFIX="camlife"
+CLOUDFLARE_R2_PUBLIC_URL=""
 
 # Mapbox
 NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=
@@ -101,20 +103,13 @@ BETTER_AUTH_URL=http://localhost:3000
 ```
 
 
-| Variable                                | Description                                                      | Default                 | Required                   |
-| :-------------------------------------- | :--------------------------------------------------------------- | :---------------------- | :------------------------- |
-| `DATABASE_URL`                          | PostgreSQL database connection URL                               | None                    | Yes                        |
-| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN`       | Mapbox map service access token                                  | None                    | Yes                        |
-| `BETTER_AUTH_SECRET`                    | Better Auth secret key (generate with `openssl rand -base64 32`) | None                    | Yes                        |
-| `BETTER_AUTH_URL`                       | Application base URL                                             | `http://localhost:3000` | Yes                        |
-| `STORAGE_PROVIDER`                      | Storage provider (Vercel Blob、Cloudflare R2、AWS S3)            | s3                      | Yes                        |
-| `STORAGE_PROVIDER_S3_ENDPOINT`          | S3 endpoint                                                      | None                    | Required if provider is s3 |
-| `STORAGE_PROVIDER_S3_BUCKET`            | S3 bucket name                                                   | None                    | Required if provider is s3 |
-| `STORAGE_PROVIDER_S3_REGION`            | S3 bucket region                                                 | auto                    | Required if provider is s3 |
-| `STORAGE_PROVIDER_S3_ACCESS_KEY_ID`     | S3 access key ID                                                 | None                    | Required if provider is s3 |
-| `STORAGE_PROVIDER_S3_SECRET_ACCESS_KEY` | S3 secret access key                                             | None                    | Required if provider is s3 |
-| `STORAGE_PROVIDER_S3_PREFIX`            | S3 object prefix                                                 | camlife                 | Required if provider is s3 |
-
+| Variable                          | Description                                                      | Default                 | Required |
+| :-------------------------------- | :--------------------------------------------------------------- | :---------------------- | :------- |
+| `DATABASE_URL`                    | PostgreSQL database connection URL                               | None                    | Yes      |
+| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox map service access token                                  | None                    | Yes      |
+| `BETTER_AUTH_SECRET`              | Better Auth secret key (generate with `openssl rand -base64 32`) | None                    | Yes      |
+| `BETTER_AUTH_URL`                 | Application base URL                                             | `http://localhost:3000` | Yes      |
+| `STORAGE_PROVIDER`                | Storage provider (Cloudflare R2、AWS S3、Vercel Blob)            | cloudflare_r2           |
 
 ## 💻  Local development
 

@@ -7,10 +7,22 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    DATABASE_URL: z.string().url(),
     NODE_ENV: z
       .enum(['development', 'test', 'production'])
       .default('development'),
+    DATABASE_URL: z.url(),
+    // Storage provider
+    STORAGE_PROVIDER: z
+      .enum(['cloudflare_r2', 'aws-s3', 'vercel_blob'])
+      .default('cloudflare_r2'),
+    // Cloudflare R2 存储配置
+    CLOUDFLARE_R2_ENDPOINT: z.url(),
+    CLOUDFLARE_R2_BUCKET: z.string(),
+    CLOUDFLARE_R2_REGION: z.string().default('auto'),
+    CLOUDFLARE_R2_ACCESS_KEY_ID: z.string(),
+    CLOUDFLARE_R2_SECRET_ACCESS_KEY: z.string(),
+    CLOUDFLARE_R2_PREFIX: z.string().default('camlife'),
+    CLOUDFLARE_R2_PUBLIC_URL: z.string().url(),
   },
 
   /**
@@ -27,8 +39,19 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
-    DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
+    DATABASE_URL: process.env.DATABASE_URL,
+    // Storage provider
+    STORAGE_PROVIDER: process.env.STORAGE_PROVIDER,
+    // Cloudflare R2
+    CLOUDFLARE_R2_ENDPOINT: process.env.CLOUDFLARE_R2_ENDPOINT,
+    CLOUDFLARE_R2_BUCKET: process.env.CLOUDFLARE_R2_BUCKET,
+    CLOUDFLARE_R2_REGION: process.env.CLOUDFLARE_R2_REGION,
+    CLOUDFLARE_R2_ACCESS_KEY_ID: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
+    CLOUDFLARE_R2_SECRET_ACCESS_KEY:
+      process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+    CLOUDFLARE_R2_PREFIX: process.env.CLOUDFLARE_R2_PREFIX,
+    CLOUDFLARE_R2_PUBLIC_URL: process.env.CLOUDFLARE_R2_PUBLIC_URL,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

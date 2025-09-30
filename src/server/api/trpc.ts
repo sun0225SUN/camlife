@@ -9,7 +9,7 @@
 import { initTRPC } from '@trpc/server'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
-
+import { auth } from '@/lib/auth'
 import { db } from '@/server/db'
 
 /**
@@ -104,3 +104,28 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware)
+
+/**
+ * Protected (authenticated) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
+ * the session is valid and guarantees `ctx.session.user` is not null.
+ */
+export const protectedProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(async ({ next, ctx }) => {
+    const session = await auth.api.getSession({
+      headers: ctx.headers,
+    })
+
+    if (!session?.user) {
+      throw new Error('Not authenticated')
+    }
+
+    return next({
+      ctx: {
+        ...ctx,
+        session,
+      },
+    })
+  })

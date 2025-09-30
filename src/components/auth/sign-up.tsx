@@ -21,7 +21,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { MagicCard } from '@/components/ui/magic-card'
 import { PasswordInput } from '@/components/ui/password-input'
-import { signIn, signUp } from '@/lib/auth-client'
+import { signIn, signUp } from '@/lib/auth/client'
 import { DEFAULT_DASHBOARD_PAGE, SIGN_IN_PAGE } from '@/routes'
 
 export function SignUp() {

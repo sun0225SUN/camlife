@@ -10,7 +10,6 @@
   "ignoreDependencies": [
     "@svgr/webpack",
     "lefthook",
-    "server-only",
     "tailwindcss",
     "tw-animate-css"
   ],

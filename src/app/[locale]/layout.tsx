@@ -4,6 +4,7 @@ import { Geist } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { ThemeProvider } from '@/components/theme/provider'
+import { Toaster } from '@/components/ui/sonner'
 import { routing } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
 import { TRPCReactProvider } from '@/trpc/react'
@@ -45,7 +46,10 @@ export default async function RootLayout({ children, params }: Props) {
             enableSystem
             disableTransitionOnChange
           >
-            <TRPCReactProvider>{children}</TRPCReactProvider>
+            <TRPCReactProvider>
+              {children}
+              <Toaster />
+            </TRPCReactProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
