@@ -1,15 +1,16 @@
 import '@/styles/globals.css'
+import '@/styles/view-transition.css'
 import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
+import NextTopLoader from 'nextjs-toploader'
 import { ConsoleBanner } from '@/components/console-banner'
 import { ThemeProvider } from '@/components/theme/provider'
 import { Toaster } from '@/components/ui/sonner'
 import { routing } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
 import { TRPCReactProvider } from '@/trpc/react'
-import '@/styles/view-transition.css'
 
 interface Props {
   children: React.ReactNode
@@ -51,6 +52,7 @@ export default async function RootLayout({ children, params }: Props) {
             <TRPCReactProvider>
               {children}
               <Toaster />
+              <NextTopLoader />
               <ConsoleBanner />
             </TRPCReactProvider>
           </ThemeProvider>
