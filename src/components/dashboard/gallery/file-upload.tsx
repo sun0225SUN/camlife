@@ -1,5 +1,6 @@
 'use client'
 
+import '@smastrom/react-rating/style.css'
 import Compressor from 'compressorjs'
 import ExifReader, { type Tags } from 'exifreader'
 import { LoaderIcon, Upload } from 'lucide-react'
@@ -15,6 +16,7 @@ import {
   ENABLE_FILE_COMPRESSION,
   IMAGE_SIZE_LIMIT,
 } from '@/constants'
+import { formatExifDateTime } from '@/lib/format'
 import { generateBlurData, getLocationFromCoordinates } from '@/lib/image'
 import { uploadFileWithProgress } from '@/lib/storage'
 import { cn, getCompressedFileName } from '@/lib/utils'
@@ -55,7 +57,6 @@ export function FileUpload() {
   const handleFileChange = async (file: File) => {
     if (!file) return
 
-    // 0. prepare file data
     setFile(file)
     const { name, type: fileType, size: fileSize } = file
     const fileNameWithoutExt = name.substring(0, name.lastIndexOf('.'))
@@ -70,7 +71,7 @@ export function FileUpload() {
     }
 
     try {
-      console.info('--- 2. get presigned and upload file ---')
+      console.info('--- 2. get presigned url and upload file ---')
       const { signedUrl, publicUrl } = await getPresignedUrl({
         fileName,
         fileType,
@@ -145,6 +146,7 @@ export function FileUpload() {
       let exifData: Tags | null = null
       try {
         exifData = await ExifReader.load(file)
+        console.log(exifData)
         console.log('exif data parsing completed')
       } catch (error) {
         console.error('parse exif data failed: ', error)
@@ -206,10 +208,16 @@ export function FileUpload() {
             (exifData.ExposureBiasValue?.value[1] as number),
           latitude: Number(exifData.GPSLatitude?.description),
           longitude: Number(exifData.GPSLongitude?.description),
-          gpsAltitude:
-            (exifData.GPSAltitude?.value[0] as number) /
-            (exifData.GPSAltitude?.value[1] as number),
-          dateTimeOriginal: exifData.DateTimeOriginal?.description as string,
+          gpsAltitude: Array.isArray(exifData.GPSAltitude?.value)
+            ? (exifData.GPSAltitude.value[0] as number) /
+              (exifData.GPSAltitude.value[1] as number)
+            : undefined,
+          dateTimeOriginal:
+            formatExifDateTime(
+              Array.isArray(exifData?.DateTimeOriginal?.value)
+                ? (exifData.DateTimeOriginal.value[0] as string)
+                : (exifData?.DateTimeOriginal?.value as string),
+            ) || undefined,
         }),
         // location
         ...(imageLocation && {
@@ -218,6 +226,8 @@ export function FileUpload() {
           region: imageLocation.region,
           city: imageLocation.city,
           district: imageLocation.district,
+          fullAddress: imageLocation.fullAddress,
+          placeFormatted: imageLocation.placeFormatted,
         }),
       }
 

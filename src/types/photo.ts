@@ -25,7 +25,7 @@ export interface PhotoInfo {
   latitude?: number
   longitude?: number
   gpsAltitude?: number
-  dateTimeOriginal?: string
+  dateTimeOriginal?: Date
   country?: string
   countryCode?: string
   region?: string

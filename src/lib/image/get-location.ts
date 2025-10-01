@@ -38,6 +38,7 @@ export async function getLocationFromCoordinates(
       .send()
 
     const features = response.body.features || []
+    console.log(features)
 
     if (features.length === 0) {
       return {}

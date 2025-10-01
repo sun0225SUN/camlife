@@ -1,7 +1,19 @@
+/**
+ * Image size limit
+ */
 export const IMAGE_SIZE_LIMIT = 10 * 1024 * 1024 // 10MB
 
-export const DEFAULT_RATING = 3
-
+/**
+ * Enable file compression
+ */
 export const ENABLE_FILE_COMPRESSION = true
 
+/**
+ * Compress quality
+ */
 export const COMPRESS_QUALITY = 0.6
+
+/**
+ * Default photo rating
+ */
+export const DEFAULT_PHOTO_RATING = 3
