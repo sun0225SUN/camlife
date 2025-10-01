@@ -12,7 +12,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "dev": "next dev --turbo",
+    "dev": "bun scripts/startup-banner.ts && next dev --turbo",
     "test": "vitest run",
     "build": "next build",
     "vercel-build": "drizzle-kit migrate && next build",

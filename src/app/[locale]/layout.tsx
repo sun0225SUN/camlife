@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
+import { ConsoleBanner } from '@/components/console-banner'
 import { ThemeProvider } from '@/components/theme/provider'
 import { Toaster } from '@/components/ui/sonner'
 import { routing } from '@/i18n/routing'
@@ -49,6 +50,7 @@ export default async function RootLayout({ children, params }: Props) {
             <TRPCReactProvider>
               {children}
               <Toaster />
+              <ConsoleBanner />
             </TRPCReactProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
