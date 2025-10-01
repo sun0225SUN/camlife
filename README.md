@@ -15,11 +15,11 @@
 
 ## ✨ Features
 
-- [ ] 🎨 Clean and minimalist design
-- [ ] 📱 Responsive design for all devices
-- [ ] 🖼️ Automatic EXIF data extraction from photos
-- [ ] 🔐 Secure authentication with Better Auth
-- [ ] ☁️ Cloud storage with Cloudflare R2
+- [x] 🎨 Clean and minimalist design
+- [x] 📱 Responsive design for all devices
+- [x] 🖼️ Automatic EXIF data extraction from photos
+- [x] 🔐 Secure authentication with Better Auth
+- [x] ☁️ Cloud storage with Cloudflare R2
 - [ ] 📡 RSS feed
 - [ ] ✨ and more...
 
@@ -43,6 +43,7 @@
 - 🔗 API Layer - [tRPC](https://trpc.io)
 - 🧹 Formatter and Linter - [Biome](https://biomejs.dev)
 - 🪝 Git hooks - [Lefthook](https://lefthook.dev)
+- 📊 Traffic Analysis -[Umami](https://umami.is)
 
 ## 👥 Contributors
 
@@ -80,26 +81,30 @@ docker-compose up -d
 
 ```bash
 # Database
-DATABASE_URL="your_database_url"
+DATABASE_URL="postgresql://postgres:password@host:port/camlife"
 
 # Storage
 STORAGE_PROVIDER="cloudflare_r2" # cloudflare_r2 | aws-s3 | vercel_blob
 
-CLOUDFLARE_R2_ENDPOINT=
-CLOUDFLARE_R2_BUCKET=
+CLOUDFLARE_R2_ENDPOINT="https://fcb75ae*******2a3f5ce73fb.r2.cloudflarestorage.com"
+CLOUDFLARE_R2_BUCKET="files"
 CLOUDFLARE_R2_REGION="auto"
-CLOUDFLARE_R2_ACCESS_KEY_ID=
-CLOUDFLARE_R2_SECRET_ACCESS_KEY=
+CLOUDFLARE_R2_ACCESS_KEY_ID="eac63617**********41cd00889"
+CLOUDFLARE_R2_SECRET_ACCESS_KEY="29d01ddcb25d*****************b6d561ab18d175a94f"
 CLOUDFLARE_R2_PREFIX="camlife"
-CLOUDFLARE_R2_PUBLIC_URL=
+CLOUDFLARE_R2_PUBLIC_URL="https://pub-ba****************j.r2.dev"
 
 # Mapbox
-NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=
+NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN="pk.eyJ18***********************************9.N3bTvCedxVfugnrCSRT2kw"
 
 # Auth
 # You can generate a random secret using `openssl rand -base64 32`
-BETTER_AUTH_SECRET=
+BETTER_AUTH_SECRET="I1IA7rUTafc+feqzSE61tjlPhtzTkewhJUnp6lL9nVI="
 BETTER_AUTH_URL="http://localhost:3000"
+
+# Umami
+NEXT_PUBLIC_UMAMI_ANALYTICS_ID="****-1d30-4876-8de6-****"
+NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 ```
 
 
@@ -117,6 +122,8 @@ BETTER_AUTH_URL="http://localhost:3000"
 | `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox map service access token                                  | None                    | Yes      |
 | `BETTER_AUTH_SECRET`              | Better Auth secret key (generate with `openssl rand -base64 32`) | None                    | Yes      |
 | `BETTER_AUTH_URL`                 | Application base URL                                             | `http://localhost:3000` | Yes      |
+| `NEXT_PUBLIC_UMAMI_ANALYTICS_ID`  | Umami Website ID                                                 | None                    | No       |
+| `NEXT_PUBLIC_UMAMI_ANALYTICS_JS`  | Umami Custom Analysis JS URL                                     | None                    | No       |
 
 > [!note]
 > Variables marked with `*` are required only when `STORAGE_PROVIDER` is set to `cloudflare_r2`. For other storage providers (AWS S3, Vercel Blob), different environment variables will be required.
