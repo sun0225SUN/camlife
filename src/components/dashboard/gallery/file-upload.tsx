@@ -1,15 +1,22 @@
 'use client'
 
-import ExifReader from 'exifreader'
+import Compressor from 'compressorjs'
+import ExifReader, { type Tags } from 'exifreader'
 import { LoaderIcon, Upload } from 'lucide-react'
 import { motion } from 'motion/react'
+import { nanoid } from 'nanoid'
 import { useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
 import { Progress } from '@/components/ui/progress'
-import { IMAGE_SIZE_LIMIT } from '@/constants'
+import {
+  COMPRESS_QUALITY,
+  ENABLE_FILE_COMPRESSION,
+  IMAGE_SIZE_LIMIT,
+} from '@/constants'
+import { generateBlurData } from '@/lib/image/gen-blur-data'
 import { uploadFileWithProgress } from '@/lib/storage'
-import { cn } from '@/lib/utils'
+import { cn, getCompressedFileName } from '@/lib/utils'
 import { usePhotoStore } from '@/stores/photo'
 import { api } from '@/trpc/react'
 import type { FileUploadStep } from '@/types'
@@ -22,6 +29,8 @@ export function FileUpload() {
   const [progress, setProgress] = useState<number>(0)
 
   const { setDialogOpen, setPhotoInfo, setTriggerType } = usePhotoStore()
+
+  const randomId = nanoid()
 
   const { mutateAsync: getPresignedUrl } =
     api.upload.getPresignedUrl.useMutation()
@@ -45,68 +54,167 @@ export function FileUpload() {
 
     // 0. prepare file data
     setFile(file)
-    const { name: fileName, type: fileType, size: fileSize } = file
+    const { name, type: fileType, size: fileSize } = file
+    const fileNameWithoutExt = name.substring(0, name.lastIndexOf('.'))
+    const fileExt = name.substring(name.lastIndexOf('.'))
+    const fileName = `${fileNameWithoutExt}_${randomId}${fileExt}`
 
-    // 1. validate file size
+    console.info('--- 1. validate file size ---')
+    setStep('upload')
     if (fileSize > IMAGE_SIZE_LIMIT) {
       toast.error(`File size exceeds ${IMAGE_SIZE_LIMIT / 1024 / 1024}MB limit`)
       return
     }
 
     try {
-      setStep('upload')
-      setProgress(0)
-
-      // 2. get presigned and public url
+      console.info('--- 2. get presigned and upload file ---')
       const { signedUrl, publicUrl } = await getPresignedUrl({
         fileName,
         fileType,
       })
-
-      // 3. upload file
       await uploadFileWithProgress(file, signedUrl, setProgress)
-      setStep('processing')
+      setFile(null)
 
-      // 4. get exif data and set photo info
-      const exifData = await ExifReader.load(file)
+      console.info('--- 3. compress file and upload if enabled ---')
+      let compressedData = { compressedUrl: '', compressedSize: 0 }
+      if (ENABLE_FILE_COMPRESSION) {
+        setStep('compress')
+        compressedData = await new Promise<{
+          compressedUrl: string
+          compressedSize: number
+        }>((resolve, reject) => {
+          new Compressor(file, {
+            quality: COMPRESS_QUALITY,
+            success: async (compressedFile) => {
+              try {
+                const compressedFileName = getCompressedFileName(fileName)
+                if (!compressedFileName) {
+                  throw new Error('Failed to generate compressed file name')
+                }
 
-      console.log(exifData)
+                const {
+                  signedUrl: compressedSignedUrl,
+                  publicUrl: compressedPublicUrl,
+                } = await getPresignedUrl({
+                  fileName: compressedFileName,
+                  fileType: compressedFile.type,
+                })
 
-      setPhotoInfo({
-        fileKey: fileName,
+                await uploadFileWithProgress(
+                  compressedFile as File,
+                  compressedSignedUrl,
+                  setProgress,
+                )
+
+                const result = {
+                  compressedUrl: compressedPublicUrl,
+                  compressedSize: compressedFile.size,
+                }
+                console.log('compressed data set:', result)
+                resolve(result)
+              } catch (error) {
+                console.error('compress file upload failed: ', error)
+                toast.error('compress file upload failed')
+                reject(error)
+              }
+            },
+            error: (err) => {
+              console.log(err.message)
+              reject(err)
+            },
+          })
+        })
+      }
+
+      console.info('--- 4. generate blur data url ---')
+      setStep('blur')
+      let blurDataUrl = ''
+      try {
+        blurDataUrl = await generateBlurData(file, 20) // reduce quality for better performance
+        console.log('blur data generation completed')
+      } catch (error) {
+        console.error('generate blur data url failed: ', error)
+        toast.error('generate blur data url failed')
+      }
+
+      console.info('--- 5. parse exif data ---')
+      setStep('exif')
+      let exifData: Tags | null = null
+      try {
+        exifData = await ExifReader.load(file)
+        console.log('exif data parsing completed')
+      } catch (error) {
+        console.error('parse exif data failed: ', error)
+        toast.error('parse exif data failed')
+      }
+
+      // console.info('--- 6. get location ---')
+      // setStep('location')
+      // if (exifData) {
+      //   try {
+      //     const imageLocation = getLocation(exifData)
+      //     setImageLocation(imageLocation)
+      //   } catch (error) {
+      //     console.error('get location failed: ', error)
+      //     toast.error('get location failed')
+      //   }
+      // }
+
+      console.info('--- 7. set photo info ---')
+
+      const newPhotoInfo = {
+        // storage
         url: publicUrl,
-        width: exifData.ImageWidth?.value as number,
-        height: exifData.ImageLength?.value as number,
-        aspectRatio:
-          (exifData.ImageWidth?.value as number) /
-          (exifData.ImageLength?.value as number),
-        make: exifData.Make?.value as string,
-        model: exifData.Model?.value as string,
-        lensModel: exifData.LensModel?.value as string,
-        focalLength:
-          (exifData.FocalLength?.value[0] as number) /
-          (exifData.FocalLength?.value[1] as number),
-        focalLength35mm: exifData.FocalLength35efl?.value as number,
-        fNumber:
-          (exifData.FNumber?.value[0] as number) /
-          (exifData.FNumber?.value[1] as number),
-        iso: exifData.ISOSpeedRatings?.value as number,
-        exposureTime:
-          (exifData.ExposureTime?.value[0] as number) /
-          (exifData.ExposureTime?.value[1] as number),
-        exposureCompensation:
-          (exifData.ExposureBiasValue?.value[0] as number) /
-          (exifData.ExposureBiasValue?.value[1] as number),
-        latitude: Number(exifData.GPSLatitude?.description),
-        longitude: Number(exifData.GPSLongitude?.description),
-        gpsAltitude:
-          (exifData.GPSAltitude?.value[0] as number) /
-          (exifData.GPSAltitude?.value[1] as number),
-        dateTimeOriginal: exifData.DateTimeOriginal?.description as string,
-      })
+        fileName,
+        fileSize,
+        // compressed
+        compressedUrl: compressedData.compressedUrl,
+        compressedSize: compressedData.compressedSize,
+        // blur
+        blurDataUrl,
+        // exif
+        ...(exifData && {
+          width: exifData.ImageWidth?.value as number,
+          height: exifData.ImageLength?.value as number,
+          aspectRatio:
+            (exifData.ImageWidth?.value as number) /
+            (exifData.ImageLength?.value as number),
+          make: exifData.Make?.value as string,
+          model: exifData.Model?.value as string,
+          lensModel: exifData.LensModel?.value as string,
+          focalLength:
+            (exifData.FocalLength?.value[0] as number) /
+            (exifData.FocalLength?.value[1] as number),
+          focalLength35mm: exifData.FocalLength35efl?.value as number,
+          fNumber:
+            (exifData.FNumber?.value[0] as number) /
+            (exifData.FNumber?.value[1] as number),
+          iso: exifData.ISOSpeedRatings?.value as number,
+          exposureTime:
+            (exifData.ExposureTime?.value[0] as number) /
+            (exifData.ExposureTime?.value[1] as number),
+          exposureCompensation:
+            (exifData.ExposureBiasValue?.value[0] as number) /
+            (exifData.ExposureBiasValue?.value[1] as number),
+          latitude: Number(exifData.GPSLatitude?.description),
+          longitude: Number(exifData.GPSLongitude?.description),
+          gpsAltitude:
+            (exifData.GPSAltitude?.value[0] as number) /
+            (exifData.GPSAltitude?.value[1] as number),
+          dateTimeOriginal: exifData.DateTimeOriginal?.description as string,
+        }),
+        // location
+        // country: undefined,
+        // countryCode: undefined,
+        // region: undefined,
+        // city: undefined,
+        // district: undefined,
+      }
+
+      setPhotoInfo(newPhotoInfo)
 
       setFile(null)
-      setStep('success')
+      setStep(null)
       setTriggerType('file-upload')
       setDialogOpen(true)
 
@@ -114,7 +222,7 @@ export function FileUpload() {
         fileInputRef.current.value = ''
       }
     } catch (error) {
-      setStep('failed')
+      setStep(null)
       setFile(null)
       setProgress(0)
       console.error(error)
@@ -126,25 +234,29 @@ export function FileUpload() {
 
   return (
     <div
-      className='h-[330px] w-full'
+      className='h-80 w-full'
       {...getRootProps()}
     >
       <motion.div
         onClick={() => fileInputRef.current?.click()}
         whileHover='animate'
-        className='group/file relative block w-full cursor-pointer overflow-hidden rounded-lg p-10'
+        className='group/file relative block h-full w-full cursor-pointer overflow-hidden rounded-lg p-10'
       >
         <div className='flex flex-col items-center justify-center'>
-          <p className='relative z-20 font-bold font-sans text-base text-neutral-700 dark:text-neutral-300'>
-            Upload Your Image
-          </p>
-          <p className='relative z-20 mt-2 font-normal font-sans text-base text-neutral-400 dark:text-neutral-400'>
-            Drag or drop your image here or click to upload, max size{' '}
-            {IMAGE_SIZE_LIMIT / 1024 / 1024}MB
-          </p>
+          {(step === 'upload' || step === null) && (
+            <>
+              <p className='relative z-20 font-bold font-sans text-base text-neutral-700 dark:text-neutral-300'>
+                Upload Your Image
+              </p>
+              <p className='relative z-20 mt-2 font-normal font-sans text-base text-neutral-400 dark:text-neutral-400'>
+                Drag or drop your image here or click to upload, max size{' '}
+                {IMAGE_SIZE_LIMIT / 1024 / 1024}MB
+              </p>
+            </>
+          )}
 
           <div className='relative mx-auto mt-10 w-full max-w-xl'>
-            {file && (
+            {file && (step === 'upload' || step === null) && (
               <div className='flex flex-col items-center justify-center gap-4'>
                 <Progress
                   value={progress}
@@ -172,7 +284,7 @@ export function FileUpload() {
                       animate={{ opacity: 1 }}
                       layout
                     >
-                      <p>{`${progress}%`}</p>
+                      {`${progress}%`}
                     </motion.p>
                   </div>
 
@@ -206,14 +318,7 @@ export function FileUpload() {
               </div>
             )}
 
-            {file && step === 'processing' && (
-              <div className='flex items-center gap-2'>
-                <LoaderIcon className='animate-spin' />
-                <p>Parsing file...</p>
-              </div>
-            )}
-
-            {!file && (
+            {!file && (step === 'upload' || step === null) && (
               <motion.div
                 layoutId='file-upload'
                 variants={{
@@ -267,6 +372,37 @@ export function FileUpload() {
                   'rounded-md border border-sky-400 border-dashed bg-transparent opacity-0',
                 )}
               />
+            )}
+          </div>
+
+          <div className='absolute inset-0 z-50 flex items-center justify-center'>
+            {step === 'compress' && (
+              <div className='flex flex-col items-center gap-2'>
+                <LoaderIcon className='animate-spin' />
+                <p>Compressing file...</p>
+              </div>
+            )}
+            {step === 'blur' && (
+              <div className='flex flex-col items-center gap-2'>
+                <LoaderIcon className='animate-spin' />
+                <p>Generating blur data...</p>
+                <p className='text-red-500'>
+                  Here is a bug, process blocking, causing the loading animation
+                  to stop.
+                </p>
+              </div>
+            )}
+            {step === 'exif' && (
+              <div className='flex flex-col items-center gap-2'>
+                <LoaderIcon className='animate-spin' />
+                <p>Parsing exif data...</p>
+              </div>
+            )}
+            {step === 'location' && (
+              <div className='flex flex-col items-center gap-2'>
+                <LoaderIcon className='animate-spin' />
+                <p>Getting location...</p>
+              </div>
             )}
           </div>
         </div>

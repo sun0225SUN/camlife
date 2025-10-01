@@ -1,8 +1,10 @@
 export interface PhotoInfo {
-  fileKey: string
   url: string
+  fileName: string
+  fileSize?: number
   blurDataUrl?: string
   compressedUrl?: string
+  compressedSize?: number
   title?: string
   description?: string
   rating?: number
@@ -39,4 +41,22 @@ export type PhotoInfoDialogTriggerType =
   | 'edit-photo-info'
   | null
 
-export type FileUploadStep = 'upload' | 'processing' | 'success' | 'failed'
+export type FileUploadStep =
+  | 'upload'
+  | 'compress'
+  | 'blur'
+  | 'exif'
+  | 'location'
+
+export type ImageLocation = {
+  latitude?: number
+  longitude?: number
+  gpsAltitude?: number
+  country?: string
+  countryCode?: string
+  region?: string
+  city?: string
+  district?: string
+  fullAddress?: string
+  placeFormatted?: string
+}
