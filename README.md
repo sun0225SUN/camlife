@@ -7,9 +7,10 @@
 
   <img alt="GitHub License" src="https://img.shields.io/github/license/sun0225SUN/camlife">
   <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/sun0225SUN/camlife?style=flat">
-   <img alt="GitHub Repo forks" src="https://img.shields.io/github/forks/sun0225SUN/camlife?style=flat">
+  <img alt="GitHub Repo forks" src="https://img.shields.io/github/forks/sun0225SUN/camlife?style=flat">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/sun0225SUN/camlife">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/sun0225SUN/camlife">
+  <img src="https://komarev.com/ghpvc/?username=camlife&label=Views&color=orange&style=flat" alt="visitors count" />&emsp;
 
   <p>Camlife is a website that showcases photography works for everyone who loves photography</p>
   <img src="./docs/images/preview.png" alt="screenshot" />
@@ -41,11 +42,15 @@
 - 🐘 Database - [Postgres](https://www.postgresql.org)
 - 🌧️ ORM - [Drizzle](https://orm.drizzle.team)
 - 🔑 Auth - [Better Auth](https://www.better-auth.com)
+- 🗺️ Maps - [mapbox](https://mapbox.com)
+- 🌐 Multi-language - [next-intl](https://next-intl.dev)
 - ✅ Schema Validations - [Zod](https://zod.dev)
+- 🧪 Testing FrameWork - [Vitest](https://vitest.dev)
 - 🔗 API Layer - [tRPC](https://trpc.io)
 - 🧹 Formatter and Linter - [Biome](https://biomejs.dev)
 - 🪝 Git hooks - [Lefthook](https://lefthook.dev)
-- 📊 Traffic Analysis -[Umami](https://umami.is)
+- 📊 Traffic Analysis - [Umami](https://umami.is)
+
 
 ## 👥 Contributors
 
@@ -80,6 +85,10 @@
 ### Vercel
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/sun0225SUN/camlife)
+
+### Netlify
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/sun0225SUN/camlife)
 
 ### Docker
 
@@ -180,13 +189,13 @@ Open: `http://localhost:3000` to see your application.
 
 This project is licensed under the [GNU General Public License v3.0](LICENSE).
 
-## 💖 Support
-
-If you find this project helpful, please give it a ⭐️ on GitHub!
-
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to open issues and pull requests.
+
+## 💖 Support
+
+If you find this project helpful, please give it a ⭐️ on GitHub!
 
 <table>
 	<tbody>

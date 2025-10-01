@@ -10,6 +10,7 @@
    <img alt="GitHub Repo forks" src="https://img.shields.io/github/forks/sun0225SUN/camlife?style=flat">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/sun0225SUN/camlife">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/sun0225SUN/camlife">
+  <img src="https://komarev.com/ghpvc/?username=camlife&label=Views&color=orange&style=flat" alt="visitors count" />&emsp;
 
   <p>Camlife 是一个为所有热爱摄影的人提供的展示摄影作品的网站</p>
   <img src="./docs/images/preview.png" alt="screenshot" />
@@ -41,7 +42,10 @@
 - 🐘 数据库 - [Postgres](https://www.postgresql.org)
 - 🌧️ ORM - [Drizzle](https://orm.drizzle.team)
 - 🔑 认证 - [Better Auth](https://www.better-auth.com)
+- 🗺️ 地图 - [mapbox](https://mapbox.com)
+- 🌐 多语言 - [next-intl](https://next-intl.dev)
 - ✅ 模式验证 - [Zod](https://zod.dev)
+- 🧪 测试框架 - [Vitest](https://vitest.dev)
 - 🔗 API 层 - [tRPC](https://trpc.io)
 - 🧹 格式化器和代码检查 - [Biome](https://biomejs.dev)
 - 🪝 Git 钩子 - [Lefthook](https://lefthook.dev)
@@ -80,6 +84,10 @@
 ### Vercel
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/sun0225SUN/camlife)
+
+### Netlify
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/sun0225SUN/camlife)
 
 ### Docker
 
@@ -180,13 +188,13 @@ bun run dev
 
 本项目基于 [GNU General Public License v3.0](LICENSE) 许可证。
 
-## 💖 支持
-
-如果您觉得这个项目有帮助，请在 GitHub 上给它一个 ⭐️！
-
 ## 🤝 贡献
 
 欢迎贡献！请随时提交问题和拉取请求。
+
+## 💖 支持
+
+如果您觉得这个项目有帮助，请在 GitHub 上给它一个 ⭐️！
 
 <table>
 	<tbody>
