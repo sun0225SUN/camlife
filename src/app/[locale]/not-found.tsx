@@ -5,7 +5,13 @@ import { cn } from '@/lib/utils'
 
 export default function NotFound() {
   return (
-    <div className='relative flex min-h-screen items-center justify-center'>
+    <div
+      className='relative flex min-h-screen items-center justify-center'
+      style={{
+        backgroundColor: 'oklch(0.145 0 0)',
+        color: 'oklch(0.985 0 0)',
+      }}
+    >
       <div
         className={cn(
           'pointer-events-none absolute inset-0 select-none [background-size:40px_40px]',
