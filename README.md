@@ -142,7 +142,7 @@ bun install
 4. Set up the database
 
 ```bash
-bun db:push
+bun db:migrate
 ```
 
 5. Start the development server

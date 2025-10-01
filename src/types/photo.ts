@@ -49,9 +49,6 @@ export type FileUploadStep =
   | 'location'
 
 export type ImageLocation = {
-  latitude?: number
-  longitude?: number
-  gpsAltitude?: number
   country?: string
   countryCode?: string
   region?: string

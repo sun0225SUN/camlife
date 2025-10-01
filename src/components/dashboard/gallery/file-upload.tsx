@@ -5,6 +5,7 @@ import ExifReader, { type Tags } from 'exifreader'
 import { LoaderIcon, Upload } from 'lucide-react'
 import { motion } from 'motion/react'
 import { nanoid } from 'nanoid'
+import { useLocale } from 'next-intl'
 import { useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
@@ -15,13 +16,16 @@ import {
   IMAGE_SIZE_LIMIT,
 } from '@/constants'
 import { generateBlurData } from '@/lib/image/gen-blur-data'
+import { getLocationFromCoordinates } from '@/lib/image/get-location'
 import { uploadFileWithProgress } from '@/lib/storage'
 import { cn, getCompressedFileName } from '@/lib/utils'
 import { usePhotoStore } from '@/stores/photo'
 import { api } from '@/trpc/react'
-import type { FileUploadStep } from '@/types'
+import type { FileUploadStep, ImageLocation } from '@/types'
 
 export function FileUpload() {
+  const locale = useLocale()
+
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [file, setFile] = useState<File | null>(null)
@@ -148,17 +152,22 @@ export function FileUpload() {
         toast.error('parse exif data failed')
       }
 
-      // console.info('--- 6. get location ---')
-      // setStep('location')
-      // if (exifData) {
-      //   try {
-      //     const imageLocation = getLocation(exifData)
-      //     setImageLocation(imageLocation)
-      //   } catch (error) {
-      //     console.error('get location failed: ', error)
-      //     toast.error('get location failed')
-      //   }
-      // }
+      console.info('--- 6. get photo location ---')
+      setStep('location')
+      let imageLocation: ImageLocation | null = null
+      if (exifData) {
+        try {
+          imageLocation = await getLocationFromCoordinates(
+            Number(exifData.GPSLatitude?.description),
+            Number(exifData.GPSLongitude?.description),
+            locale,
+            3,
+          )
+        } catch (error) {
+          console.error('get location failed: ', error)
+          toast.error('get location failed')
+        }
+      }
 
       console.info('--- 7. set photo info ---')
 
@@ -204,11 +213,13 @@ export function FileUpload() {
           dateTimeOriginal: exifData.DateTimeOriginal?.description as string,
         }),
         // location
-        // country: undefined,
-        // countryCode: undefined,
-        // region: undefined,
-        // city: undefined,
-        // district: undefined,
+        ...(imageLocation && {
+          country: imageLocation.country,
+          countryCode: imageLocation.countryCode,
+          region: imageLocation.region,
+          city: imageLocation.city,
+          district: imageLocation.district,
+        }),
       }
 
       setPhotoInfo(newPhotoInfo)
