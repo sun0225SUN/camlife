@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { routing } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
 import { TRPCReactProvider } from '@/trpc/react'
+import '@/styles/view-transition.css'
 
 interface Props {
   children: React.ReactNode

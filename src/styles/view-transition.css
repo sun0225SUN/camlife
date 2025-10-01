@@ -24,6 +24,7 @@
 
 ::view-transition-group(root) {
   animation-timing-function: var(--expo-out);
+  animation-duration: 0.8s;
 }
 
 ::view-transition-new(root) {
@@ -31,19 +32,32 @@
     url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><defs><filter id="blur"><feGaussianBlur stdDeviation="2"/></filter></defs><circle cx="0" cy="0" r="18" fill="white" filter="url(%23blur)"/></svg>')
     top left / 0 no-repeat;
   mask-origin: content-box;
-  animation: scale 1s;
+  animation: scale 0.8s ease-out forwards;
   transform-origin: top left;
+  z-index: 1;
 }
 
 ::view-transition-old(root),
 .dark::view-transition-old(root) {
-  animation: scale 1s;
+  animation: fadeOut 0.8s ease-out forwards;
   transform-origin: top left;
-  z-index: -1;
+  z-index: 0;
 }
 
 @keyframes scale {
-  to {
+  0% {
+    mask-size: 0;
+  }
+  100% {
     mask-size: 350vmax;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }

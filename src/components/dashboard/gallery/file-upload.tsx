@@ -15,8 +15,7 @@ import {
   ENABLE_FILE_COMPRESSION,
   IMAGE_SIZE_LIMIT,
 } from '@/constants'
-import { generateBlurData } from '@/lib/image/gen-blur-data'
-import { getLocationFromCoordinates } from '@/lib/image/get-location'
+import { generateBlurData, getLocationFromCoordinates } from '@/lib/image'
 import { uploadFileWithProgress } from '@/lib/storage'
 import { cn, getCompressedFileName } from '@/lib/utils'
 import { usePhotoStore } from '@/stores/photo'

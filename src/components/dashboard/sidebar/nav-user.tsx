@@ -37,7 +37,6 @@ import { routing } from '@/i18n/routing'
 import { signOut } from '@/lib/auth/client'
 import { cn } from '@/lib/utils'
 import { DASHBOARD_PROFILE_PAGE, SIGN_IN_PAGE } from '@/routes'
-import '@/styles/view-transition.css'
 
 interface NavUserProps {
   name: string

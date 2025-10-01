@@ -3,7 +3,6 @@
 import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
-import '@/styles/view-transition.css'
 
 interface ThemeToggleProps {
   className?: string
