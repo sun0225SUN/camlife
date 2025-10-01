@@ -7,6 +7,7 @@ import { ChevronDownIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { LocationMap } from '@/components/dashboard/gallery/location-map'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -51,15 +52,13 @@ export function PhotoInfo() {
     setPhotoInfo,
   } = usePhotoStore()
   const { mutateAsync: deleteFile } = api.upload.deleteFile.useMutation()
+  const { mutateAsync: createPhoto } = api.upload.createPhoto.useMutation()
   const { resolvedTheme } = useTheme()
 
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [time, setTime] = useState<string>('10:30:00')
-
-  useEffect(() => {
-    console.log(photoInfo)
-  }, [photoInfo])
+  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
     if (photoInfo?.dateTimeOriginal) {
@@ -96,6 +95,81 @@ export function PhotoInfo() {
     setTriggerType(null)
   }
 
+  const handleSave = async () => {
+    if (!photoInfo) {
+      toast.error('No photo information to save')
+      return
+    }
+
+    // Set loading state
+    setIsSaving(true)
+
+    try {
+      // Validate and set default values
+      const photoData = {
+        url: photoInfo.url,
+        blurDataUrl: photoInfo.blurDataUrl || '',
+        compressedUrl: photoInfo.compressedUrl || null,
+
+        // Basic information - set default values
+        title: photoInfo.title?.trim() || 'untitled',
+        description: photoInfo.description?.trim() || 'No description',
+        rating: photoInfo.rating ?? DEFAULT_PHOTO_RATING,
+        isFavorite: photoInfo.isFavorite ?? false,
+        visibility: (photoInfo.visibility as 'public' | 'private') || 'public',
+
+        // Image dimensions - required fields
+        width: photoInfo.width || 0,
+        height: photoInfo.height || 0,
+        aspectRatio:
+          photoInfo.aspectRatio ||
+          (photoInfo.width && photoInfo.height
+            ? photoInfo.width / photoInfo.height
+            : 1),
+
+        // Camera information - optional fields
+        make: Array.isArray(photoInfo.make)
+          ? photoInfo.make.join(', ')
+          : photoInfo.make || null,
+        model: Array.isArray(photoInfo.model)
+          ? photoInfo.model.join(', ')
+          : photoInfo.model || null,
+        lensModel: photoInfo.lensModel || null,
+        focalLength: photoInfo.focalLength || null,
+        focalLength35mm: photoInfo.focalLength35mm || null,
+        fNumber: photoInfo.fNumber || null,
+        iso: photoInfo.iso || null,
+        exposureTime: photoInfo.exposureTime || null,
+        exposureCompensation: photoInfo.exposureCompensation || null,
+
+        // Location information - optional fields
+        latitude: photoInfo.latitude || null,
+        longitude: photoInfo.longitude || null,
+        gpsAltitude: photoInfo.gpsAltitude || null,
+        dateTimeOriginal: photoInfo.dateTimeOriginal || null,
+        country: photoInfo.country || null,
+        countryCode: photoInfo.countryCode || null,
+        region: photoInfo.region || null,
+        city: photoInfo.city || null,
+        district: photoInfo.district || null,
+        fullAddress: photoInfo.fullAddress || null,
+        placeFormatted: photoInfo.placeFormatted || null,
+      }
+
+      await createPhoto({ photo: photoData })
+
+      toast.success('Photo saved successfully!')
+      setDialogOpen(false)
+      setTriggerType(null)
+    } catch (error) {
+      console.error('Failed to save photo:', error)
+      toast.error('Failed to save photo, please try again')
+    } finally {
+      // Reset loading state
+      setIsSaving(false)
+    }
+  }
+
   return (
     <Dialog
       open={dialogOpen}
@@ -119,20 +193,21 @@ export function PhotoInfo() {
             <div className='space-y-2'>
               <Label>Title</Label>
               <Input
-                value={photoInfo?.title || 'untitled'}
+                value={photoInfo?.title ?? ''}
                 onChange={(e) => {
                   if (!photoInfo) return
                   setPhotoInfo({ ...photoInfo, title: e.target.value })
                 }}
                 autoFocus={false}
+                placeholder='photo title'
               />
             </div>
 
             <div className='space-y-2'>
               <Label>Description</Label>
               <Textarea
-                placeholder='Type your message here.'
-                value={photoInfo?.description || 'No description'}
+                placeholder='photo description'
+                value={photoInfo?.description ?? ''}
                 onChange={(e) => {
                   if (!photoInfo) return
                   setPhotoInfo({ ...photoInfo, description: e.target.value })
@@ -546,6 +621,8 @@ export function PhotoInfo() {
           <Button
             type='submit'
             className='cursor-pointer'
+            onClick={handleSave}
+            disabled={isSaving}
           >
             Save
           </Button>

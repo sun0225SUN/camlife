@@ -13,8 +13,8 @@ export interface PhotoInfo {
   width?: number
   height?: number
   aspectRatio?: number
-  make?: string
-  model?: string
+  make?: string | string[]
+  model?: string | string[]
   lensModel?: string
   focalLength?: number
   focalLength35mm?: number
