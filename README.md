@@ -3,6 +3,8 @@
   <img src="./docs/images/logo.png" alt="screenshot" width="100" />
   <h1>Camlife</h1>
 
+  English | [简体中文](/README_zh.md)
+
   <img alt="GitHub License" src="https://img.shields.io/github/license/sun0225SUN/camlife">
   <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/sun0225SUN/camlife?style=flat">
    <img alt="GitHub Repo forks" src="https://img.shields.io/github/forks/sun0225SUN/camlife?style=flat">
@@ -185,6 +187,19 @@ If you find this project helpful, please give it a ⭐️ on GitHub!
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to open issues and pull requests.
+
+<table>
+	<tbody>
+		<tr>
+      <td align="center">
+         <img src="https://files.guoqi.dev/wxpay.png" width="250px"  alt="wxpay" style="border-radius:10px;" />
+      </td>
+      <td align="center">
+        <img src="https://files.guoqi.dev/alipay.jpg" width="250px"  alt="alipay" style="border-radius:10px;" />
+      </td>
+		</tr>
+	<tbody>
+</table>
 
 ## 📊 Repository Status
 
