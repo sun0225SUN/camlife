@@ -1,4 +1,4 @@
 {
   "i18n-ally.localesPaths": ["messages", "src/i18n", "src/components/language"],
-  "cSpell.words": ["exif", "mapbox"]
+  "cSpell.words": ["exif", "mapbox", "umami"]
 }

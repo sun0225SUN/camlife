@@ -4,11 +4,13 @@ import '@/styles/view-transition.css'
 import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import { notFound } from 'next/navigation'
+import Script from 'next/script'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import NextTopLoader from 'nextjs-toploader'
 import { ConsoleBanner } from '@/components/console-banner'
 import { ThemeProvider } from '@/components/theme/provider'
 import { Toaster } from '@/components/ui/sonner'
+import { env } from '@/env'
 import { routing } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
 import { TRPCReactProvider } from '@/trpc/react'
@@ -58,6 +60,11 @@ export default async function RootLayout({ children, params }: Props) {
             </TRPCReactProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
+        <Script
+          src={env.NEXT_PUBLIC_UMAMI_ANALYTICS_JS}
+          strategy='beforeInteractive'
+          data-website-id={env.NEXT_PUBLIC_UMAMI_ANALYTICS_ID}
+        />
       </body>
     </html>
   )
