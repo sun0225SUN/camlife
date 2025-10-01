@@ -1,4 +1,5 @@
 export interface PhotoInfo {
+  id?: string
   url: string
   fileName: string
   fileSize?: number

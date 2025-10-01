@@ -38,7 +38,7 @@ export function FileUpload() {
   const randomId = nanoid()
 
   const { mutateAsync: getPresignedUrl } =
-    api.upload.getPresignedUrl.useMutation()
+    api.photo.getPresignedUrl.useMutation()
 
   const { getRootProps, isDragActive } = useDropzone({
     multiple: false,

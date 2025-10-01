@@ -9,7 +9,6 @@ import {
   text,
   timestamp,
   uniqueIndex,
-  uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
 import {
@@ -17,6 +16,7 @@ import {
   createSelectSchema,
   createUpdateSchema,
 } from 'drizzle-zod'
+import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
 export const photoVisibility = pgEnum('photo_visibility', ['public', 'private'])
@@ -24,11 +24,15 @@ export const photoVisibility = pgEnum('photo_visibility', ['public', 'private'])
 export const photos = pgTable(
   'photos',
   {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: varchar('id', { length: 21 })
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
 
     url: text('url').notNull(),
     blurDataUrl: text('blur_data_url').notNull(),
     compressedUrl: text('compressed_url'),
+    fileSize: integer('file_size'),
+    compressedSize: integer('compressed_size'),
 
     title: text('title').notNull(),
     description: text('description').notNull(),
@@ -73,14 +77,16 @@ export const photos = pgTable(
 export const citySets = pgTable(
   'city_sets',
   {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: varchar('id', { length: 21 })
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
     description: text('description'),
 
     country: text('country').notNull(),
     countryCode: text('country_code').notNull(),
     city: text('city').notNull(),
     photoCount: integer('photo_count').default(0).notNull(),
-    coverPhotoId: uuid('cover_photo_id')
+    coverPhotoId: varchar('cover_photo_id', { length: 21 })
       .references(() => photos.id)
       .notNull(),
 
@@ -108,6 +114,7 @@ export const photosRelations = relations(photos, ({ one }) => ({
 
 // Schema
 export const photosInsertSchema = createInsertSchema(photos).extend({
+  id: z.string().optional(), // 让 ID 可选，由数据库自动生成
   title: z.string().min(1, { message: 'Title is required' }),
   description: z.string().min(1, { message: 'Description is required' }),
 })
@@ -122,6 +129,24 @@ export const photosUpdateSchema = createUpdateSchema(photos)
     latitude: true,
     longitude: true,
     visibility: true,
+    make: true,
+    model: true,
+    lensModel: true,
+    focalLength: true,
+    focalLength35mm: true,
+    fNumber: true,
+    iso: true,
+    exposureTime: true,
+    exposureCompensation: true,
+    gpsAltitude: true,
+    dateTimeOriginal: true,
+    country: true,
+    countryCode: true,
+    region: true,
+    city: true,
+    district: true,
+    fullAddress: true,
+    placeFormatted: true,
   })
   .partial()
 

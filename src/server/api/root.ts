@@ -1,4 +1,4 @@
-import { uploadRouter } from '@/server/api/routers/upload'
+import { photoRouter } from '@/server/api/routers/photo'
 import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc'
 
 /**
@@ -7,7 +7,7 @@ import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc'
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  upload: uploadRouter,
+  photo: photoRouter,
 })
 
 // export type definition of API

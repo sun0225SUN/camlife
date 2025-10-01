@@ -3,7 +3,7 @@
 import '@smastrom/react-rating/style.css'
 
 import { Rating } from '@smastrom/react-rating'
-import { ChevronDownIcon } from 'lucide-react'
+import { ChevronDownIcon, Download } from 'lucide-react'
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
@@ -19,7 +19,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -38,6 +37,7 @@ import {
 import { Snippet } from '@/components/ui/snippet'
 import { Textarea } from '@/components/ui/textarea'
 import { DEFAULT_PHOTO_RATING } from '@/constants'
+import { downloadImage } from '@/lib/image'
 import { getCompressedFileName } from '@/lib/utils'
 import { usePhotoStore } from '@/stores/photo'
 import { api } from '@/trpc/react'
@@ -51,8 +51,11 @@ export function PhotoInfo() {
     setTriggerType,
     setPhotoInfo,
   } = usePhotoStore()
-  const { mutateAsync: deleteFile } = api.upload.deleteFile.useMutation()
-  const { mutateAsync: createPhoto } = api.upload.createPhoto.useMutation()
+
+  const utils = api.useUtils()
+  const { mutateAsync: deleteFile } = api.photo.deleteFile.useMutation()
+  const { mutateAsync: upsertPhoto } = api.photo.upsertPhoto.useMutation()
+
   const { resolvedTheme } = useTheme()
 
   const [open, setOpen] = useState(false)
@@ -101,15 +104,16 @@ export function PhotoInfo() {
       return
     }
 
-    // Set loading state
     setIsSaving(true)
 
     try {
-      // Validate and set default values
       const photoData = {
+        id: photoInfo.id,
         url: photoInfo.url,
         blurDataUrl: photoInfo.blurDataUrl || '',
         compressedUrl: photoInfo.compressedUrl || null,
+        fileSize: photoInfo.fileSize || null,
+        compressedSize: photoInfo.compressedSize || null,
 
         // Basic information - set default values
         title: photoInfo.title?.trim() || 'untitled',
@@ -156,16 +160,23 @@ export function PhotoInfo() {
         placeFormatted: photoInfo.placeFormatted || null,
       }
 
-      await createPhoto({ photo: photoData })
+      const result = await upsertPhoto({ photo: photoData })
 
-      toast.success('Photo saved successfully!')
+      if (result.isUpdate) {
+        toast.success('Photo updated successfully!')
+      } else {
+        toast.success('Photo created successfully!')
+      }
+
+      // invalidate photos list
+      await utils.photo.getPhotosList.invalidate()
+
       setDialogOpen(false)
       setTriggerType(null)
     } catch (error) {
       console.error('Failed to save photo:', error)
       toast.error('Failed to save photo, please try again')
     } finally {
-      // Reset loading state
       setIsSaving(false)
     }
   }
@@ -175,12 +186,8 @@ export function PhotoInfo() {
       open={dialogOpen}
       onOpenChange={setDialogOpen}
     >
-      <DialogTrigger>Open</DialogTrigger>
-
       <DialogContent
         className='!max-w-7xl !max-h-[90vh] flex flex-col'
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onInteractOutside={(e) => e.preventDefault()}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
@@ -533,7 +540,22 @@ export function PhotoInfo() {
           <div className='flex h-full w-full flex-col justify-between gap-6 lg:w-96 lg:flex-shrink-0 lg:gap-0'>
             {photoInfo?.url && (
               <div className='flex flex-col gap-3'>
-                <p className='font-medium text-sm'>Original</p>
+                <div className='flex items-center justify-between'>
+                  <p className='font-medium text-sm'>Original</p>
+                  <Button
+                    onClick={() => {
+                      if (photoInfo.url) {
+                        const filename = `${photoInfo.title || 'photo'}_original.jpg`
+                        downloadImage(photoInfo.url, filename)
+                      }
+                    }}
+                    variant='outline'
+                    size='sm'
+                    className='cursor-pointer'
+                  >
+                    <Download />
+                  </Button>
+                </div>
 
                 <div className='relative overflow-hidden rounded-lg border'>
                   <div className='relative h-[180px] w-full overflow-hidden'>
@@ -557,8 +579,23 @@ export function PhotoInfo() {
             )}
 
             {photoInfo?.compressedUrl && (
-              <div className='flex flex-col gap-3'>
-                <p className='font-medium text-sm'>Compressed</p>
+              <div className='mt-5 flex flex-col gap-3'>
+                <div className='flex items-center justify-between'>
+                  <p className='font-medium text-sm'>Compressed</p>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    onClick={() => {
+                      if (photoInfo.compressedUrl) {
+                        const filename = `${photoInfo.title || 'photo'}_compressed.jpg`
+                        downloadImage(photoInfo.compressedUrl, filename)
+                      }
+                    }}
+                    className='cursor-pointer'
+                  >
+                    <Download />
+                  </Button>
+                </div>
 
                 <div className='relative overflow-hidden rounded-lg border'>
                   <div className='relative h-[180px] w-full overflow-hidden'>
@@ -582,8 +619,23 @@ export function PhotoInfo() {
             )}
 
             {photoInfo?.blurDataUrl && (
-              <div className='flex flex-col gap-3'>
-                <p className='font-medium text-sm'>BlurHash</p>
+              <div className='mt-5 flex flex-col gap-3'>
+                <div className='flex items-center justify-between'>
+                  <p className='font-medium text-sm'>BlurHash</p>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    onClick={() => {
+                      if (photoInfo.blurDataUrl) {
+                        const filename = `${photoInfo.title || 'photo'}_blur.jpg`
+                        downloadImage(photoInfo.blurDataUrl, filename)
+                      }
+                    }}
+                    className='cursor-pointer'
+                  >
+                    <Download />
+                  </Button>
+                </div>
 
                 <div className='relative overflow-hidden rounded-lg border'>
                   <div className='relative h-[180px] w-full overflow-hidden'>
@@ -624,7 +676,7 @@ export function PhotoInfo() {
             onClick={handleSave}
             disabled={isSaving}
           >
-            Save
+            {triggerType === 'file-upload' ? 'Save' : 'Update'}
           </Button>
         </DialogFooter>
       </DialogContent>
