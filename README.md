@@ -108,7 +108,7 @@ docker-compose up -d
 DATABASE_URL="postgresql://postgres:password@host:port/camlife"
 
 # Storage
-STORAGE_PROVIDER="cloudflare_r2" # cloudflare_r2 | aws-s3 | vercel_blob
+STORAGE_PROVIDER="cloudflare-r2" # cloudflare-r2 | aws-s3 | vercel-blob
 
 CLOUDFLARE_R2_ENDPOINT="https://fcb75ae*******2a3f5ce73fb.r2.cloudflarestorage.com"
 CLOUDFLARE_R2_BUCKET="files"
@@ -135,7 +135,7 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 | Variable                          | Description                                                      | Default                 | Required |
 | :-------------------------------- | :--------------------------------------------------------------- | :---------------------- | :------- |
 | `DATABASE_URL`                    | PostgreSQL database connection URL                               | None                    | Yes      |
-| `STORAGE_PROVIDER`                | Storage provider (cloudflare_r2, aws-s3, vercel_blob)            | cloudflare_r2           | Yes      |
+| `STORAGE_PROVIDER`                | Storage provider (cloudflare-r2, aws-s3, vercel-blob)            | cloudflare-r2           | Yes      |
 | `CLOUDFLARE_R2_ENDPOINT`          | Cloudflare R2 endpoint URL                                       | None                    | Yes*     |
 | `CLOUDFLARE_R2_BUCKET`            | Cloudflare R2 bucket name                                        | None                    | Yes*     |
 | `CLOUDFLARE_R2_REGION`            | Cloudflare R2 region                                             | auto                    | No       |
@@ -150,7 +150,7 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 | `NEXT_PUBLIC_UMAMI_ANALYTICS_JS`  | Umami Custom Analysis JS URL                                     | None                    | No       |
 
 > [!note]
-> Variables marked with `*` are required only when `STORAGE_PROVIDER` is set to `cloudflare_r2`. For other storage providers (AWS S3, Vercel Blob), different environment variables will be required.
+> Variables marked with `*` are required only when `STORAGE_PROVIDER` is set to `cloudflare-r2`. For other storage providers (AWS S3, Vercel Blob), different environment variables will be required.
 
 ## 💻  Local development
 

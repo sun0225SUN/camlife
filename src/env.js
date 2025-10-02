@@ -13,8 +13,8 @@ export const env = createEnv({
     DATABASE_URL: z.url(),
     // Storage provider
     STORAGE_PROVIDER: z
-      .enum(['cloudflare_r2', 'aws-s3', 'vercel_blob'])
-      .default('cloudflare_r2'),
+      .enum(['cloudflare-r2', 'aws-s3', 'vercel-blob'])
+      .default('cloudflare-r2'),
     // Cloudflare R2 存储配置
     CLOUDFLARE_R2_ENDPOINT: z.url(),
     CLOUDFLARE_R2_BUCKET: z.string(),

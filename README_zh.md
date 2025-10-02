@@ -107,7 +107,7 @@ docker-compose up -d
 DATABASE_URL="postgresql://postgres:password@host:port/camlife"
 
 # 存储
-STORAGE_PROVIDER="cloudflare_r2" # cloudflare_r2 | aws-s3 | vercel_blob
+STORAGE_PROVIDER="cloudflare-r2" # cloudflare-r2 | aws-s3 | vercel-blob
 
 CLOUDFLARE_R2_ENDPOINT="https://fcb75ae*******2a3f5ce73fb.r2.cloudflarestorage.com"
 CLOUDFLARE_R2_BUCKET="files"
@@ -134,7 +134,7 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 | 变量名                            | 描述                                                   | 默认值                  | 必需 |
 | :-------------------------------- | :----------------------------------------------------- | :---------------------- | :--- |
 | `DATABASE_URL`                    | PostgreSQL 数据库连接 URL                              | None                    | Yes  |
-| `STORAGE_PROVIDER`                | 存储提供商 (cloudflare_r2, aws-s3, vercel_blob)        | cloudflare_r2           | Yes  |
+| `STORAGE_PROVIDER`                | 存储提供商 (cloudflare-r2, aws-s3, vercel-blob)        | cloudflare-r2           | Yes  |
 | `CLOUDFLARE_R2_ENDPOINT`          | Cloudflare R2 端点 URL                                 | None                    | Yes* |
 | `CLOUDFLARE_R2_BUCKET`            | Cloudflare R2 存储桶名称                               | None                    | Yes* |
 | `CLOUDFLARE_R2_REGION`            | Cloudflare R2 区域                                     | auto                    | No   |
@@ -149,7 +149,7 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 | `NEXT_PUBLIC_UMAMI_ANALYTICS_JS`  | Umami 自定义分析 JS URL                                | None                    | No   |
 
 > [!note]
-> 标记为 `*` 的变量仅在 `STORAGE_PROVIDER` 设置为 `cloudflare_r2` 时必需。对于其他存储提供商（AWS S3、Vercel Blob），需要不同的环境变量。
+> 标记为 `*` 的变量仅在 `STORAGE_PROVIDER` 设置为 `cloudflare-r2` 时必需。对于其他存储提供商（AWS S3、Vercel Blob），需要不同的环境变量。
 
 ## 💻 本地开发
 

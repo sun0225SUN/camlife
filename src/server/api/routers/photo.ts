@@ -25,7 +25,7 @@ export const photoRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       try {
         switch (env.STORAGE_PROVIDER) {
-          case 'cloudflare_r2': {
+          case 'cloudflare-r2': {
             const signedUrl = await getSignedUrlForUpload(
               s3Client,
               input.fileName,
@@ -51,7 +51,7 @@ export const photoRouter = createTRPCRouter({
     .input(z.object({ key: z.string() }))
     .mutation(async ({ input }) => {
       switch (env.STORAGE_PROVIDER) {
-        case 'cloudflare_r2':
+        case 'cloudflare-r2':
           await deleteFile(s3Client, input.key)
       }
     }),

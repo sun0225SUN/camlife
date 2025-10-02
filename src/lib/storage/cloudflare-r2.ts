@@ -23,7 +23,7 @@ export function getFullKey(key: string): string {
  */
 export function getPublicUrl(key: string) {
   switch (env.STORAGE_PROVIDER) {
-    case 'cloudflare_r2':
+    case 'cloudflare-r2':
       return `${env.CLOUDFLARE_R2_PUBLIC_URL}/${getFullKey(key)}`
     default:
       throw new Error('Invalid storage provider, no public url available')
