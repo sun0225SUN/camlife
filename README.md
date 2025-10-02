@@ -1,6 +1,6 @@
 
 <div align="center">
-  <img src="./docs/images/logo.png" alt="screenshot" width="100" />
+  <img src="./readme/images/logo.png" alt="screenshot" width="100" />
   <h1>Camlife</h1>
 
   English | [简体中文](/README_zh.md)
@@ -13,7 +13,7 @@
   <img src="https://komarev.com/ghpvc/?username=camlife&label=Views&color=orange&style=flat" alt="visitors count" />&emsp;
 
   <p>Camlife is a website that showcases photography works for everyone who loves photography</p>
-  <img src="./docs/images/preview.png" alt="screenshot" />
+  <img src="./readme/images/preview.png" alt="screenshot" />
 </div>
 
 ## ✨ Features
@@ -22,7 +22,7 @@
 - [x] 📱 Responsive design for all devices
 - [x] 🖼️ Automatic EXIF data extraction from photos
 - [x] 🔐 Secure authentication with Better Auth
-- [x] ☁️ Cloud storage with Cloudflare R2
+- [x] ☁️ Cloud storage with Cloudflare R2、AWS S3 or Vercel Blob
 - [ ] 📡 RSS feed
 - [ ] ✨ and more...
 
@@ -118,6 +118,11 @@ CLOUDFLARE_R2_SECRET_ACCESS_KEY="29d01ddcb25d*****************b6d561ab18d175a94f
 CLOUDFLARE_R2_PREFIX="camlife"
 CLOUDFLARE_R2_PUBLIC_URL="https://pub-ba****************j.r2.dev"
 
+AWS_S3_BUCKET=
+AWS_S3_REGION=
+AWS_S3_ACCESS_KEY=
+AWS_S3_SECRET_ACCESS_KEY=
+
 # Mapbox
 NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN="pk.eyJ18***********************************9.N3bTvCedxVfugnrCSRT2kw"
 
@@ -143,6 +148,10 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 | `CLOUDFLARE_R2_SECRET_ACCESS_KEY` | Cloudflare R2 secret access key                                  | None                    | Yes*     |
 | `CLOUDFLARE_R2_PREFIX`            | Cloudflare R2 object key prefix                                  | camlife                 | No       |
 | `CLOUDFLARE_R2_PUBLIC_URL`        | Cloudflare R2 public URL for accessing files                     | None                    | Yes*     |
+| `AWS_S3_BUCKET`                   | AWS S3 bucket name                                               | None                    | Yes*     |
+| `AWS_S3_REGION`                   | AWS S3 region                                                    | auto                    | No       |
+| `AWS_S3_ACCESS_KEY`               | AWS S3 access key                                                | None                    | Yes*     |
+| `AWS_S3_SECRET_ACCESS_KEY`        | AWS S3 secret access key                                         | None                    | Yes*     |
 | `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox map service access token                                  | None                    | Yes      |
 | `BETTER_AUTH_SECRET`              | Better Auth secret key (generate with `openssl rand -base64 32`) | None                    | Yes      |
 | `BETTER_AUTH_URL`                 | Application base URL                                             | `http://localhost:3000` | Yes      |
@@ -151,6 +160,101 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 
 > [!note]
 > Variables marked with `*` are required only when `STORAGE_PROVIDER` is set to `cloudflare-r2`. For other storage providers (AWS S3, Vercel Blob), different environment variables will be required.
+
+<details>
+<summary><strong>Cloudflare R2</strong></summary>
+
+1. Setup bucket
+   - [Create R2 bucket](https://developers.cloudflare.com/r2/) with default settings
+   - Setup CORS under bucket settings:
+   ```json
+   [{
+       "AllowedHeaders": ["*"],
+       "AllowedMethods": [
+         "GET",
+         "PUT"
+       ],
+       "AllowedOrigins": [
+          "http://localhost:3000",
+          "https://{VERCEL_PROJECT_NAME}*.vercel.app",
+          "{PRODUCTION_DOMAIN}"
+       ]
+   }]
+   ```
+   - Enable public hosting by doing one of the following:
+       - Select "Connect Custom Domain" and choose a Cloudflare domain
+       - OR
+       - Select "Allow Access" from R2.dev subdomain
+   - Store public configuration:
+     - `CLOUDFLARE_R2_BUCKET`: bucket name
+     - `CLOUDFLARE_R2_ENDPOINT`: bucket endpoint
+     - `CLOUDFLARE_R2_PUBLIC_URL`: either "your-custom-domain.com" or "pub-jf90908...s0d9f8s0s9df.r2.dev"
+2. Setup private credentials
+   - Create API token by selecting "Manage R2 API Tokens," and clicking "Create API Token"
+   - Select "Object Read & Write," choose "Apply to specific buckets only," and select the bucket created in Step 1
+   - Store credentials:
+     - `CLOUDFLARE_R2_ACCESS_KEY`
+     - `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
+
+</details>
+
+<details>
+<summary><strong>AWS S3</strong></summary>
+
+1. Setup bucket
+   - [Create S3 bucket](https://s3.console.aws.amazon.com/s3) with "ACLs enabled," and "Block all public access" turned off
+   - Setup CORS under bucket permissions:
+     ```json
+     [{
+      "AllowedHeaders": ["*"],
+      "AllowedMethods": [
+        "GET",
+        "PUT"
+      ],
+      "AllowedOrigins": [
+        "http://localhost:*",
+        "https://{VERCEL_PROJECT_NAME}*.vercel.app",
+        "{PRODUCTION_DOMAIN}"
+      ],
+      "ExposeHeaders": []
+     }]
+     ```
+   - Store public configuration
+     - `AWS_S3_BUCKET`: bucket name
+     - `AWS_S3_REGION`: bucket region, e.g., "us-east-1"
+2. Setup private credentials
+   - [Create IAM policy](https://console.aws.amazon.com/iam/home#/policies) using JSON editor:
+     ```json
+     {
+       "Version": "2012-10-17",
+       "Statement": [
+         {
+           "Effect": "Allow",
+           "Action": [
+             "s3:PutObject",
+             "s3:PutObjectACL",
+             "s3:GetObject",
+             "s3:ListBucket",
+             "s3:DeleteObject"
+           ],
+           "Resource": [
+             "arn:aws:s3:::{BUCKET_NAME}",
+             "arn:aws:s3:::{BUCKET_NAME}/*"
+           ]
+         }
+       ]
+     }
+     ```
+   - [Create IAM user](https://console.aws.amazon.com/iam/home#/users) by choosing "Attach policies directly," and selecting the policy created above. Create "Access key" under "Security credentials," choose "Application running outside AWS," and store credentials :
+     - `AWS_S3_ACCESS_KEY`
+     - `AWS_S3_SECRET_ACCESS_KEY`
+
+</details>
+
+<details>
+<summary><strong>Vercel Blob</strong></summary>
+  Todo
+</details>
 
 ## 💻  Local development
 

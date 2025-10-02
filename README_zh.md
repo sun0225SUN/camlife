@@ -1,6 +1,6 @@
 
 <div align="center">
-  <img src="./docs/images/logo.png" alt="screenshot" width="100" />
+  <img src="./readme/images/logo.png" alt="screenshot" width="100" />
   <h1>Camlife</h1>
 
   [English](/README.md) | 简体中文
@@ -13,26 +13,26 @@
   <img src="https://komarev.com/ghpvc/?username=camlife&label=Views&color=orange&style=flat" alt="visitors count" />&emsp;
 
   <p>Camlife 是一个为所有热爱摄影的人提供的展示摄影作品的网站</p>
-  <img src="./docs/images/preview.png" alt="screenshot" />
+  <img src="./readme/images/preview.png" alt="screenshot" />
 </div>
 
-## ✨ Features
+## ✨ 功能特性
 
 - [x] 🎨 简洁极简的设计
 - [x] 📱 适配所有设备的响应式设计
 - [x] 🖼️ 自动从照片中提取 EXIF 数据
 - [x] 🔐 使用 Better Auth 的安全认证
-- [x] ☁️ 使用 Cloudflare R2 的云存储
+- [x] ☁️ 使用 Cloudflare R2、AWS S3 或 Vercel Blob 的云存储
 - [ ] 📡 RSS 订阅源
 - [ ] ✨ 更多功能...
 
-## 🎬 Showcase
+## 🎬 示例网站
 
 - https://camlife.app
 
 > 欢迎将您的网站添加到列表中 ❤️
 
-## 🔨 Tech Stack
+## 🔨 技术栈
 
 - ⚡ 框架 - [Next.js](https://nextjs.org)
 - 🧩 语言 - [TypeScript](https://www.typescriptlang.org)
@@ -51,7 +51,7 @@
 - 🪝 Git 钩子 - [Lefthook](https://lefthook.dev)
 - 📊 流量分析 - [Umami](https://umami.is)
 
-## 👥 Contributors
+## 👥 贡献者
 
 <!-- readme: collaborators,contributors -start -->
 <table>
@@ -69,7 +69,7 @@
 </table>
 <!-- readme: collaborators,contributors -end -->
 
-## 💡 Inspired Projects
+## 💡 启发项目
 
 - [Camarts](https://camarts.app)
 - [exif-photo-blog](https://github.com/sambecker/exif-photo-blog)
@@ -117,6 +117,11 @@ CLOUDFLARE_R2_SECRET_ACCESS_KEY="29d01ddcb25d*****************b6d561ab18d175a94f
 CLOUDFLARE_R2_PREFIX="camlife"
 CLOUDFLARE_R2_PUBLIC_URL="https://pub-ba****************j.r2.dev"
 
+AWS_S3_BUCKET=
+AWS_S3_REGION=
+AWS_S3_ACCESS_KEY=
+AWS_S3_SECRET_ACCESS_KEY=
+
 # Mapbox
 NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN="pk.eyJ18***********************************9.N3bTvCedxVfugnrCSRT2kw"
 
@@ -142,6 +147,10 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 | `CLOUDFLARE_R2_SECRET_ACCESS_KEY` | Cloudflare R2 秘密访问密钥                             | None                    | Yes* |
 | `CLOUDFLARE_R2_PREFIX`            | Cloudflare R2 对象键前缀                               | camlife                 | No   |
 | `CLOUDFLARE_R2_PUBLIC_URL`        | Cloudflare R2 公共访问文件 URL                         | None                    | Yes* |
+| `AWS_S3_BUCKET`                   | AWS S3 存储桶名称                                      | None                    | Yes* |
+| `AWS_S3_REGION`                   | AWS S3 区域                                            | auto                    | No   |
+| `AWS_S3_ACCESS_KEY`               | AWS S3 访问密钥                                        | None                    | Yes* |
+| `AWS_S3_SECRET_ACCESS_KEY`        | AWS S3 秘密访问密钥                                    | None                    | Yes* |
 | `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox 地图服务访问令牌                                | None                    | Yes  |
 | `BETTER_AUTH_SECRET`              | Better Auth 密钥 (使用 `openssl rand -base64 32` 生成) | None                    | Yes  |
 | `BETTER_AUTH_URL`                 | 应用程序基础 URL                                       | `http://localhost:3000` | Yes  |
@@ -150,6 +159,101 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 
 > [!note]
 > 标记为 `*` 的变量仅在 `STORAGE_PROVIDER` 设置为 `cloudflare-r2` 时必需。对于其他存储提供商（AWS S3、Vercel Blob），需要不同的环境变量。
+
+<details>
+<summary><strong>Cloudflare R2</strong></summary>
+
+1. 设置存储桶
+   - [创建 R2 存储桶](https://developers.cloudflare.com/r2/)，使用默认设置
+   - 在存储桶设置下配置 CORS：
+   ```json
+   [{
+       "AllowedHeaders": ["*"],
+       "AllowedMethods": [
+         "GET",
+         "PUT"
+       ],
+       "AllowedOrigins": [
+          "http://localhost:3000",
+          "https://{VERCEL_PROJECT_NAME}*.vercel.app",
+          "{PRODUCTION_DOMAIN}"
+       ]
+   }]
+   ```
+   - 通过以下方式之一启用公共托管：
+       - 选择"连接自定义域"并选择 Cloudflare 域
+       - 或者
+       - 从 R2.dev 子域选择"允许访问"
+   - 存储公共配置：
+     - `CLOUDFLARE_R2_BUCKET`：存储桶名称
+     - `CLOUDFLARE_R2_ENDPOINT`：存储桶端点
+     - `CLOUDFLARE_R2_PUBLIC_URL`：可以是"your-custom-domain.com"或"pub-jf90908...s0d9f8s0s9df.r2.dev"
+2. 设置私有凭据
+   - 通过选择"管理 R2 API 令牌"并点击"创建 API 令牌"来创建 API 令牌
+   - 选择"对象读写"，选择"仅应用于特定存储桶"，并选择在步骤 1 中创建的存储桶
+   - 存储凭据：
+     - `CLOUDFLARE_R2_ACCESS_KEY`
+     - `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
+
+</details>
+
+<details>
+<summary><strong>AWS S3</strong></summary>
+
+1. 设置存储桶
+   - [创建 S3 存储桶](https://s3.console.aws.amazon.com/s3)，启用"ACL"，并关闭"阻止所有公共访问"
+   - 在存储桶权限下设置 CORS：
+     ```json
+     [{
+      "AllowedHeaders": ["*"],
+      "AllowedMethods": [
+        "GET",
+        "PUT"
+      ],
+      "AllowedOrigins": [
+        "http://localhost:*",
+        "https://{VERCEL_PROJECT_NAME}*.vercel.app",
+        "{PRODUCTION_DOMAIN}"
+      ],
+      "ExposeHeaders": []
+     }]
+     ```
+   - 存储公共配置
+     - `AWS_S3_BUCKET`：存储桶名称
+     - `AWS_S3_REGION`：存储桶区域，例如"us-east-1"
+2. 设置私有凭据
+   - [创建 IAM 策略](https://console.aws.amazon.com/iam/home#/policies)，使用 JSON 编辑器：
+     ```json
+     {
+       "Version": "2012-10-17",
+       "Statement": [
+         {
+           "Effect": "Allow",
+           "Action": [
+             "s3:PutObject",
+             "s3:PutObjectACL",
+             "s3:GetObject",
+             "s3:ListBucket",
+             "s3:DeleteObject"
+           ],
+           "Resource": [
+             "arn:aws:s3:::{BUCKET_NAME}",
+             "arn:aws:s3:::{BUCKET_NAME}/*"
+           ]
+         }
+       ]
+     }
+     ```
+   - [创建 IAM 用户](https://console.aws.amazon.com/iam/home#/users)，选择"直接附加策略"，并选择上面创建的策略。在"安全凭据"下创建"访问密钥"，选择"在 AWS 外部运行的应用程序"，并存储凭据：
+     - `AWS_S3_ACCESS_KEY`
+     - `AWS_S3_SECRET_ACCESS_KEY`
+
+</details>
+
+<details>
+<summary><strong>Vercel Blob</strong></summary>
+  待完成
+</details>
 
 ## 💻 本地开发
 
