@@ -1,4 +1,5 @@
-import { decode, encode } from 'blurhash'
+import { decode } from 'blurhash'
+import type { WorkerRequest, WorkerResponse } from './blurhash.worker'
 
 /**
  * Load image from URL
@@ -27,7 +28,22 @@ const getImageData = (image: HTMLImageElement): ImageData => {
 }
 
 /**
- * Generate blur data URL
+ * Create blurhash worker instance
+ */
+let workerInstance: Worker | null = null
+
+const getWorker = (): Worker => {
+  if (!workerInstance) {
+    workerInstance = new Worker(
+      new URL('./blurhash.worker.ts', import.meta.url),
+      { type: 'module' },
+    )
+  }
+  return workerInstance
+}
+
+/**
+ * Generate blur data URL using Web Worker
  * @param file Input image file
  * @param quality Output image quality, default 30
  * @returns Base64 encoded WebP image string
@@ -43,42 +59,72 @@ export async function generateBlurData(
     const image = await loadImage(imageUrl)
     const imageData = getImageData(image)
 
-    // Encode to blurhash
-    const blurhash = encode(
-      imageData.data,
-      imageData.width,
-      imageData.height,
-      4,
-      3,
-    )
+    // Use Web Worker to encode blurhash
+    const worker = getWorker()
 
-    // Decode blurhash directly to small size (32x32)
-    const blurWidth = 32
-    const blurHeight = 32
-    const decodedData = decode(blurhash, blurWidth, blurHeight)
+    const result = await new Promise<string>((resolve, reject) => {
+      const handleMessage = (e: MessageEvent<WorkerResponse>) => {
+        worker.removeEventListener('message', handleMessage)
 
-    if (!decodedData) {
-      throw new Error('Failed to decode blurhash')
-    }
+        if (e.data.type === 'error') {
+          reject(new Error(e.data.error || 'Worker error'))
+        } else if (e.data.type === 'encode') {
+          if (e.data.blurDataUrl) {
+            // Worker successfully generated blurDataUrl
+            resolve(e.data.blurDataUrl)
+          } else if (e.data.blurhash) {
+            // Worker only returned blurhash, need to complete remaining work in main thread
+            // (This happens in browsers that don't support OffscreenCanvas)
+            const blurWidth = 32
+            const blurHeight = 32
+            const decodedData = decode(e.data.blurhash, blurWidth, blurHeight)
 
-    // Create canvas for final output
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    if (!ctx) {
-      throw new Error('Unable to get canvas context')
-    }
+            if (!decodedData) {
+              reject(new Error('Failed to decode blurhash'))
+              return
+            }
 
-    canvas.width = blurWidth
-    canvas.height = blurHeight
+            // Create canvas for final output
+            const canvas = document.createElement('canvas')
+            const ctx = canvas.getContext('2d')
+            if (!ctx) {
+              reject(new Error('Unable to get canvas context'))
+              return
+            }
 
-    // Create ImageData from decoded blurhash data
-    const imgData = ctx.createImageData(blurWidth, blurHeight)
-    imgData.data.set(decodedData)
+            canvas.width = blurWidth
+            canvas.height = blurHeight
 
-    ctx.putImageData(imgData, 0, 0)
+            // Create ImageData from decoded blurhash data
+            const imgData = ctx.createImageData(blurWidth, blurHeight)
+            imgData.data.set(decodedData)
 
-    // Convert to WebP format base64 string
-    return canvas.toDataURL('image/webp', quality / 100)
+            ctx.putImageData(imgData, 0, 0)
+
+            // Convert to WebP format base64 string
+            resolve(canvas.toDataURL('image/webp', quality / 100))
+          } else {
+            reject(new Error('Invalid worker response'))
+          }
+        }
+      }
+
+      worker.addEventListener('message', handleMessage)
+
+      const request: WorkerRequest = {
+        type: 'encode',
+        imageData: {
+          data: imageData.data,
+          width: imageData.width,
+          height: imageData.height,
+        },
+        quality,
+      }
+
+      worker.postMessage(request)
+    })
+
+    return result
   } catch (error) {
     console.error('Error generating blur data:', error)
     throw error

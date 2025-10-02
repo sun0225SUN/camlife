@@ -406,10 +406,6 @@ export function FileUpload() {
               <div className='flex flex-col items-center gap-2'>
                 <LoaderIcon className='animate-spin' />
                 <p>Generating blur data...</p>
-                <p className='text-red-500'>
-                  Here is a bug, process blocking, causing the loading animation
-                  to stop.
-                </p>
               </div>
             )}
             {step === 'exif' && (
