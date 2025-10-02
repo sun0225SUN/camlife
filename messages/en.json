@@ -48,5 +48,19 @@
     "shuffle": "Shuffle",
     "nearby": "Nearby",
     "faraway": "Faraway"
+  },
+  "PhotoInfo": {
+    "focalLength": "Focal Length",
+    "aperture": "Aperture",
+    "exposureTime": "Shutter Speed",
+    "iso": "ISO",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "locationNotAvailable": "Location information not available",
+    "location": "Location",
+    "rating": "Rating",
+    "camera": "Camera",
+    "lensModel": "Lens",
+    "time": "Time"
   }
 }

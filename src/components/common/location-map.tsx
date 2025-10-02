@@ -98,3 +98,20 @@ export function LocationMap({
     </MapGL>
   )
 }
+
+export function DynamicLocationMap({
+  latitude,
+  longitude,
+}: {
+  latitude: number
+  longitude: number
+}) {
+  return (
+    <LocationMap
+      latitude={latitude}
+      longitude={longitude}
+      width='100%'
+      height='200px'
+    />
+  )
+}

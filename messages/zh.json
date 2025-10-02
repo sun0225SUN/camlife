@@ -47,5 +47,19 @@
     "shuffle": "随览",
     "nearby": "附近",
     "faraway": "远方"
+  },
+  "PhotoInfo": {
+    "focalLength": "焦距",
+    "aperture": "光圈",
+    "exposureTime": "快门速度",
+    "iso": "感光度",
+    "latitude": "纬度",
+    "longitude": "经度",
+    "locationNotAvailable": "位置信息不可用",
+    "location": "位置",
+    "rating": "评分",
+    "camera": "相机",
+    "lensModel": "镜头",
+    "time": "时间"
   }
 }

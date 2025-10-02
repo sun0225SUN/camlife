@@ -30,3 +30,28 @@ export function formatExifDateTime(dateTime: string): Date | null {
 
   return null
 }
+
+/**
+ * Format exposure time to human-readable string
+ * @param exposureTime Exposure time in seconds (e.g., 0.00125 for 1/800s)
+ * @returns Formatted exposure time string (e.g., "1/800s", "1s", "2.5s")
+ */
+export function formatExposureTime(exposureTime: number): string {
+  if (!exposureTime || exposureTime <= 0) {
+    return 'unknown'
+  }
+
+  // If exposure time is less than 1 second, show as fraction
+  if (exposureTime < 1) {
+    const denominator = Math.round(1 / exposureTime)
+    return `1/${denominator}s`
+  }
+
+  // If exposure time is 1 second or more, show as decimal
+  if (exposureTime === 1) {
+    return '1s'
+  }
+
+  // For longer exposures, show with 1 decimal place
+  return `${exposureTime.toFixed(1)}s`
+}

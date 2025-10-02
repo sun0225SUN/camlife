@@ -8,7 +8,7 @@ import Image from 'next/image'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { LocationMap } from '@/components/dashboard/gallery/location-map'
+import { LocationMap } from '@/components/common/location-map'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {

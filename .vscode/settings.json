@@ -1,4 +1,5 @@
 {
   "i18n-ally.localesPaths": ["messages", "src/i18n", "src/components/language"],
-  "cSpell.words": ["exif", "mapbox", "umami"]
+  "cSpell.words": ["exif", "mapbox", "umami"],
+  "i18n-ally.keystyle": "nested"
 }
