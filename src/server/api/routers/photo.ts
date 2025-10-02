@@ -1,10 +1,14 @@
 import { TRPCError } from '@trpc/server'
-import { desc, eq } from 'drizzle-orm'
+import { desc, eq, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { env } from '@/env'
 import { deleteFile, getPublicUrl, getSignedUrlForUpload } from '@/lib/storage'
 import { s3Client } from '@/lib/storage/s3-client'
-import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc'
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from '@/server/api/trpc'
 import { db } from '@/server/db'
 import { photos, photosInsertSchema } from '@/server/db/schema/photos'
 
@@ -191,11 +195,55 @@ export const photoRouter = createTRPCRouter({
     }
   }),
   // get essential photos list（bg rating > 2）
-  getEssentialPhotosList: protectedProcedure.query(async () => {
+  getEssentialPhotosList: publicProcedure.query(async () => {
     const photosList = await db
       .select()
       .from(photos)
+      .where(sql`${photos.rating} > 2`)
       .orderBy(desc(photos.createdAt))
+    return {
+      data: photosList,
+    }
+  }),
+  // get shuffled photos list
+  getShuffledPhotosList: publicProcedure.query(async () => {
+    const photosList = await db.select().from(photos).orderBy(sql`RANDOM()`)
+    return {
+      data: photosList,
+    }
+  }),
+  // get nearby photos list (photos with GPS coordinates)
+  getNearbyPhotosList: publicProcedure.query(async () => {
+    const photosList = await db
+      .select()
+      .from(photos)
+      .where(
+        sql`${photos.latitude} IS NOT NULL AND ${photos.longitude} IS NOT NULL`,
+      )
+      .orderBy(desc(photos.createdAt))
+    return {
+      data: photosList,
+    }
+  }),
+  // get faraway photos list (photos without GPS coordinates or from different countries)
+  getFarawayPhotosList: publicProcedure.query(async () => {
+    const photosList = await db
+      .select()
+      .from(photos)
+      .where(
+        sql`${photos.latitude} IS NULL OR ${photos.longitude} IS NULL OR ${photos.country} IS NOT NULL`,
+      )
+      .orderBy(desc(photos.createdAt))
+    return {
+      data: photosList,
+    }
+  }),
+  // get explore photos list (mix of different criteria)
+  getExplorePhotosList: publicProcedure.query(async () => {
+    const photosList = await db
+      .select()
+      .from(photos)
+      .orderBy(sql`${photos.rating} DESC, ${photos.createdAt} DESC`)
     return {
       data: photosList,
     }

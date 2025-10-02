@@ -20,27 +20,22 @@ export function ViewTabs() {
 
   const tabsConfig: TabConfig[] = [
     {
-      id: 'essential',
-      path: '/essential',
+      path: '/',
       label: t('essential'),
     },
     {
-      id: 'recent',
       path: '/recent',
       label: t('recent'),
     },
     {
-      id: 'shuffle',
       path: '/shuffle',
       label: t('shuffle'),
     },
     {
-      id: 'nearby',
       path: '/nearby',
       label: t('nearby'),
     },
     {
-      id: 'faraway',
       path: '/faraway',
       label: t('faraway'),
     },
@@ -62,7 +57,7 @@ export function ViewTabs() {
       {tabsConfig.map((item) => (
         <button
           type='button'
-          key={item.id}
+          key={item.path}
           tabIndex={0}
           onClick={() => router.push(item.path)}
           onKeyDown={(e) => {

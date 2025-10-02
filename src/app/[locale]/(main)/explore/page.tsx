@@ -1,9 +1,19 @@
-import { ViewLayout } from '@/components/home/view-layout'
+import { Suspense } from 'react'
+import { Fallback } from '@/components/common/fallback'
+import { BaseLayout } from '@/components/layout/base'
+import { ExplorePhotos } from '@/components/photos/explore'
+import { api, HydrateClient } from '@/trpc/server'
 
-export default function ExplorePage() {
+export default async function ExplorePage() {
+  void api.photo.getExplorePhotosList.prefetch()
+
   return (
-    <ViewLayout>
-      <div>Explore</div>
-    </ViewLayout>
+    <HydrateClient>
+      <BaseLayout>
+        <Suspense fallback={<Fallback />}>
+          <ExplorePhotos />
+        </Suspense>
+      </BaseLayout>
+    </HydrateClient>
   )
 }

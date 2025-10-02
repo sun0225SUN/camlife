@@ -1,9 +1,19 @@
-import { ViewLayout } from '@/components/home/view-layout'
+import { Suspense } from 'react'
+import { Fallback } from '@/components/common/fallback'
+import { BaseLayout } from '@/components/layout/base'
+import { EssentialPhotos } from '@/components/photos/essential'
+import { api, HydrateClient } from '@/trpc/server'
 
-export default function HomePage() {
+export default async function HomePage() {
+  void (await api.photo.getEssentialPhotosList.prefetch())
+
   return (
-    <ViewLayout>
-      <div>HomePage</div>
-    </ViewLayout>
+    <HydrateClient>
+      <BaseLayout>
+        <Suspense fallback={<Fallback />}>
+          <EssentialPhotos />
+        </Suspense>
+      </BaseLayout>
+    </HydrateClient>
   )
 }
