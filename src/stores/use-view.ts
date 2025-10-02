@@ -4,15 +4,15 @@ import { persist } from 'zustand/middleware'
 type ViewType = 'feed' | 'waterfall' | 'grid'
 
 interface ViewStore {
-  view: ViewType
-  setView: (view: ViewType) => void
+  layout: ViewType
+  setLayout: (layout: ViewType) => void
 }
 
 export const useView = create<ViewStore>()(
   persist(
     (set) => ({
-      view: 'feed',
-      setView: (view) => set({ view }),
+      layout: 'feed',
+      setLayout: (layout) => set({ layout }),
     }),
     {
       name: 'view-store',

@@ -2,7 +2,6 @@ import '@/styles/globals.css'
 import '@/styles/view-transition.css'
 
 import type { Metadata } from 'next'
-import { Geist } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import NextTopLoader from 'nextjs-toploader'
@@ -10,6 +9,7 @@ import { Analytics } from '@/components/common/analytics'
 import { ConsoleBanner } from '@/components/common/console-banner'
 import { ThemeProvider } from '@/components/theme/provider'
 import { Toaster } from '@/components/ui/sonner'
+import { geist } from '@/fonts'
 import { routing } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
 import { TRPCReactProvider } from '@/trpc/react'
@@ -25,11 +25,6 @@ export const metadata: Metadata = {
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 }
 
-const geist = Geist({
-  subsets: ['latin'],
-  variable: '--font-geist-sans',
-})
-
 export default async function RootLayout({ children, params }: Props) {
   // Ensure that the incoming `locale` is valid
   const { locale } = await params
@@ -40,7 +35,7 @@ export default async function RootLayout({ children, params }: Props) {
   return (
     <html
       lang={locale}
-      className={cn(geist.variable)}
+      className={cn(geist.className)}
       suppressHydrationWarning
     >
       <body>

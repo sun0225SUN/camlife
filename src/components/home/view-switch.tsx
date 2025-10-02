@@ -6,10 +6,10 @@ import { useView } from '@/stores/use-view'
 import type { ViewType } from '@/types'
 
 export function ViewSwitch() {
-  const { view, setView } = useView()
+  const { layout, setLayout } = useView()
 
   const handleViewChange = (view: ViewType) => {
-    setView(view)
+    setLayout(view)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -20,7 +20,7 @@ export function ViewSwitch() {
         onClick={() => handleViewChange('feed')}
         className={cn(
           'cursor-pointer transition-all duration-300 hover:scale-105',
-          view !== 'feed' &&
+          layout !== 'feed' &&
             'text-muted-foreground hover:text-black dark:hover:text-white',
         )}
       >
@@ -36,7 +36,7 @@ export function ViewSwitch() {
         onClick={() => handleViewChange('waterfall')}
         className={cn(
           'cursor-pointer transition-all duration-300 hover:scale-105',
-          view !== 'waterfall' &&
+          layout !== 'waterfall' &&
             'text-muted-foreground hover:text-black dark:hover:text-white',
         )}
       >
@@ -52,7 +52,7 @@ export function ViewSwitch() {
         onClick={() => handleViewChange('grid')}
         className={cn(
           'cursor-pointer transition-all duration-300 hover:scale-105',
-          view !== 'grid' &&
+          layout !== 'grid' &&
             'text-muted-foreground hover:text-black dark:hover:text-white',
         )}
       >

@@ -2,6 +2,7 @@
 
 import { Check, Globe } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Popover,
@@ -19,12 +20,20 @@ interface LanguageToggleProps {
 export function LanguageToggle({ className }: LanguageToggleProps) {
   const t = useTranslations('Language')
   const { locale: currentLocale, onSelectChange } = useLanguageToggle()
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <Popover>
+    <Popover
+      open={isOpen}
+      onOpenChange={setIsOpen}
+    >
       <PopoverTrigger asChild>
         <Globe
-          className={cn('size-6 cursor-pointer', className)}
+          className={cn(
+            'size-6 cursor-pointer',
+            // when popover is open, disable hover scale effect to prevent jitter
+            !isOpen && className,
+          )}
           strokeWidth={2}
           absoluteStrokeWidth
         />

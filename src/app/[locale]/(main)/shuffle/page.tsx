@@ -1,9 +1,9 @@
 import { ViewLayout } from '@/components/home/view-layout'
 
-export default function HomePage() {
+export default function ShufflePage() {
   return (
     <ViewLayout>
-      <div>HomePage</div>
+      <div>Shuffle</div>
     </ViewLayout>
   )
 }

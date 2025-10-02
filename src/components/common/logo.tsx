@@ -1,18 +1,10 @@
 'use client'
 
-import { Abril_Fatface as FontLogo } from 'next/font/google'
 import CamlifeLogo from '@/assets/images/logo.svg'
 import { Pointer } from '@/components/ui/pointer'
+import { fontLogo } from '@/fonts'
 import { useConfetti } from '@/hooks/use-confetti'
 import { cn } from '@/lib/utils'
-
-const fontLogo = FontLogo({
-  subsets: ['latin'],
-  variable: '--font-logo',
-  weight: '400',
-  display: 'swap',
-  adjustFontFallback: false,
-})
 
 export function Logo({ className }: { className?: string }) {
   return (

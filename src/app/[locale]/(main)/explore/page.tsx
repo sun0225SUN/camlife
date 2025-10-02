@@ -1,3 +1,9 @@
+import { ViewLayout } from '@/components/home/view-layout'
+
 export default function ExplorePage() {
-  return <div>Explore</div>
+  return (
+    <ViewLayout>
+      <div>Explore</div>
+    </ViewLayout>
+  )
 }

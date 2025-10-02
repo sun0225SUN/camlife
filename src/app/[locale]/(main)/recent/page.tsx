@@ -1,9 +1,9 @@
 import { ViewLayout } from '@/components/home/view-layout'
 
-export default function HomePage() {
+export default function RecentPage() {
   return (
     <ViewLayout>
-      <div>HomePage</div>
+      <div>Recent</div>
     </ViewLayout>
   )
 }

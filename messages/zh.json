@@ -40,5 +40,12 @@
     "signUpError": "注册失败，请检查输入信息",
     "signOut": "退出登录",
     "profile": "个人资料"
+  },
+  "View": {
+    "essential": "精选",
+    "recent": "最新",
+    "shuffle": "随览",
+    "nearby": "附近",
+    "faraway": "远方"
   }
 }

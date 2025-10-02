@@ -41,5 +41,12 @@
     "signUpError": "Registration failed, please check your input",
     "signOut": "Sign Out",
     "profile": "Profile"
+  },
+  "View": {
+    "essential": "Essential",
+    "recent": "Recent",
+    "shuffle": "Shuffle",
+    "nearby": "Nearby",
+    "faraway": "Faraway"
   }
 }

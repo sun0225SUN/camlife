@@ -190,4 +190,14 @@ export const photoRouter = createTRPCRouter({
       data: photosList,
     }
   }),
+  // get essential photos list（bg rating > 2）
+  getEssentialPhotosList: protectedProcedure.query(async () => {
+    const photosList = await db
+      .select()
+      .from(photos)
+      .orderBy(desc(photos.createdAt))
+    return {
+      data: photosList,
+    }
+  }),
 })
