@@ -16,10 +16,12 @@ import {
   ENABLE_FILE_COMPRESSION,
   IMAGE_SIZE_LIMIT,
 } from '@/constants'
+import { useConfetti } from '@/hooks/use-confetti'
 import { formatExifDateTime } from '@/lib/format'
 import { generateBlurData, getLocationFromCoordinates } from '@/lib/image'
 import { uploadFileWithProgress } from '@/lib/storage'
 import { cn, getCompressedFileName } from '@/lib/utils'
+import { useCommonStore } from '@/stores/common'
 import { usePhotoStore } from '@/stores/photo'
 import { api } from '@/trpc/react'
 import type { FileUploadStep, ImageLocation } from '@/types'
@@ -34,6 +36,9 @@ export function FileUpload() {
   const [progress, setProgress] = useState<number>(0)
 
   const { setDialogOpen, setPhotoInfo, setTriggerType } = usePhotoStore()
+  const { setFirstPhotoUploaded, firstPhotoUploaded } = useCommonStore()
+
+  const { playConfetti } = useConfetti()
 
   const randomId = nanoid()
 
@@ -229,6 +234,12 @@ export function FileUpload() {
           fullAddress: imageLocation.fullAddress,
           placeFormatted: imageLocation.placeFormatted,
         }),
+      }
+
+      // confirm first photo uploaded
+      if (!firstPhotoUploaded) {
+        playConfetti()
+        setFirstPhotoUploaded(true)
       }
 
       setPhotoInfo(newPhotoInfo)
