@@ -18,19 +18,32 @@
 
 ## ✨ 功能特性
 
-- [x] 🎨 简洁极简的设计
-- [x] 📱 适配所有设备的响应式设计
-- [x] 🖼️ 自动从照片中提取 EXIF 数据
+- [x] 🌓 支持深色/浅色主题
+- [x] ✨ 简约优雅的 UI 设计
+- [x] 📱 全设备响应式设计
+- [x] 🖼️ 各种精美的图片展示布局
+- [ ] 🗺️ 酷炫的交互式地图浏览模式
+- [ ] 🏷️ 使用标签整理和展示照片
+- [ ] 🔗 图片分享和 OpenGraph 图片生成
+- [ ] 💼 支持版权购买的图片使用
+- [x] 📊 仪表板支持数据统计、相册管理等
+- [x] 🤖 集成 AI 生成的图片标题和描述
+- [x] 📷 图片 EXIF 自动解析
+- [x] 🗜️ 高效图片压缩和模糊哈希数据生成
+- [x] 📍 基于经纬度获取图片位置信息
+- [ ] 📦 支持批量自动上传和解析处理图片
+- [ ] 📰 生成 RSS/JSON 订阅源
+- [ ] 📸 Live Photo 图片格式支持
+- [ ] 🚀 支持 CDN 加速，更快的照片传输
 - [x] 🔐 使用 Better Auth 的安全认证
-- [x] ☁️ 使用 Cloudflare R2、AWS S3 或 Vercel Blob 的云存储
-- [ ] 📡 RSS 订阅源
-- [ ] ✨ 更多功能...
+- [x] 💾 多存储支持：Cloudflare R2、AWS S3 或 Vercel Blob
+- [ ] 🎁 一些彩蛋和更多功能
 
 ## 🎬 示例网站
 
 - https://camlife.app
 
-> 欢迎将您的网站添加到列表中 ❤️
+> 欢迎将您的网站添加到列表中 https://github.com/sun0225SUN/camlife/issues/11
 
 ## 🔨 技术栈
 
@@ -255,6 +268,7 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
   待完成
 </details>
 
+
 ## 💻 本地开发
 
 1. 克隆仓库
@@ -265,7 +279,7 @@ git clone https://github.com/sun0225SUN/camlife.git
 cd camlife
 ```
 
-2. 在根目录创建 `.env` 文件
+2. 在根目录创建一个 .env 文件，并按照 [🚀 快速开始](#-快速开始) 部分所述配置环境变量
 
 3. 安装依赖
 
@@ -286,7 +300,6 @@ bun run dev
 ```
 
 打开：`http://localhost:3000` 查看您的应用程序。
-
 
 ## 📝 许可证
 

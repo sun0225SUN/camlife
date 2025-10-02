@@ -158,7 +158,7 @@ export function FileUpload() {
       console.info('--- 6. get photo location ---')
       setStep('location')
       let imageLocation: ImageLocation | null = null
-      if (exifData) {
+      if (exifData?.GPSLatitude && exifData?.GPSLongitude) {
         try {
           imageLocation = await getLocationFromCoordinates(
             Number(exifData.GPSLatitude?.description),

@@ -18,19 +18,32 @@
 
 ## ✨ Features
 
-- [x] 🎨 Clean and minimalist design
+- [x] 🌓 Supports dark/light themes
+- [x] ✨ Minimalist and elegant UI design
 - [x] 📱 Responsive design for all devices
-- [x] 🖼️ Automatic EXIF data extraction from photos
+- [x] 🖼️ Various beautiful image display layouts
+- [ ] 🗺️ Cool interactive map browsing mode
+- [ ] 🏷️ Organize and display photos using tags
+- [ ] 🔗 Image sharing and open graph image generation
+- [ ] 💼 Support image usage with copyright purchase
+- [x] 📊 Dashboard supports data statistics, album management, and others
+- [x] 🤖 Integrate AI generated image titles and descriptions
+- [x] 📷 Image EXIF automatic parsing
+- [x] 🗜️ High-efficiency image compression and generation of BlurHash data
+- [x] 📍 Get image location information based on latitude and longitude
+- [ ] 📦 Support for batch automatic upload and parsing processing of images
+- [ ] 📰 Generate RSS/JSON feeds
+- [ ] 📸 Live Photo image format support
+- [ ] 🚀 Supports CDN acceleration for faster photo delivery
 - [x] 🔐 Secure authentication with Better Auth
-- [x] ☁️ Cloud storage with Cloudflare R2、AWS S3 or Vercel Blob
-- [ ] 📡 RSS feed
-- [ ] ✨ and more...
+- [x] 💾 Multi-Storage Support: Cloudflare R2、AWS S3 or Vercel Blob
+- [ ] 🎁 Hide some Easter eggs and more features at any time
 
 ## 🎬 Showcase
 
 - https://camlife.app
 
-> welcome to add your website to the list ❤️
+> Welcome to add your website to the list https://github.com/sun0225SUN/camlife/issues/11
 
 ## 🔨 Tech Stack
 
@@ -50,7 +63,6 @@
 - 🧹 Formatter and Linter - [Biome](https://biomejs.dev)
 - 🪝 Git hooks - [Lefthook](https://lefthook.dev)
 - 📊 Traffic Analysis - [Umami](https://umami.is)
-
 
 ## 👥 Contributors
 
@@ -266,7 +278,7 @@ git clone https://github.com/sun0225SUN/camlife.git
 cd camlife
 ```
 
-2. Create a `.env` file in the root directory
+2. Create a .env file in the root directory, and configure the environment variables as described in the [🚀 Getting Started](#-getting-started) section.
 
 3. Install dependencies
 
@@ -287,7 +299,6 @@ bun run dev
 ```
 
 Open: `http://localhost:3000` to see your application.
-
 
 ## 📝 License
 
