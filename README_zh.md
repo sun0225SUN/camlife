@@ -10,7 +10,7 @@
    <img alt="GitHub Repo forks" src="https://img.shields.io/github/forks/sun0225SUN/camlife?style=flat">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/sun0225SUN/camlife">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/sun0225SUN/camlife">
-  <img src="https://komarev.com/ghpvc/?username=camlife&label=Views&color=orange&style=flat" alt="visitors count" />&emsp;
+  <img alt="Page views" src="https://komarev.com/ghpvc/?username=camlife&label=Views&color=orange&style=flat"/>
 
   <p>Camlife 是一个为所有热爱摄影的人提供的展示摄影作品的网站</p>
   <img src="./readme/images/preview.png" alt="screenshot" />
@@ -25,17 +25,17 @@
 - [ ] 🗺️ 酷炫的交互式地图浏览模式
 - [ ] 🏷️ 使用标签整理和展示照片
 - [ ] 🔗 图片分享和 OpenGraph 图片生成
-- [ ] 💼 支持版权购买的图片使用
+- [ ] 💼 支持图片版权购买
 - [x] 📊 仪表板支持数据统计、相册管理等
-- [x] 🤖 集成 AI 生成的图片标题和描述
+- [x] 🤖 集成 AI 生成图片标题和描述
 - [x] 📷 图片 EXIF 自动解析
 - [x] 🗜️ 高效图片压缩和模糊哈希数据生成
 - [x] 📍 基于经纬度获取图片位置信息
 - [ ] 📦 支持批量自动上传和解析处理图片
-- [ ] 📰 生成 RSS/JSON 订阅源
-- [ ] 📸 Live Photo 图片格式支持
+- [ ] 📰 支持 RSS/JSON 订阅
+- [ ] 📸 支持 Live Photo 图片格式
 - [ ] 🚀 支持 CDN 加速，更快的照片传输
-- [x] 🔐 使用 Better Auth 的安全认证
+- [x] 🔐 使用 Better Auth 完成安全认证
 - [x] 💾 多存储支持：Cloudflare R2、AWS S3 或 Vercel Blob
 - [ ] 🎁 一些彩蛋和更多功能
 
@@ -148,28 +148,6 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_ID="****-1d30-4876-8de6-****"
 NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 ```
 
-
-| 变量名                            | 描述                                                   | 默认值                  | 必需 |
-| :-------------------------------- | :----------------------------------------------------- | :---------------------- | :--- |
-| `DATABASE_URL`                    | PostgreSQL 数据库连接 URL                              | None                    | Yes  |
-| `STORAGE_PROVIDER`                | 存储提供商 (cloudflare-r2, aws-s3, vercel-blob)        | cloudflare-r2           | Yes  |
-| `CLOUDFLARE_R2_ENDPOINT`          | Cloudflare R2 端点 URL                                 | None                    | Yes* |
-| `CLOUDFLARE_R2_BUCKET`            | Cloudflare R2 存储桶名称                               | None                    | Yes* |
-| `CLOUDFLARE_R2_REGION`            | Cloudflare R2 区域                                     | auto                    | No   |
-| `CLOUDFLARE_R2_ACCESS_KEY_ID`     | Cloudflare R2 访问密钥 ID                              | None                    | Yes* |
-| `CLOUDFLARE_R2_SECRET_ACCESS_KEY` | Cloudflare R2 秘密访问密钥                             | None                    | Yes* |
-| `CLOUDFLARE_R2_PREFIX`            | Cloudflare R2 对象键前缀                               | camlife                 | No   |
-| `CLOUDFLARE_R2_PUBLIC_URL`        | Cloudflare R2 公共访问文件 URL                         | None                    | Yes* |
-| `AWS_S3_BUCKET`                   | AWS S3 存储桶名称                                      | None                    | Yes* |
-| `AWS_S3_REGION`                   | AWS S3 区域                                            | auto                    | No   |
-| `AWS_S3_ACCESS_KEY`               | AWS S3 访问密钥                                        | None                    | Yes* |
-| `AWS_S3_SECRET_ACCESS_KEY`        | AWS S3 秘密访问密钥                                    | None                    | Yes* |
-| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox 地图服务访问令牌                                | None                    | Yes  |
-| `BETTER_AUTH_SECRET`              | Better Auth 密钥 (使用 `openssl rand -base64 32` 生成) | None                    | Yes  |
-| `BETTER_AUTH_URL`                 | 应用程序基础 URL                                       | `http://localhost:3000` | Yes  |
-| `NEXT_PUBLIC_UMAMI_ANALYTICS_ID`  | Umami 网站 ID                                          | None                    | No   |
-| `NEXT_PUBLIC_UMAMI_ANALYTICS_JS`  | Umami 自定义分析 JS URL                                | None                    | No   |
-
 > [!note]
 > 标记为 `*` 的变量仅在 `STORAGE_PROVIDER` 设置为 `cloudflare-r2` 时必需。对于其他存储提供商（AWS S3、Vercel Blob），需要不同的环境变量。
 
@@ -268,6 +246,26 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
   待完成
 </details>
 
+| 变量名                            | 描述                                                   | 默认值                  | 必需 |
+| :-------------------------------- | :----------------------------------------------------- | :---------------------- | :--- |
+| `DATABASE_URL`                    | PostgreSQL 数据库连接 URL                              | None                    | Yes  |
+| `STORAGE_PROVIDER`                | 存储提供商 (cloudflare-r2, aws-s3, vercel-blob)        | cloudflare-r2           | Yes  |
+| `CLOUDFLARE_R2_ENDPOINT`          | Cloudflare R2 端点 URL                                 | None                    | Yes* |
+| `CLOUDFLARE_R2_BUCKET`            | Cloudflare R2 存储桶名称                               | None                    | Yes* |
+| `CLOUDFLARE_R2_REGION`            | Cloudflare R2 区域                                     | auto                    | No   |
+| `CLOUDFLARE_R2_ACCESS_KEY_ID`     | Cloudflare R2 访问密钥 ID                              | None                    | Yes* |
+| `CLOUDFLARE_R2_SECRET_ACCESS_KEY` | Cloudflare R2 秘密访问密钥                             | None                    | Yes* |
+| `CLOUDFLARE_R2_PREFIX`            | Cloudflare R2 对象键前缀                               | camlife                 | No   |
+| `CLOUDFLARE_R2_PUBLIC_URL`        | Cloudflare R2 公共访问文件 URL                         | None                    | Yes* |
+| `AWS_S3_BUCKET`                   | AWS S3 存储桶名称                                      | None                    | Yes* |
+| `AWS_S3_REGION`                   | AWS S3 区域                                            | auto                    | No   |
+| `AWS_S3_ACCESS_KEY`               | AWS S3 访问密钥                                        | None                    | Yes* |
+| `AWS_S3_SECRET_ACCESS_KEY`        | AWS S3 秘密访问密钥                                    | None                    | Yes* |
+| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox 地图服务访问令牌                                | None                    | Yes  |
+| `BETTER_AUTH_SECRET`              | Better Auth 密钥 (使用 `openssl rand -base64 32` 生成) | None                    | Yes  |
+| `BETTER_AUTH_URL`                 | 应用程序基础 URL                                       | `http://localhost:3000` | Yes  |
+| `NEXT_PUBLIC_UMAMI_ANALYTICS_ID`  | Umami 网站 ID                                          | None                    | No   |
+| `NEXT_PUBLIC_UMAMI_ANALYTICS_JS`  | Umami 自定义分析 JS URL                                | None                    | No   |
 
 ## 💻 本地开发
 

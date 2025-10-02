@@ -10,7 +10,7 @@
   <img alt="GitHub Repo forks" src="https://img.shields.io/github/forks/sun0225SUN/camlife?style=flat">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/sun0225SUN/camlife">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/sun0225SUN/camlife">
-  <img src="https://komarev.com/ghpvc/?username=camlife&label=Views&color=orange&style=flat" alt="visitors count" />&emsp;
+  <img alt="Page views" src="https://komarev.com/ghpvc/?username=camlife&label=Views&color=orange&style=flat" />
 
   <p>Camlife is a website that showcases photography works for everyone who loves photography</p>
   <img src="./readme/images/preview.png" alt="screenshot" />
@@ -149,27 +149,6 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 ```
 
 
-| Variable                          | Description                                                      | Default                 | Required |
-| :-------------------------------- | :--------------------------------------------------------------- | :---------------------- | :------- |
-| `DATABASE_URL`                    | PostgreSQL database connection URL                               | None                    | Yes      |
-| `STORAGE_PROVIDER`                | Storage provider (cloudflare-r2, aws-s3, vercel-blob)            | cloudflare-r2           | Yes      |
-| `CLOUDFLARE_R2_ENDPOINT`          | Cloudflare R2 endpoint URL                                       | None                    | Yes*     |
-| `CLOUDFLARE_R2_BUCKET`            | Cloudflare R2 bucket name                                        | None                    | Yes*     |
-| `CLOUDFLARE_R2_REGION`            | Cloudflare R2 region                                             | auto                    | No       |
-| `CLOUDFLARE_R2_ACCESS_KEY_ID`     | Cloudflare R2 access key ID                                      | None                    | Yes*     |
-| `CLOUDFLARE_R2_SECRET_ACCESS_KEY` | Cloudflare R2 secret access key                                  | None                    | Yes*     |
-| `CLOUDFLARE_R2_PREFIX`            | Cloudflare R2 object key prefix                                  | camlife                 | No       |
-| `CLOUDFLARE_R2_PUBLIC_URL`        | Cloudflare R2 public URL for accessing files                     | None                    | Yes*     |
-| `AWS_S3_BUCKET`                   | AWS S3 bucket name                                               | None                    | Yes*     |
-| `AWS_S3_REGION`                   | AWS S3 region                                                    | auto                    | No       |
-| `AWS_S3_ACCESS_KEY`               | AWS S3 access key                                                | None                    | Yes*     |
-| `AWS_S3_SECRET_ACCESS_KEY`        | AWS S3 secret access key                                         | None                    | Yes*     |
-| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox map service access token                                  | None                    | Yes      |
-| `BETTER_AUTH_SECRET`              | Better Auth secret key (generate with `openssl rand -base64 32`) | None                    | Yes      |
-| `BETTER_AUTH_URL`                 | Application base URL                                             | `http://localhost:3000` | Yes      |
-| `NEXT_PUBLIC_UMAMI_ANALYTICS_ID`  | Umami Website ID                                                 | None                    | No       |
-| `NEXT_PUBLIC_UMAMI_ANALYTICS_JS`  | Umami Custom Analysis JS URL                                     | None                    | No       |
-
 > [!note]
 > Variables marked with `*` are required only when `STORAGE_PROVIDER` is set to `cloudflare-r2`. For other storage providers (AWS S3, Vercel Blob), different environment variables will be required.
 
@@ -267,6 +246,29 @@ NEXT_PUBLIC_UMAMI_ANALYTICS_JS="https://umami.guoqi.dev/script.js"
 <summary><strong>Vercel Blob</strong></summary>
   Todo
 </details>
+
+
+| Variable                          | Description                                                      | Default                 | Required |
+| :-------------------------------- | :--------------------------------------------------------------- | :---------------------- | :------- |
+| `DATABASE_URL`                    | PostgreSQL database connection URL                               | None                    | Yes      |
+| `STORAGE_PROVIDER`                | Storage provider (cloudflare-r2, aws-s3, vercel-blob)            | cloudflare-r2           | Yes      |
+| `CLOUDFLARE_R2_ENDPOINT`          | Cloudflare R2 endpoint URL                                       | None                    | Yes*     |
+| `CLOUDFLARE_R2_BUCKET`            | Cloudflare R2 bucket name                                        | None                    | Yes*     |
+| `CLOUDFLARE_R2_REGION`            | Cloudflare R2 region                                             | auto                    | No       |
+| `CLOUDFLARE_R2_ACCESS_KEY_ID`     | Cloudflare R2 access key ID                                      | None                    | Yes*     |
+| `CLOUDFLARE_R2_SECRET_ACCESS_KEY` | Cloudflare R2 secret access key                                  | None                    | Yes*     |
+| `CLOUDFLARE_R2_PREFIX`            | Cloudflare R2 object key prefix                                  | camlife                 | No       |
+| `CLOUDFLARE_R2_PUBLIC_URL`        | Cloudflare R2 public URL for accessing files                     | None                    | Yes*     |
+| `AWS_S3_BUCKET`                   | AWS S3 bucket name                                               | None                    | Yes*     |
+| `AWS_S3_REGION`                   | AWS S3 region                                                    | auto                    | No       |
+| `AWS_S3_ACCESS_KEY`               | AWS S3 access key                                                | None                    | Yes*     |
+| `AWS_S3_SECRET_ACCESS_KEY`        | AWS S3 secret access key                                         | None                    | Yes*     |
+| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Mapbox map service access token                                  | None                    | Yes      |
+| `BETTER_AUTH_SECRET`              | Better Auth secret key (generate with `openssl rand -base64 32`) | None                    | Yes      |
+| `BETTER_AUTH_URL`                 | Application base URL                                             | `http://localhost:3000` | Yes      |
+| `NEXT_PUBLIC_UMAMI_ANALYTICS_ID`  | Umami Website ID                                                 | None                    | No       |
+| `NEXT_PUBLIC_UMAMI_ANALYTICS_JS`  | Umami Custom Analysis JS URL                                     | None                    | No       |
+
 
 ## 💻  Local development
 

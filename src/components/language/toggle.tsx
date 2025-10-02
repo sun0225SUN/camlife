@@ -1,39 +1,57 @@
 'use client'
 
+import { Check, Globe } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { Button } from '@/components/ui/button'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { useLanguageToggle } from '@/hooks/use-language-toggle'
 import { routing } from '@/i18n/routing'
+import { cn } from '@/lib/utils'
 
-export function LanguageToggle() {
+interface LanguageToggleProps {
+  className?: string
+}
+
+export function LanguageToggle({ className }: LanguageToggleProps) {
   const t = useTranslations('Language')
-  const { locale, onSelectChange } = useLanguageToggle()
+  const { locale: currentLocale, onSelectChange } = useLanguageToggle()
 
   return (
-    <Select
-      onValueChange={onSelectChange}
-      defaultValue={locale}
-    >
-      <SelectTrigger className='w-[180px]'>
-        <SelectValue placeholder={t(locale)} />
-      </SelectTrigger>
-      <SelectContent>
-        {routing.locales.map((locale) => (
-          <SelectItem
-            key={locale}
-            value={locale}
-            className='cursor-pointer'
-          >
-            {t(locale)}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <Popover>
+      <PopoverTrigger asChild>
+        <Globe
+          className={cn('size-6 cursor-pointer', className)}
+          strokeWidth={2}
+          absoluteStrokeWidth
+        />
+      </PopoverTrigger>
+      <PopoverContent
+        className='w-36 border-none bg-white/80 p-1 shadow-lg backdrop-blur-md dark:bg-black/80'
+        align='end'
+        sideOffset={8}
+      >
+        <div className='space-y-1'>
+          {routing.locales.map((locale) => (
+            <Button
+              key={locale}
+              variant='ghost'
+              size='sm'
+              onClick={() => onSelectChange(locale)}
+              className={cn(
+                'w-full cursor-pointer justify-between font-normal text-sm',
+                locale === currentLocale && 'bg-accent dark:bg-accent/50',
+              )}
+            >
+              {t(locale)}
+              {locale === currentLocale && <Check className='size-4' />}
+            </Button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }

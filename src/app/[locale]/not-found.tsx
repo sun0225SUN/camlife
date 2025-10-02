@@ -1,4 +1,4 @@
-import { Eye } from '@/components/eye'
+import { Eye } from '@/components/common/eye'
 import { MorphingText } from '@/components/ui/morphing-text'
 import { Spotlight } from '@/components/ui/spotlight'
 import { cn } from '@/lib/utils'

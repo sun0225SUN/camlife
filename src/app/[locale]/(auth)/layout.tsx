@@ -1,4 +1,4 @@
-import { LogoWithConfetti } from '@/components/logo'
+import { LogoWithConfetti } from '@/components/common/logo'
 import { EtherealShadow } from '@/components/ui/ethereal-shadow'
 import { GridPattern } from '@/components/ui/grid-pattern'
 

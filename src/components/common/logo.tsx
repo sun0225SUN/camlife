@@ -17,7 +17,12 @@ const fontLogo = FontLogo({
 export function Logo({ className }: { className?: string }) {
   return (
     <div className='flex h-16 items-center gap-2 font-bold text-4xl'>
-      <CamlifeLogo className={className} />
+      <CamlifeLogo
+        className={cn(
+          'size-13 cursor-pointer transition-all duration-300 hover:rotate-45 hover:scale-105',
+          className,
+        )}
+      />
       <div className={cn(fontLogo.className, 'flex-shrink-0 tracking-wide')}>
         CamLife
       </div>

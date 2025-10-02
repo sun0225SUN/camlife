@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import CamlifeLogo from '@/assets/images/logo.svg'
-import { Logo } from '@/components/logo'
+import { Logo } from '@/components/common/logo'
 import { useSidebar } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
 import { DEFAULT_DASHBOARD_PAGE } from '@/routes'

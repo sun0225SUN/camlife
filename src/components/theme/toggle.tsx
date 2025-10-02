@@ -10,11 +10,7 @@ interface ThemeToggleProps {
   strokeWidth?: number
 }
 
-export function ThemeToggle({
-  size = 20,
-  strokeWidth = 2,
-  className,
-}: ThemeToggleProps) {
+export function ThemeToggle({ strokeWidth = 2, className }: ThemeToggleProps) {
   const { setTheme, resolvedTheme } = useTheme()
 
   const toggleTheme = () => {
@@ -31,18 +27,16 @@ export function ThemeToggle({
     <button
       type='button'
       onClick={toggleTheme}
-      className={cn(className, 'cursor-pointer')}
+      className={cn('cursor-pointer', className)}
       aria-label='Toggle theme'
     >
       <Sun
-        className='dark:hidden'
-        size={size}
+        className={cn('size-6 dark:hidden', className)}
         strokeWidth={strokeWidth}
         absoluteStrokeWidth
       />
       <Moon
-        className='hidden dark:block'
-        size={size}
+        className={cn('hidden size-6 dark:block', className)}
         strokeWidth={strokeWidth}
         absoluteStrokeWidth
       />
