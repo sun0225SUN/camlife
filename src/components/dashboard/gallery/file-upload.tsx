@@ -6,7 +6,6 @@ import ExifReader, { type Tags } from 'exifreader'
 import { LoaderIcon, Upload } from 'lucide-react'
 import { motion } from 'motion/react'
 import { nanoid } from 'nanoid'
-import { useLocale } from 'next-intl'
 import { useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
@@ -27,8 +26,6 @@ import { api } from '@/trpc/react'
 import type { FileUploadStep, ImageLocation } from '@/types'
 
 export function FileUpload() {
-  const locale = useLocale()
-
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [file, setFile] = useState<File | null>(null)
@@ -166,7 +163,6 @@ export function FileUpload() {
           imageLocation = await getLocationFromCoordinates(
             Number(exifData.GPSLatitude?.description),
             Number(exifData.GPSLongitude?.description),
-            locale,
             3,
           )
         } catch (error) {

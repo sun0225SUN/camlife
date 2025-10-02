@@ -1,4 +1,5 @@
 import mbxGeocoding from '@mapbox/mapbox-sdk/services/geocoding'
+import { ADDRESS_LANGUAGE } from '@/constants'
 import { env } from '@/env'
 import type { ImageLocation } from '@/types'
 
@@ -10,21 +11,19 @@ const geocodingClient = mbxGeocoding({
  * Get location information using Mapbox Geocoding SDK
  * @param latitude Latitude coordinate
  * @param longitude Longitude coordinate
- * @param language Language code, defaults to 'en'
  * @param level Address level, defaults to 0
  * @returns Promise<ImageLocation> Location information
  */
 export async function getLocationFromCoordinates(
   latitude: number,
   longitude: number,
-  language = 'en',
   level = 0,
 ): Promise<ImageLocation> {
   try {
     const response = await geocodingClient
       .reverseGeocode({
         query: [longitude, latitude],
-        language: [language],
+        language: [ADDRESS_LANGUAGE],
         types: [
           'country',
           'region',

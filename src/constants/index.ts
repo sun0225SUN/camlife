@@ -17,3 +17,8 @@ export const COMPRESS_QUALITY = 0.6
  * Default photo rating
  */
 export const DEFAULT_PHOTO_RATING = 3
+
+/**
+ * Address language in Mapbox Geocoding (ISO 639-1 language code)
+ */
+export const ADDRESS_LANGUAGE = 'en'
