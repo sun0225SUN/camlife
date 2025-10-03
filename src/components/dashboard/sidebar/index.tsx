@@ -18,7 +18,6 @@ import {
   DASHBOARD_HOME_PAGE,
   DASHBOARD_PROFILE_PAGE,
   DASHBOARD_TODO_PAGE,
-  withoutLocale,
 } from '@/routes'
 import { NavSettings } from './nav-settings'
 import { NavTools } from './nav-tools'
@@ -61,7 +60,6 @@ export function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar> & AppSidebarProps) {
   const pathname = usePathname()
-  const pathWithoutLocale = withoutLocale(pathname) // Remove the locale from the pathname
 
   return (
     <Sidebar
@@ -74,15 +72,15 @@ export function AppSidebar({
       <SidebarContent>
         <NavMain
           projects={data.MainMenu}
-          pathname={pathWithoutLocale}
+          pathname={pathname}
         />
         <NavTools
           projects={data.ToolsMenu}
-          pathname={pathWithoutLocale}
+          pathname={pathname}
         />
         <NavSettings
           projects={data.SettingsMenu}
-          pathname={pathWithoutLocale}
+          pathname={pathname}
         />
       </SidebarContent>
       <SidebarFooter>
