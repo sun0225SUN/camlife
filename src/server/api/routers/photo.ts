@@ -393,4 +393,23 @@ export const photoRouter = createTRPCRouter({
       data: photosList,
     }
   }),
+  // get all coordinates for map display
+  getAllCoordinates: publicProcedure.query(async () => {
+    const coordinatesList = await db
+      .select({
+        longitude: photos.longitude,
+        latitude: photos.latitude,
+        url: photos.url,
+        blurData: photos.blurDataUrl,
+        width: photos.width,
+        height: photos.height,
+      })
+      .from(photos)
+      .where(
+        sql`${photos.latitude} IS NOT NULL AND ${photos.longitude} IS NOT NULL`,
+      )
+      .orderBy(desc(photos.createdAt))
+
+    return coordinatesList
+  }),
 })

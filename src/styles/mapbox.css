@@ -11,3 +11,16 @@
 .mapboxgl-compact {
   display: none;
 }
+
+.mapboxgl-popup-content {
+  padding: 0;
+  border-radius: 10px;
+}
+
+.mapboxgl-popup-close-button {
+  display: none;
+}
+
+.dark .mapboxgl-popup-tip {
+  border-top-color: #333333;
+}

@@ -1,19 +1,21 @@
-import { Suspense } from 'react'
-import { Fallback } from '@/components/common/fallback'
-import { BaseLayout } from '@/components/layout/base'
-import { ExplorePhotos } from '@/components/photos/explore'
-import { api, HydrateClient } from '@/trpc/server'
+'use client'
 
-export default async function ExplorePage() {
-  void api.photo.getExplorePhotosList.prefetch()
+import dynamic from 'next/dynamic'
+import { useSearchParams } from 'next/navigation'
+
+const DynamicMap = dynamic(() => import('@/components/map'), {
+  ssr: false,
+})
+
+export default function MapPage() {
+  const params = useSearchParams()
+  const hideControls = params.get('hide_controls') === 'true'
+  const lang = params?.get('lang')
 
   return (
-    <HydrateClient>
-      <BaseLayout>
-        <Suspense fallback={<Fallback />}>
-          <ExplorePhotos />
-        </Suspense>
-      </BaseLayout>
-    </HydrateClient>
+    <DynamicMap
+      hideControls={hideControls}
+      lang={lang}
+    />
   )
 }
