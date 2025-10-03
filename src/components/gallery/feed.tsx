@@ -23,6 +23,18 @@ interface FeedGalleryProps {
   tempRating?: number
   onRatingChange: (rating: number | undefined) => void
   photos: Photo[]
+  queryResult?: {
+    data?: {
+      pages: Array<{
+        items: Photo[]
+        nextCursor?: string
+      }>
+    }
+    fetchNextPage: () => void
+    hasNextPage?: boolean
+    isFetchingNextPage: boolean
+    isLoading: boolean
+  }
 }
 
 export function FeedGallery({
@@ -31,6 +43,7 @@ export function FeedGallery({
   tempRating,
   onRatingChange,
   photos,
+  queryResult,
 }: FeedGalleryProps) {
   const photoWidth = photo.width || 1200
   const photoHeight = photo.height || 900
@@ -84,6 +97,7 @@ export function FeedGallery({
         index={index}
         tempRating={tempRating}
         onRatingChange={onRatingChange}
+        queryResult={queryResult}
       />
     </>
   )

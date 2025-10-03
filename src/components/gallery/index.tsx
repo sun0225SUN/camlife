@@ -183,6 +183,7 @@ export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
                     handleRatingChange(photo.id, rating)
                   }
                   photos={photos}
+                  queryResult={queryResult}
                 />
               )
             case 'waterfall':
@@ -196,6 +197,7 @@ export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
                     handleRatingChange(photo.id, rating)
                   }
                   photos={photos}
+                  queryResult={queryResult}
                 />
               )
             case 'grid':
@@ -209,6 +211,7 @@ export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
                     handleRatingChange(photo.id, rating)
                   }
                   photos={photos}
+                  queryResult={queryResult}
                 />
               )
             default:
@@ -222,6 +225,7 @@ export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
                     handleRatingChange(photo.id, rating)
                   }
                   photos={photos}
+                  queryResult={queryResult}
                 />
               )
           }

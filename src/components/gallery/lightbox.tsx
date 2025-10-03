@@ -15,6 +15,7 @@ import '@/styles/lightbox.css'
 import Captions from 'yet-another-react-lightbox/plugins/captions'
 import 'yet-another-react-lightbox/plugins/captions.css'
 import Zoom from 'yet-another-react-lightbox/plugins/zoom'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface PhotoLightboxProps {
   photos: Photo[]
@@ -23,6 +24,21 @@ interface PhotoLightboxProps {
   index: number
   tempRating?: number
   onRatingChange: (rating: number | undefined) => void
+  fetchNextPage?: () => void
+  hasNextPage?: boolean
+  isFetchingNextPage?: boolean
+  queryResult?: {
+    data?: {
+      pages: Array<{
+        items: Photo[]
+        nextCursor?: string
+      }>
+    }
+    fetchNextPage: () => void
+    hasNextPage?: boolean
+    isFetchingNextPage: boolean
+    isLoading: boolean
+  }
 }
 
 export function PhotoLightbox({
@@ -32,39 +48,71 @@ export function PhotoLightbox({
   index,
   tempRating,
   onRatingChange,
+  queryResult,
 }: PhotoLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(index)
+  const [allPhotos, setAllPhotos] = useState<Photo[]>(photos)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     setCurrentIndex(index)
   }, [index])
 
+  useEffect(() => {
+    if (queryResult?.data?.pages) {
+      const allPhotosFromPages = queryResult.data.pages.flatMap(
+        (page) => page.items,
+      )
+      const seenIds = new Set<string>()
+      const deduplicatedPhotos = allPhotosFromPages.filter((photo) => {
+        if (seenIds.has(photo.id)) {
+          return false
+        }
+        seenIds.add(photo.id)
+        return true
+      })
+      setAllPhotos(deduplicatedPhotos)
+    } else {
+      setAllPhotos(photos)
+    }
+  }, [photos, queryResult?.data?.pages])
+
   const isClient = useIsClient()
   const { resolvedTheme } = useTheme()
 
   const slides = useMemo(() => {
-    return photos.map((photo) => ({
-      src: photo.compressedUrl || photo.url,
-      alt: photo.title || 'Photo',
-      title: photo.title,
-      width: photo.width || 1200,
-      height: photo.height || 900,
-      srcSet: [
-        {
-          src: photo.compressedUrl || photo.url,
-          width: photo.width || 1200,
-          height: photo.height || 900,
-        },
-        {
-          src: photo.url,
-          width: photo.width || 1200,
-          height: photo.height || 900,
-        },
-      ],
-    }))
-  }, [photos])
+    return allPhotos.map((photo) => {
+      // Ensure width and height are valid numbers
+      const width =
+        photo.width && photo.width > 0 ? Math.round(photo.width) : 1200
+      const height =
+        photo.height && photo.height > 0 ? Math.round(photo.height) : 900
 
-  const currentPhoto = photos[currentIndex]
+      return {
+        // Use the original URL for the slide source
+        src: photo.url,
+        alt: photo.title || 'Photo',
+        title: photo.title,
+        width,
+        height,
+        srcSet: [
+          {
+            src: photo.compressedUrl || photo.url,
+            width,
+            height,
+          },
+          {
+            src: photo.url,
+            width,
+            height,
+          },
+        ],
+      }
+    })
+  }, [allPhotos])
+
+  const currentPhoto = allPhotos[currentIndex]
 
   const lightboxStyles = useMemo(() => {
     const isDark = resolvedTheme === 'dark'
@@ -81,8 +129,21 @@ export function PhotoLightbox({
   const handleViewChange = useCallback(
     ({ index: newIndex }: { index: number }) => {
       setCurrentIndex(newIndex)
+
+      if (
+        queryResult?.hasNextPage &&
+        !queryResult?.isFetchingNextPage &&
+        !isLoadingMore &&
+        newIndex >= allPhotos.length - 3
+      ) {
+        setIsLoadingMore(true)
+        queryResult.fetchNextPage()
+        setTimeout(() => {
+          setIsLoadingMore(false)
+        }, 1000)
+      }
     },
-    [],
+    [queryResult, isLoadingMore, allPhotos.length],
   )
 
   if (!isClient) {
@@ -126,30 +187,27 @@ export function PhotoLightbox({
         render={{
           slide: ({ slide, rect }) => {
             const slideIndex = slides.findIndex((s) => s.src === slide.src)
-            const photo = slideIndex >= 0 ? photos[slideIndex] : null
+            const photo = slideIndex >= 0 ? allPhotos[slideIndex] : null
 
-            // Calculate optimal display size
-            const cover = false // Use contain mode
+            // Use the pre-calculated dimensions from slides
             const slideWidth = slide.width || 1200
             const slideHeight = slide.height || 900
 
-            const width = !cover
-              ? Math.round(
-                  Math.min(
-                    rect.width,
-                    (rect.height / slideHeight) * slideWidth,
-                  ),
-                )
-              : rect.width
+            // Calculate aspect ratio
+            const slideAspectRatio = slideWidth / slideHeight
+            const rectAspectRatio = rect.width / rect.height
 
-            const height = !cover
-              ? Math.round(
-                  Math.min(
-                    rect.height,
-                    (rect.width / slideWidth) * slideHeight,
-                  ),
-                )
-              : rect.height
+            let width: number, height: number
+
+            if (slideAspectRatio > rectAspectRatio) {
+              // Image is wider than container - fit to width
+              width = Math.round(rect.width)
+              height = Math.round(width / slideAspectRatio)
+            } else {
+              // Image is taller than container - fit to height
+              height = Math.round(rect.height)
+              width = Math.round(height * slideAspectRatio)
+            }
 
             return (
               <div className='relative flex h-full w-full items-center justify-center'>
@@ -193,7 +251,7 @@ export function PhotoLightbox({
               type='button'
               onClick={() => {
                 if (currentIndex > 0) {
-                  setCurrentIndex(currentIndex - 1)
+                  handleViewChange({ index: currentIndex - 1 })
                 }
               }}
               disabled={currentIndex === 0}
@@ -214,15 +272,15 @@ export function PhotoLightbox({
               key='next-button'
               type='button'
               onClick={() => {
-                if (currentIndex < photos.length - 1) {
-                  setCurrentIndex(currentIndex + 1)
+                if (currentIndex < allPhotos.length - 1) {
+                  handleViewChange({ index: currentIndex + 1 })
                 }
               }}
-              disabled={currentIndex === photos.length - 1}
+              disabled={currentIndex === allPhotos.length - 1}
               className={cn(
                 '-translate-y-1/2 absolute top-1/2 right-4 z-50 flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200',
                 'cursor-pointer border backdrop-blur-md hover:scale-110 active:scale-95',
-                currentIndex === photos.length - 1 &&
+                currentIndex === allPhotos.length - 1 &&
                   'cursor-not-allowed opacity-50',
                 resolvedTheme === 'dark'
                   ? 'border-white/20 bg-black/30 text-white hover:bg-black/50'
@@ -236,13 +294,16 @@ export function PhotoLightbox({
       />
 
       {currentPhoto &&
+        !isMobile &&
         createPortal(
           <div
             className={cn(
-              'fixed right-0 bottom-15 left-0 z-50 transition-all duration-200',
-              open
-                ? 'translate-y-0 opacity-100'
-                : 'pointer-events-none translate-y-4 opacity-0',
+              'pointer-events-none fixed bottom-6 left-1/2 z-[9999] transition-all duration-200',
+              '-translate-x-1/2 transform',
+              open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
+              'bg-white/80 backdrop-blur-md dark:bg-black/80',
+              'rounded-2xl border border-white/20 dark:border-black/20',
+              'mx-auto max-w-7xl p-4 shadow-lg',
             )}
           >
             <FeedPhotoInfo

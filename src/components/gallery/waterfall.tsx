@@ -13,6 +13,18 @@ interface WaterfallGalleryProps {
   tempRating?: number
   onRatingChange: (rating: number | undefined) => void
   photos: Photo[]
+  queryResult?: {
+    data?: {
+      pages: Array<{
+        items: Photo[]
+        nextCursor?: string
+      }>
+    }
+    fetchNextPage: () => void
+    hasNextPage?: boolean
+    isFetchingNextPage: boolean
+    isLoading: boolean
+  }
 }
 
 export function WaterfallGallery({
@@ -21,6 +33,7 @@ export function WaterfallGallery({
   tempRating,
   onRatingChange,
   photos,
+  queryResult,
 }: WaterfallGalleryProps) {
   const isClient = useIsClient()
   const photoWidth = photo.width || 1200
@@ -63,6 +76,7 @@ export function WaterfallGallery({
         index={index}
         tempRating={tempRating}
         onRatingChange={onRatingChange}
+        queryResult={queryResult}
       />
     </>
   )

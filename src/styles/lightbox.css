@@ -1,5 +1,5 @@
 .yarl__portal {
-  z-index: 49;
+  z-index: 49 !important;
 }
 
 /* Ensure lightbox container supports center alignment */
@@ -15,75 +15,22 @@
   justify-content: center;
 }
 
-/* Adjust captions positioning for mobile */
-.yarl__caption {
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 12px 16px;
-  border-radius: 12px;
-  font-size: 14px;
-  max-width: 90%;
-  text-align: center;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.yarl__caption__title {
-  font-weight: 600;
-  margin-bottom: 6px;
-  font-size: 16px;
-}
-
-.yarl__caption__description {
-  font-size: 13px;
-  opacity: 0.9;
-  line-height: 1.4;
-}
-
-/* Mobile specific adjustments */
-@media (max-width: 768px) {
-  .yarl__caption {
-    bottom: 120px;
-    padding: 16px 20px;
-    max-width: 95%;
-    font-size: 15px;
-  }
-
-  .yarl__caption__title {
-    font-size: 18px;
-    margin-bottom: 8px;
-  }
-
-  .yarl__caption__description {
-    font-size: 14px;
-  }
-}
-
-/* Very small screens */
-@media (max-width: 480px) {
-  .yarl__caption {
-    bottom: 140px;
-    padding: 20px 24px;
-    max-width: 98%;
-  }
-
-  .yarl__caption__title {
-    font-size: 20px;
-  }
-
-  .yarl__caption__description {
-    font-size: 15px;
-  }
-}
-
 /* Hide zoom buttons */
 .yarl__button[title="Zoom in"],
 .yarl__button[title="Zoom out"],
 .yarl__button[aria-label="Zoom in"],
 .yarl__button[aria-label="Zoom out"] {
-  display: none !important;
+  display: none;
+}
+
+.yarl__slide_captions_container {
+  background: transparent !important;
+}
+
+.yarl__slide_title {
+  color: black !important;
+}
+
+.dark .yarl__slide_title {
+  color: white !important;
 }

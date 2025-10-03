@@ -17,6 +17,9 @@
         "noStaticElementInteractions": "off",
         "useKeyWithClickEvents": "off"
       },
+      "complexity": {
+        "noImportantStyles": "off"
+      },
       "nursery": {
         "useSortedClasses": {
           "level": "warn",
