@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import NextTopLoader from 'nextjs-toploader'
 import { Analytics } from '@/components/common/analytics'
+import { CommandMenu } from '@/components/common/cmdk'
 import { ConsoleBanner } from '@/components/common/console-banner'
 import { ThemeProvider } from '@/components/theme/provider'
 import { Toaster } from '@/components/ui/sonner'
@@ -52,6 +53,7 @@ export default async function RootLayout({ children, params }: Props) {
               <Analytics />
               <NextTopLoader />
               <ConsoleBanner />
+              <CommandMenu />
             </TRPCReactProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
