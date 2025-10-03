@@ -22,7 +22,7 @@
 - [x] ✨ Minimalist and elegant UI design
 - [x] 📱 Responsive design for all devices
 - [x] 🖼️ Various beautiful image display layouts
-- [ ] 🗺️ Cool interactive map browsing mode
+- [x] 🗺️ Cool interactive map browsing mode
 - [ ] 🏷️ Organize and display photos using tags
 - [ ] 🔗 Image sharing and open graph image generation
 - [ ] 💼 Support image usage with copyright purchase
@@ -62,7 +62,7 @@
 - 🔗 API Layer - [tRPC](https://trpc.io)
 - 🧹 Formatter and Linter - [Biome](https://biomejs.dev)
 - 🪝 Git hooks - [Lefthook](https://lefthook.dev)
-- 📊 Traffic Analysis - [Umami](https://umami.is)
+- 📊 Traffic Analysis - [Umami](https://umami.is) &  [@vercel/analytics](https://vercel.com/docs/analytics/quickstart?package-manager=bun)
 
 ## 👥 Contributors
 

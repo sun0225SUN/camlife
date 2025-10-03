@@ -1,3 +1,4 @@
+import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
 import Script from 'next/script'
 import { env } from '@/env'
 
@@ -14,6 +15,7 @@ export const Analytics = () => {
           data-website-id={env.NEXT_PUBLIC_UMAMI_ANALYTICS_ID}
         />
       )}
+      <VercelAnalytics />
     </>
   )
 }
