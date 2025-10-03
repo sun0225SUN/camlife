@@ -2,6 +2,8 @@
 
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
+import { useState } from 'react'
+import { PhotoLightbox } from '@/components/gallery/lightbox'
 import { PhotoExif } from '@/components/gallery/photo-info/exif'
 import { PhotoHoverOverlay } from '@/components/gallery/photo-info/hover-overlay'
 import { InfoItem } from '@/components/gallery/photo-info/item'
@@ -20,6 +22,7 @@ interface FeedGalleryProps {
   index: number
   tempRating?: number
   onRatingChange: (rating: number | undefined) => void
+  photos: Photo[]
 }
 
 export function FeedGallery({
@@ -27,11 +30,14 @@ export function FeedGallery({
   index,
   tempRating,
   onRatingChange,
+  photos,
 }: FeedGalleryProps) {
   const photoWidth = photo.width || 1200
   const photoHeight = photo.height || 900
   const isPortrait = photoHeight > photoWidth
   const isClient = useIsClient()
+
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   const { displaySize } = useImageDisplaySize({
     width: photoWidth,
@@ -39,39 +45,51 @@ export function FeedGallery({
   })
 
   return (
-    <div className='fade-in-0 slide-in-from-bottom-4 relative flex max-w-full animate-in flex-col items-center justify-center gap-6 px-2 duration-700 md:gap-10 md:px-0'>
-      <div
-        className='group relative max-w-full rounded-lg object-contain'
-        style={{ width: displaySize.width, height: displaySize.height }}
-      >
-        {isClient && (
-          <Image
-            placeholder='blur'
-            blurDataURL={photo.blurDataUrl}
-            src={photo.compressedUrl || photo.url}
-            fill
-            alt={photo.title || 'Photo'}
-            priority={index < PER_PAGE_PHOTOS_COUNT}
-            className='rounded-lg shadow-2xl'
-            sizes={`(min-width: 1280px) min(${displaySize.width}px, calc(100vw - 384px)), (min-width: 768px) min(${displaySize.width}px, calc(100vw - 96px)), min(${displaySize.width}px, 100vw)`}
+    <>
+      <div className='fade-in-0 slide-in-from-bottom-4 relative flex max-w-full animate-in cursor-pointer flex-col items-center justify-center gap-6 px-2 duration-700 md:gap-10 md:px-0'>
+        <div
+          className='group relative max-w-full rounded-lg object-contain'
+          style={{ width: displaySize.width, height: displaySize.height }}
+          onClick={() => setLightboxOpen(true)}
+        >
+          {isClient && (
+            <Image
+              placeholder='blur'
+              blurDataURL={photo.blurDataUrl}
+              src={photo.compressedUrl || photo.url}
+              fill
+              alt={photo.title || 'Photo'}
+              priority={index < PER_PAGE_PHOTOS_COUNT}
+              className='rounded-lg shadow-2xl'
+              sizes={`(min-width: 1280px) min(${displaySize.width}px, calc(100vw - 384px)), (min-width: 768px) min(${displaySize.width}px, calc(100vw - 96px)), min(${displaySize.width}px, 100vw)`}
+            />
+          )}
+          <PhotoHoverOverlay
+            title={photo.title}
+            description={photo.description}
+            isPortrait={isPortrait}
           />
-        )}
-        <PhotoHoverOverlay
-          title={photo.title}
-          description={photo.description}
-          isPortrait={isPortrait}
+        </div>
+        <FeedPhotoInfo
+          photo={photo}
+          tempRating={tempRating}
+          onRatingChange={onRatingChange}
         />
       </div>
-      <FeedPhotoInfo
-        photo={photo}
+
+      <PhotoLightbox
+        photos={photos}
+        open={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        index={index}
         tempRating={tempRating}
         onRatingChange={onRatingChange}
       />
-    </div>
+    </>
   )
 }
 
-function FeedPhotoInfo({
+export function FeedPhotoInfo({
   photo,
   tempRating,
   onRatingChange,

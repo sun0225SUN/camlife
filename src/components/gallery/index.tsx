@@ -182,6 +182,7 @@ export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
                   onRatingChange={(rating) =>
                     handleRatingChange(photo.id, rating)
                   }
+                  photos={photos}
                 />
               )
             case 'waterfall':
@@ -189,6 +190,12 @@ export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
                 <WaterfallGallery
                   key={photoKey}
                   photo={photo}
+                  index={index}
+                  tempRating={tempRatings[photo.id]}
+                  onRatingChange={(rating) =>
+                    handleRatingChange(photo.id, rating)
+                  }
+                  photos={photos}
                 />
               )
             case 'grid':
@@ -196,6 +203,12 @@ export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
                 <GridGallery
                   key={photoKey}
                   photo={photo}
+                  index={index}
+                  tempRating={tempRatings[photo.id]}
+                  onRatingChange={(rating) =>
+                    handleRatingChange(photo.id, rating)
+                  }
+                  photos={photos}
                 />
               )
             default:
@@ -208,6 +221,7 @@ export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
                   onRatingChange={(rating) =>
                     handleRatingChange(photo.id, rating)
                   }
+                  photos={photos}
                 />
               )
           }
