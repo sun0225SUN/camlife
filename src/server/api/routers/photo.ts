@@ -738,4 +738,239 @@ export const photoRouter = createTRPCRouter({
 
     return coordinatesList
   }),
+  // get dashboard statistics
+  getDashboardStats: protectedProcedure.query(async () => {
+    // Get total photos count (all photos for dashboard)
+    const totalPhotosResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(photos)
+
+    // Get photos by country
+    const photosByCountry = await db
+      .select({
+        country: photos.country,
+        count: sql<number>`count(*)`,
+      })
+      .from(photos)
+      .where(sql`${photos.country} IS NOT NULL`)
+      .groupBy(photos.country)
+      .orderBy(sql`count(*) DESC`)
+      .limit(10)
+
+    // Get photos by city
+    const photosByCity = await db
+      .select({
+        city: photos.city,
+        country: photos.country,
+        count: sql<number>`count(*)`,
+      })
+      .from(photos)
+      .where(sql`${photos.city} IS NOT NULL`)
+      .groupBy(photos.city, photos.country)
+      .orderBy(sql`count(*) DESC`)
+      .limit(10)
+
+    // Get photos by month (last 12 months)
+    const photosByMonth = await db
+      .select({
+        month: sql<string>`to_char(${photos.dateTimeOriginal}, 'YYYY-MM')`,
+        count: sql<number>`count(*)`,
+      })
+      .from(photos)
+      .where(
+        sql`${photos.dateTimeOriginal} IS NOT NULL AND ${photos.dateTimeOriginal} >= NOW() - INTERVAL '12 months'`,
+      )
+      .groupBy(sql`to_char(${photos.dateTimeOriginal}, 'YYYY-MM')`)
+      .orderBy(sql`to_char(${photos.dateTimeOriginal}, 'YYYY-MM')`)
+
+    // Get photos by rating
+    const photosByRating = await db
+      .select({
+        rating: photos.rating,
+        count: sql<number>`count(*)`,
+      })
+      .from(photos)
+      .groupBy(photos.rating)
+      .orderBy(photos.rating)
+
+    // Get camera equipment stats
+    const cameraStats = await db
+      .select({
+        make: photos.make,
+        model: photos.model,
+        count: sql<number>`count(*)`,
+      })
+      .from(photos)
+      .where(sql`${photos.make} IS NOT NULL AND ${photos.model} IS NOT NULL`)
+      .groupBy(photos.make, photos.model)
+      .orderBy(sql`count(*) DESC`)
+      .limit(10)
+
+    // Get lens equipment stats
+    const lensStats = await db
+      .select({
+        lensModel: photos.lensModel,
+        count: sql<number>`count(*)`,
+      })
+      .from(photos)
+      .where(sql`${photos.lensModel} IS NOT NULL`)
+      .groupBy(photos.lensModel)
+      .orderBy(sql`count(*) DESC`)
+      .limit(10)
+
+    // Get recent photos (last 30 days)
+    const recentPhotos = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(photos)
+      .where(sql`${photos.createdAt} >= NOW() - INTERVAL '30 days'`)
+
+    return {
+      totalPhotos: totalPhotosResult[0]?.count || 0,
+      recentPhotos: recentPhotos[0]?.count || 0,
+      photosByCountry,
+      photosByCity,
+      photosByMonth,
+      photosByRating,
+      cameraStats,
+      lensStats,
+    }
+  }),
+
+  // Get photo activity data (similar to GitHub contribution graph)
+  getActivityData: protectedProcedure.query(async () => {
+    // Get all photo data, grouped by shooting time year
+    const yearlyData = await db
+      .select({
+        year: sql<number>`EXTRACT(YEAR FROM ${photos.dateTimeOriginal})`,
+        date: sql<string>`DATE(${photos.dateTimeOriginal})`,
+        count: sql<number>`count(*)`,
+      })
+      .from(photos)
+      .where(sql`${photos.dateTimeOriginal} IS NOT NULL`)
+      .groupBy(
+        sql`EXTRACT(YEAR FROM ${photos.dateTimeOriginal})`,
+        sql`DATE(${photos.dateTimeOriginal})`,
+      )
+      .orderBy(
+        sql`EXTRACT(YEAR FROM ${photos.dateTimeOriginal})`,
+        sql`DATE(${photos.dateTimeOriginal})`,
+      )
+
+    // Get total photos per year (including photos without dateTimeOriginal)
+    const yearlyTotals = await db
+      .select({
+        year: sql<number>`EXTRACT(YEAR FROM ${photos.dateTimeOriginal})`,
+        totalCount: sql<number>`count(*)`,
+      })
+      .from(photos)
+      .where(sql`${photos.dateTimeOriginal} IS NOT NULL`)
+      .groupBy(sql`EXTRACT(YEAR FROM ${photos.dateTimeOriginal})`)
+      .orderBy(sql`EXTRACT(YEAR FROM ${photos.dateTimeOriginal})`)
+
+    // Get count of photos without dateTimeOriginal (grouped by creation time year)
+    const photosWithoutDateTime = await db
+      .select({
+        year: sql<number>`EXTRACT(YEAR FROM ${photos.createdAt})`,
+        totalCount: sql<number>`count(*)`,
+      })
+      .from(photos)
+      .where(sql`${photos.dateTimeOriginal} IS NULL`)
+      .groupBy(sql`EXTRACT(YEAR FROM ${photos.createdAt})`)
+      .orderBy(sql`EXTRACT(YEAR FROM ${photos.createdAt})`)
+
+    // Get total photo count
+    const totalPhotosResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(photos)
+
+    // Organize data by year
+    const yearGroups = new Map<number, Map<string, number>>()
+    yearlyData.forEach((item) => {
+      if (!yearGroups.has(item.year)) {
+        yearGroups.set(item.year, new Map())
+      }
+      yearGroups.get(item.year)!.set(item.date, item.count)
+    })
+
+    // Merge yearly totals (photos with dateTimeOriginal)
+    const yearlyTotalsMap = new Map<number, number>()
+    yearlyTotals.forEach((item) => {
+      yearlyTotalsMap.set(item.year, item.totalCount)
+    })
+
+    // Merge photos without dateTimeOriginal to corresponding years
+    photosWithoutDateTime.forEach((item) => {
+      const existingCount = yearlyTotalsMap.get(item.year) || 0
+      yearlyTotalsMap.set(item.year, existingCount + item.totalCount)
+    })
+
+    // Generate heatmap data for each year
+    const yearlyActivityData: Record<
+      number,
+      {
+        weeklyData: number[][]
+        totalPhotos: number
+        startDate: string
+      }
+    > = {}
+
+    const years = Array.from(yearGroups.keys()).sort((a, b) => b - a) // Sort years in descending order
+
+    years.forEach((year) => {
+      const dateCountMap = yearGroups.get(year)!
+
+      // Calculate start and end dates for the year
+      const yearStart = new Date(year, 0, 1) // January 1st
+      const yearEnd = new Date(year, 11, 31) // December 31st
+
+      // Find the first Sunday of the year
+      const startDate = new Date(yearStart)
+      const dayOfWeek = startDate.getDay()
+      startDate.setDate(startDate.getDate() - dayOfWeek)
+
+      // Generate weekly data for the year
+      const weeklyData: number[][] = []
+      const today = new Date()
+
+      for (let week = 0; week < 53; week++) {
+        const weekData: number[] = []
+
+        for (let day = 0; day < 7; day++) {
+          const currentDate = new Date(startDate)
+          currentDate.setDate(startDate.getDate() + week * 7 + day)
+
+          // If date is outside year range or in future, set to 0
+          if (
+            currentDate < yearStart ||
+            currentDate > yearEnd ||
+            currentDate > today
+          ) {
+            weekData.push(0)
+            continue
+          }
+
+          const dateStr = currentDate.toISOString().split('T')[0]!
+          const count = dateCountMap.get(dateStr) || 0
+          weekData.push(count)
+        }
+
+        weeklyData.push(weekData)
+      }
+
+      yearlyActivityData[year] = {
+        weeklyData,
+        totalPhotos: yearlyTotalsMap.get(year) || 0,
+        startDate: startDate.toISOString().split('T')[0]!,
+      }
+    })
+
+    // Calculate total
+    const totalPhotos = totalPhotosResult[0]?.count || 0
+
+    return {
+      yearlyData: yearlyActivityData,
+      years,
+      totalPhotos,
+    }
+  }),
 })

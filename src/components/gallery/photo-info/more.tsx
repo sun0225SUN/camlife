@@ -34,7 +34,7 @@ export function PhotoInfoMore({ photo }: PhotoInfoMoreProps) {
         </DrawerTrigger>
         <DrawerContent className='max-h-[60vh] p-4'>
           <DrawerHeader>
-            <DrawerTitle>详细信息</DrawerTitle>
+            <DrawerTitle>Details</DrawerTitle>
           </DrawerHeader>
           <PhotoInfoMoreContent photo={photo} />
         </DrawerContent>

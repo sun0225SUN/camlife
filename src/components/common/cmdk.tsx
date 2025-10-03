@@ -2,11 +2,11 @@
 
 import * as Dialog from '@radix-ui/react-dialog'
 import { Command } from 'cmdk'
-import { useRouter } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import { useState } from 'react'
 import { useKey } from 'react-use'
 import { useLanguageToggle } from '@/hooks/use-language-toggle'
+import { useRouter } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 
 export function CommandMenu() {
@@ -100,7 +100,7 @@ export function CommandMenu() {
               onSelect={handleLanguageToggle}
             >
               <span className='mr-2'>🌐</span>
-              Switch to {locale === 'zh' ? 'English' : '中文'}
+              Switch to {locale === 'zh' ? 'English' : 'Chinese'}
             </Command.Item>
           </Command.Group>
 

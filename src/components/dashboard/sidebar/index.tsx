@@ -1,8 +1,9 @@
 'use client'
 
-import { Home, Image, ListTodo, SquareUserRound } from 'lucide-react'
+import { Home, Image, ListTodo, Settings } from 'lucide-react'
 import { NavLogo } from '@/components/dashboard/sidebar/nav-logo'
 import { NavMain } from '@/components/dashboard/sidebar/nav-main'
+import { NavSettings } from '@/components/dashboard/sidebar/nav-settings'
 import { NavUser } from '@/components/dashboard/sidebar/nav-user'
 import {
   Sidebar,
@@ -16,11 +17,9 @@ import type { Session } from '@/lib/auth'
 import {
   DASHBOARD_GALLERY_PAGE,
   DASHBOARD_HOME_PAGE,
-  DASHBOARD_PROFILE_PAGE,
+  DASHBOARD_SETTINGS_PAGE,
   DASHBOARD_TODO_PAGE,
 } from '@/routes'
-import { NavSettings } from './nav-settings'
-import { NavTools } from './nav-tools'
 
 interface AppSidebarProps {
   session: Session
@@ -48,9 +47,9 @@ const data = {
   ],
   SettingsMenu: [
     {
-      name: 'Profile',
-      url: DASHBOARD_PROFILE_PAGE,
-      icon: SquareUserRound,
+      name: 'Settings',
+      url: DASHBOARD_SETTINGS_PAGE,
+      icon: Settings,
     },
   ],
 }
@@ -72,10 +71,6 @@ export function AppSidebar({
       <SidebarContent>
         <NavMain
           projects={data.MainMenu}
-          pathname={pathname}
-        />
-        <NavTools
-          projects={data.ToolsMenu}
           pathname={pathname}
         />
         <NavSettings

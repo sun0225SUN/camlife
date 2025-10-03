@@ -217,7 +217,7 @@
     display: none; /* Chrome, Safari and Opera */
   }
 
-  /* Grid 响应式间距优化 - 更大的图片 */
+  /* Grid responsive spacing optimization - larger images */
   .grid-container {
     width: 100%;
     display: grid;

@@ -129,7 +129,7 @@ export function ApertureLoader({
         borderRadius: '50%',
       }}
     >
-      {/* 第一组扇形 */}
+      {/* First group of sectors */}
       <span
         style={{
           position: 'absolute',
@@ -167,7 +167,7 @@ export function ApertureLoader({
         }}
       />
 
-      {/* 第二组扇形 */}
+      {/* Second group of sectors */}
       <span
         style={{
           position: 'absolute',
@@ -205,7 +205,7 @@ export function ApertureLoader({
         }}
       />
 
-      {/* 第三组扇形 */}
+      {/* Third group of sectors */}
       <span
         style={{
           position: 'absolute',
@@ -243,7 +243,7 @@ export function ApertureLoader({
         }}
       />
 
-      {/* 第四组扇形 */}
+      {/* Fourth group of sectors */}
       <span
         style={{
           position: 'absolute',

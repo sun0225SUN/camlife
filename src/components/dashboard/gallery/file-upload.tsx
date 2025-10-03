@@ -60,6 +60,7 @@ export function FileUpload() {
     if (!file) return
 
     setFile(file)
+    setProgress(0) // 重置进度为0，防止使用内存中的进度
     const { name, type: fileType, size: fileSize } = file
     const fileNameWithoutExt = name.substring(0, name.lastIndexOf('.'))
     const fileExt = name.substring(name.lastIndexOf('.'))
@@ -85,7 +86,6 @@ export function FileUpload() {
         fileType,
       })
       await uploadFileWithProgress(file, signedUrl, setProgress)
-      setFile(null)
 
       console.info('--- 3. compress file and upload if enabled ---')
       let compressedData = { compressedUrl: '', compressedSize: 0 }
@@ -248,6 +248,7 @@ export function FileUpload() {
 
       setFile(null)
       setStep(null)
+      setProgress(0) // 照片处理完成后重置进度为0
       setTriggerType('file-upload')
       setDialogOpen(true)
 
@@ -276,7 +277,7 @@ export function FileUpload() {
         className='group/file relative block h-full w-full cursor-pointer overflow-hidden rounded-lg p-10'
       >
         <div className='flex flex-col items-center justify-center'>
-          {(step === 'upload' || step === null) && (
+          {!file && (
             <>
               <p className='relative z-20 font-bold font-sans text-base text-neutral-700 dark:text-neutral-300'>
                 Upload Your Image
@@ -289,7 +290,7 @@ export function FileUpload() {
           )}
 
           <div className='relative mx-auto mt-10 w-full max-w-xl'>
-            {file && (step === 'upload' || step === null) && (
+            {file && (
               <div className='flex flex-col items-center justify-center gap-4'>
                 <Progress
                   value={progress}
@@ -351,7 +352,7 @@ export function FileUpload() {
               </div>
             )}
 
-            {!file && (step === 'upload' || step === null) && (
+            {!file && (
               <motion.div
                 layoutId='file-upload'
                 variants={{
@@ -408,32 +409,19 @@ export function FileUpload() {
             )}
           </div>
 
-          <div className='absolute inset-0 z-50 flex items-center justify-center'>
-            {step === 'compress' && (
+          {file && step && step !== 'upload' && (
+            <div className='absolute inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm'>
               <div className='flex flex-col items-center gap-2'>
-                <LoaderIcon className='animate-spin' />
-                <p>Compressing file...</p>
+                <LoaderIcon className='h-6 w-6 animate-spin' />
+                <p className='font-medium text-sm'>
+                  {step === 'compress' && 'Compressing file...'}
+                  {step === 'blur' && 'Generating blur data...'}
+                  {step === 'exif' && 'Parsing exif data...'}
+                  {step === 'location' && 'Getting location...'}
+                </p>
               </div>
-            )}
-            {step === 'blur' && (
-              <div className='flex flex-col items-center gap-2'>
-                <LoaderIcon className='animate-spin' />
-                <p>Generating blur data...</p>
-              </div>
-            )}
-            {step === 'exif' && (
-              <div className='flex flex-col items-center gap-2'>
-                <LoaderIcon className='animate-spin' />
-                <p>Parsing exif data...</p>
-              </div>
-            )}
-            {step === 'location' && (
-              <div className='flex flex-col items-center gap-2'>
-                <LoaderIcon className='animate-spin' />
-                <p>Getting location...</p>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         <input

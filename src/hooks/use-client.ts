@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 
 export function useIsClient() {
-  const [isClient, setIsClient] = useState<boolean>(true) // 默认为 true，避免闪烁
+  const [isClient, setIsClient] = useState<boolean>(true) // Default to true to avoid flickering
 
   useEffect(() => {
-    // 确保在客户端环境中运行
+    // Ensure running in client environment
     if (typeof window !== 'undefined') {
       setIsClient(true)
     }

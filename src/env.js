@@ -15,7 +15,7 @@ export const env = createEnv({
     STORAGE_PROVIDER: z
       .enum(['cloudflare-r2', 'aws-s3', 'vercel-blob'])
       .default('cloudflare-r2'),
-    // Cloudflare R2 存储配置
+    // Cloudflare R2 storage configuration
     CLOUDFLARE_R2_ENDPOINT: z.url(),
     CLOUDFLARE_R2_BUCKET: z.string(),
     CLOUDFLARE_R2_REGION: z.string().default('auto'),
