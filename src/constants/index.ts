@@ -1,7 +1,7 @@
 /**
  * Image size limit
  */
-export const IMAGE_SIZE_LIMIT = 10 * 1024 * 1024 // 10MB
+export const IMAGE_SIZE_LIMIT = 20 * 1024 * 1024 // 20MB
 
 /**
  * Enable file compression

@@ -69,6 +69,12 @@ export function FileUpload() {
     setStep('upload')
     if (fileSize > IMAGE_SIZE_LIMIT) {
       toast.error(`File size exceeds ${IMAGE_SIZE_LIMIT / 1024 / 1024}MB limit`)
+      setFile(null)
+      setStep(null)
+      setProgress(0)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
       return
     }
 

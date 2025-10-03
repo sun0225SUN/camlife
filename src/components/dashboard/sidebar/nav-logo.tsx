@@ -3,12 +3,11 @@ import CamlifeLogo from '@/assets/images/logo.svg'
 import { Logo } from '@/components/common/logo'
 import { useSidebar } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
-import { DEFAULT_DASHBOARD_PAGE } from '@/routes'
 
 export function NavLogo() {
   const { open } = useSidebar()
   return (
-    <Link href={DEFAULT_DASHBOARD_PAGE}>
+    <Link href='/'>
       <div className='relative flex items-center justify-center overflow-hidden border-b pb-2'>
         <div
           className={cn(
