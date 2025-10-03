@@ -2,15 +2,12 @@
 
 import { CirclePause, CirclePlay } from 'lucide-react'
 
-interface RotateControlProps {
+interface RotateToggleProps {
   isRotating: boolean
   setIsRotating: (isRotating: boolean) => void
 }
 
-export function RotateControl({
-  isRotating,
-  setIsRotating,
-}: RotateControlProps) {
+export function RotateToggle({ isRotating, setIsRotating }: RotateToggleProps) {
   return (
     <button
       type='button'

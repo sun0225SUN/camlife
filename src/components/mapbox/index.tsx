@@ -1,0 +1,303 @@
+'use client'
+
+import 'mapbox-gl/dist/mapbox-gl.css'
+import '@/styles/mapbox.css'
+
+import MapboxLanguage from '@mapbox/mapbox-gl-language'
+import mapboxgl from 'mapbox-gl'
+import Image from 'next/image'
+import { useLocale } from 'next-intl'
+import { useTheme } from 'next-themes'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  GeolocateControl,
+  Map as MapboxMap,
+  type MapRef,
+  NavigationControl,
+  Popup,
+} from 'react-map-gl/mapbox'
+import { MapPoints } from '@/components/mapbox/map-points'
+import { MapTools } from '@/components/mapbox/toolbar'
+import { MAP_CONFIG, MAP_STYLES } from '@/constants/mapbox'
+import { env } from '@/env'
+import { api } from '@/trpc/react'
+import type { PopupInfo } from '@/types/mapbox'
+
+interface MapBoxProps {
+  lang?: string | null
+  hideControls: boolean
+}
+
+export default function MapBox({ hideControls, lang }: MapBoxProps) {
+  const { resolvedTheme } = useTheme()
+
+  const locale = useLocale()
+
+  const { data: coordinates } = api.photo.getAllCoordinates.useQuery()
+
+  const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null)
+  const [isRotating, setIsRotating] = useState(false)
+  const [mapLoaded, setMapLoaded] = useState(false)
+  const [isGlobe, setIsGlobe] = useState(true)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const mapInstanceRef = useRef<mapboxgl.Map | null>(null)
+
+  // map style
+  const mapStyle = useMemo(() => {
+    return (
+      MAP_STYLES[resolvedTheme as keyof typeof MAP_STYLES] || MAP_STYLES.light
+    )
+  }, [resolvedTheme])
+
+  // geojson data
+  const { geojsonData, validCoordinatesCount } = useMemo(() => {
+    if (!coordinates) return { geojsonData: null, validCoordinatesCount: 0 }
+
+    const validCoordinates = coordinates.filter(
+      (coord): coord is PopupInfo =>
+        coord.longitude !== null && coord.latitude !== null,
+    )
+
+    const geojsonData = {
+      type: 'FeatureCollection' as const,
+      features: validCoordinates.map((coord, index) => ({
+        type: 'Feature' as const,
+        geometry: {
+          type: 'Point' as const,
+          coordinates: [coord.longitude, coord.latitude] as [number, number],
+        },
+        properties: {
+          id: index,
+          url: coord.url,
+          blurData: coord.blurData,
+          width: coord.width,
+          height: coord.height,
+        },
+      })),
+    }
+
+    return {
+      geojsonData,
+      validCoordinatesCount: validCoordinates.length,
+    }
+  }, [coordinates])
+
+  // map ref
+  const mapRef = useCallback(
+    (ref: MapRef) => {
+      if (ref) {
+        mapInstanceRef.current = ref.getMap()
+        if (lang) {
+          const language = lang === 'zh' ? 'zh-Hans' : 'en'
+          ref
+            .getMap()
+            .addControl(new MapboxLanguage({ defaultLanguage: language }))
+        } else if (locale === 'zh') {
+          ref
+            .getMap()
+            .addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }))
+        }
+        mapInstanceRef.current.on('load', () => {
+          setMapLoaded(true)
+        })
+      }
+    },
+    [locale, lang],
+  )
+
+  /**
+   * Rotate map
+   * @returns void
+   * @description Rotate map when zoom is less than threshold
+   */
+  const rotate = useCallback(() => {
+    if (!isRotating || !mapInstanceRef.current) return
+
+    const zoom = mapInstanceRef.current.getZoom()
+    if (zoom < MAP_CONFIG.ROTATION.ZOOM_THRESHOLD) {
+      const center = mapInstanceRef.current.getCenter()
+      center.lng -= MAP_CONFIG.ROTATION.LONGITUDE_STEP
+      mapInstanceRef.current.easeTo({
+        center,
+        duration: MAP_CONFIG.ROTATION.DURATION,
+        easing: (n) => n,
+      })
+    }
+  }, [isRotating])
+
+  useEffect(() => {
+    if (mapLoaded && mapInstanceRef.current) {
+      mapInstanceRef.current.on('moveend', rotate)
+      if (isRotating) rotate()
+    }
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.off('moveend', rotate)
+      }
+    }
+  }, [mapLoaded, isRotating, rotate])
+
+  /**
+   * Toggle projection
+   * @returns void
+   * @description Toggle projection between globe and mercator
+   */
+  const toggleProjection = useCallback(() => {
+    if (!mapInstanceRef.current || isTransitioning) return
+
+    setIsTransitioning(true)
+    const map = mapInstanceRef.current
+
+    const currentView = {
+      center: map.getCenter(),
+      zoom: map.getZoom(),
+      bearing: map.getBearing(),
+      pitch: 0,
+    }
+
+    const easing = (t: number) => t * (2 - t)
+
+    if (isGlobe) {
+      map.easeTo({
+        ...currentView,
+        duration: MAP_CONFIG.PROJECTION_TRANSITION.DURATION,
+        easing,
+      })
+
+      setTimeout(() => {
+        map.setProjection({ name: 'mercator' })
+        map.easeTo({
+          ...currentView,
+          duration: MAP_CONFIG.PROJECTION_TRANSITION.MERCATOR_DURATION,
+          easing,
+        })
+        setIsGlobe(false)
+        setTimeout(
+          () => setIsTransitioning(false),
+          MAP_CONFIG.PROJECTION_TRANSITION.MERCATOR_DURATION,
+        )
+      }, MAP_CONFIG.PROJECTION_TRANSITION.DELAY)
+    } else {
+      map.setProjection({ name: 'globe' })
+      map.easeTo({
+        ...currentView,
+        duration: MAP_CONFIG.PROJECTION_TRANSITION.DURATION,
+        easing,
+      })
+
+      setIsGlobe(true)
+      setTimeout(
+        () => setIsTransitioning(false),
+        MAP_CONFIG.PROJECTION_TRANSITION.DURATION,
+      )
+    }
+  }, [isGlobe, isTransitioning])
+
+  /**
+   * Handle point click
+   * @param event - Map mouse event
+   * @returns void
+   * @description Set popup info when point is clicked
+   */
+  const handlePointClick = useCallback((event: mapboxgl.MapMouseEvent) => {
+    setIsRotating(false)
+
+    const feature = event.features?.[0]
+    if (!feature || feature.geometry.type !== 'Point') {
+      setPopupInfo(null)
+      return
+    }
+
+    const [longitude, latitude] = feature.geometry.coordinates as [
+      number,
+      number,
+    ]
+    const { url, blurData, width, height } = feature.properties as {
+      url: string
+      blurData: string
+      width: number
+      height: number
+    }
+
+    setPopupInfo({
+      longitude,
+      latitude,
+      url,
+      blurData,
+      width,
+      height,
+    })
+  }, [])
+
+  return (
+    <>
+      {!hideControls && (
+        <MapTools
+          isRotating={isRotating}
+          setIsRotating={setIsRotating}
+          isGlobe={isGlobe}
+          setIsGlobe={toggleProjection}
+          isTransitioning={isTransitioning}
+        />
+      )}
+      <MapboxMap
+        mapLib={mapboxgl}
+        initialViewState={MAP_CONFIG.INITIAL_VIEW}
+        style={{ width: '100vw', height: '100vh' }}
+        mapStyle={mapStyle}
+        mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+        ref={mapRef}
+        interactiveLayerIds={['point-hitbox', 'point']}
+        onClick={handlePointClick}
+        projection={{ name: isGlobe ? 'globe' : 'mercator' }}
+      >
+        <MapPoints
+          geojsonData={geojsonData}
+          validCoordinatesCount={validCoordinatesCount}
+        />
+        {!hideControls && popupInfo && (
+          <Popup
+            longitude={popupInfo.longitude}
+            latitude={popupInfo.latitude}
+            anchor='bottom'
+            onClose={() => setPopupInfo(null)}
+            closeOnClick={false}
+            offset={MAP_CONFIG.POPUP_OFFSET}
+          >
+            <div className='rounded-md p-2 dark:bg-[#333333]'>
+              <Image
+                src={popupInfo.url}
+                placeholder='blur'
+                blurDataURL={popupInfo.blurData ?? ''}
+                alt='地图照片'
+                width={popupInfo.width}
+                height={popupInfo.height}
+              />
+            </div>
+          </Popup>
+        )}
+        {!hideControls && (
+          <>
+            <NavigationControl
+              position='bottom-right'
+              style={{
+                marginBottom: MAP_CONFIG.CONTROLS_MARGIN.BOTTOM,
+                marginRight: hideControls
+                  ? MAP_CONFIG.CONTROLS_MARGIN.RIGHT_WITHOUT_CONTROLS
+                  : MAP_CONFIG.CONTROLS_MARGIN.RIGHT_WITH_CONTROLS,
+              }}
+            />
+            <GeolocateControl
+              position='bottom-right'
+              style={{
+                marginRight: hideControls
+                  ? MAP_CONFIG.CONTROLS_MARGIN.RIGHT_WITHOUT_CONTROLS
+                  : MAP_CONFIG.CONTROLS_MARGIN.RIGHT_WITH_CONTROLS,
+              }}
+            />
+          </>
+        )}
+      </MapboxMap>
+    </>
+  )
+}

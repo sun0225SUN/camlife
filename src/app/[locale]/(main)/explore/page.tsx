@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic'
 import { useSearchParams } from 'next/navigation'
 
-const DynamicMap = dynamic(() => import('@/components/map'), {
+const DynamicMap = dynamic(() => import('@/components/mapbox'), {
   ssr: false,
 })
 
