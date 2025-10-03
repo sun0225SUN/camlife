@@ -1,7 +1,7 @@
 import '@smastrom/react-rating/style.css'
 import { Rating } from '@smastrom/react-rating'
 import { useTheme } from 'next-themes'
-import { useIsClient } from '@/hooks/use-is-client'
+import { useIsClient } from '@/hooks/use-client'
 
 interface PhotoRatingProps {
   rating: number

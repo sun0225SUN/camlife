@@ -51,7 +51,7 @@ export function LanguageToggle({ className }: LanguageToggleProps) {
               size='sm'
               onClick={() => onSelectChange(locale)}
               className={cn(
-                'w-full cursor-pointer justify-between font-normal text-sm',
+                'w-full cursor-pointer justify-between font-normal text-sm focus-visible:border-none focus-visible:ring-0',
                 locale === currentLocale && 'bg-accent dark:bg-accent/50',
               )}
             >

@@ -66,5 +66,10 @@
     "lensModel": "Lens",
     "time": "Time",
     "exifInfo": "Exif"
+  },
+  "Gallery": {
+    "allPhotosDisplayed": "All photos ({count} displayed)",
+    "noPhotosFound": "No photos found",
+    "switchingLayout": "Switching layout..."
   }
 }

@@ -7,7 +7,8 @@ import { LanguageToggle } from '@/components/language/toggle'
 import { ThemeToggle } from '@/components/theme/toggle'
 import { ViewSwitch } from '@/components/toolbar/view-switch'
 import { GITHUB_REPOSITORY_URL } from '@/constants'
-import { useIsClient } from '@/hooks/use-is-client'
+import { useIsClient } from '@/hooks/use-client'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { useScroll } from '@/hooks/use-scroll'
 import { cn } from '@/lib/utils'
 import { EXPLORE_MAP_PAGE } from '@/routes'
@@ -15,11 +16,16 @@ import { EXPLORE_MAP_PAGE } from '@/routes'
 export function ToolBar() {
   const isClient = useIsClient()
   const isScrolled = useScroll(48)
+  const isMobile = useIsMobile()
 
   if (!isClient) {
     return (
       <div className='hidden h-[48px] w-[328px] rounded-full bg-gray-100/60 md:block dark:bg-[rgba(36,36,36,0.6)]/60' />
     )
+  }
+
+  if (isMobile) {
+    return <ToolsBarMobile />
   }
 
   return (
@@ -61,7 +67,7 @@ export function ToolBar() {
   )
 }
 
-export function ToolsBarMobile() {
+function ToolsBarMobile() {
   const lastScrollY = useRef<number>(0)
 
   const [scrollPosition, setScrollPosition] = useState<number>(0)

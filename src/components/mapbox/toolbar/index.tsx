@@ -6,7 +6,7 @@ import { LanguageToggle } from '@/components/language/toggle'
 import { ProjectionToggle } from '@/components/mapbox/toolbar/projection-toggle'
 import { RotateToggle } from '@/components/mapbox/toolbar/rotate-toggle'
 import { ThemeToggle } from '@/components/theme/toggle'
-import { useIsClient } from '@/hooks/use-is-client'
+import { useIsClient } from '@/hooks/use-client'
 
 interface MapToolsProps {
   isRotating: boolean

@@ -22,7 +22,7 @@ export function ViewSwitch() {
 
   const handleViewChange = (view: ViewType) => {
     setLayout(view)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    window.scrollTo({ top: 0 })
   }
 
   return (

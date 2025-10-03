@@ -1,14 +1,22 @@
 import { Aperture, Telescope, Timer } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import ISO from '@/assets/images/iso.svg'
+import { InfoItem } from '@/components/gallery/photo-info/item'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { formatExposureTime } from '@/lib/format'
 import type { Photo } from '@/server/db/schema/photos'
-import { InfoItem } from './photo-info-item'
 
 interface PhotoExifProps {
   photo: Photo
@@ -16,46 +24,75 @@ interface PhotoExifProps {
 
 export function PhotoExif({ photo }: PhotoExifProps) {
   const t = useTranslations('PhotoInfo')
+  const isMobile = useIsMobile()
+
+  if (isMobile) {
+    return (
+      <Drawer>
+        <DrawerTrigger asChild>
+          <InfoItem title={t('exifInfo')}>
+            <PhotoExifTrigger photo={photo} />
+          </InfoItem>
+        </DrawerTrigger>
+        <DrawerContent className='max-h-[60vh] overflow-y-auto p-4'>
+          <DrawerHeader>
+            <DrawerTitle>{t('exifInfo')}</DrawerTitle>
+          </DrawerHeader>
+          <PhotoExifContent photo={photo} />
+        </DrawerContent>
+      </Drawer>
+    )
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <InfoItem title={t('exifInfo')}>
-          <div className='flex cursor-pointer gap-4'>
-            <div className='flex items-center gap-1'>
-              <Telescope
-                size={18}
-                strokeWidth={2}
-              />
-              {photo.focalLength35mm ? `${photo.focalLength35mm}mm` : 'unknown'}
-            </div>
-            <div className='flex items-center gap-1'>
-              <Aperture
-                size={18}
-                strokeWidth={2}
-              />
-              {photo.fNumber ? `ƒ/${photo.fNumber}` : 'unknown'}
-            </div>
-            <div className='flex items-center gap-1'>
-              <Timer
-                size={18}
-                strokeWidth={2.2}
-                absoluteStrokeWidth
-              />
-              {photo.exposureTime
-                ? formatExposureTime(photo.exposureTime)
-                : 'unknown'}
-            </div>
-            <div className='flex items-center gap-1'>
-              <ISO className='size-6' />
-              {photo.iso?.toString() ?? 'unknown'}
-            </div>
-          </div>
+          <PhotoExifTrigger photo={photo} />
         </InfoItem>
       </PopoverTrigger>
       <PopoverContent>
         <PhotoExifContent photo={photo} />
       </PopoverContent>
     </Popover>
+  )
+}
+
+export function PhotoExifTrigger({ photo }: PhotoExifProps) {
+  return (
+    <button
+      className='flex cursor-pointer gap-4'
+      type='button'
+    >
+      <div className='flex items-center gap-1'>
+        <Telescope
+          size={18}
+          strokeWidth={2}
+        />
+        {photo.focalLength35mm ? `${photo.focalLength35mm}mm` : 'unknown'}
+      </div>
+      <div className='flex items-center gap-1'>
+        <Aperture
+          size={18}
+          strokeWidth={2}
+        />
+        {photo.fNumber ? `ƒ/${photo.fNumber}` : 'unknown'}
+      </div>
+      <div className='flex items-center gap-1'>
+        <Timer
+          size={18}
+          strokeWidth={2.2}
+          absoluteStrokeWidth
+        />
+        {photo.exposureTime
+          ? formatExposureTime(photo.exposureTime)
+          : 'unknown'}
+      </div>
+      <div className='flex items-center gap-1'>
+        <ISO className='size-6' />
+        {photo.iso?.toString() ?? 'unknown'}
+      </div>
+    </button>
   )
 }
 

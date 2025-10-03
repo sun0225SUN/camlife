@@ -1,11 +1,19 @@
 import { useTranslations } from 'next-intl'
 import { LocationMap } from '@/components/common/location-map'
-import { InfoItem } from '@/components/gallery/photo-info-item'
+import { InfoItem } from '@/components/gallery/photo-info/item'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { formatLatitude, formatLongitude } from '@/lib/format/coordinates'
 import type { Photo } from '@/server/db/schema/photos'
 
@@ -15,21 +23,48 @@ interface PhotoLocationProps {
 
 export function PhotoLocation({ photo }: PhotoLocationProps) {
   const t = useTranslations('PhotoInfo')
+  const isMobile = useIsMobile()
+
+  if (isMobile) {
+    return (
+      <Drawer>
+        <DrawerTrigger asChild>
+          <InfoItem title={t('location')}>
+            <PhotoLocationTrigger photo={photo} />
+          </InfoItem>
+        </DrawerTrigger>
+        <DrawerContent className='max-h-[60vh] overflow-y-auto p-4'>
+          <DrawerHeader>
+            <DrawerTitle>{t('location')}</DrawerTitle>
+          </DrawerHeader>
+          <PhotoLocationContent photo={photo} />
+        </DrawerContent>
+      </Drawer>
+    )
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <InfoItem title={t('location')}>
-          <p className='max-w-100 overflow-x-hidden text-ellipsis whitespace-nowrap pl-1 text-center'>
-            {photo.city && photo.region && photo.country
-              ? `${photo.city} , ${photo.region} , ${photo.country}`
-              : t('locationNotAvailable')}
-          </p>
+          <PhotoLocationTrigger photo={photo} />
         </InfoItem>
       </PopoverTrigger>
       <PopoverContent className='w-auto'>
         <PhotoLocationContent photo={photo} />
       </PopoverContent>
     </Popover>
+  )
+}
+
+export function PhotoLocationTrigger({ photo }: PhotoLocationProps) {
+  const t = useTranslations('PhotoInfo')
+  return (
+    <p className='max-w-100 overflow-x-hidden text-ellipsis whitespace-nowrap pl-1 text-center'>
+      {photo.city && photo.region && photo.country
+        ? `${photo.city} , ${photo.region} , ${photo.country}`
+        : t('locationNotAvailable')}
+    </p>
   )
 }
 
@@ -81,7 +116,7 @@ function CoordinateCard({ label, formattedValue }: CoordinateCardProps) {
           <div className='text-gray-500 text-xs dark:text-gray-400'>
             {label}
           </div>
-          <div className='font-medium text-gray-900 dark:text-gray-100'>
+          <div className='font-medium text-2xl text-gray-900 dark:text-gray-100'>
             {formattedValue}
           </div>
         </div>

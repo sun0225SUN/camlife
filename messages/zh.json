@@ -65,5 +65,10 @@
     "lensModel": "镜头",
     "time": "时间",
     "exifInfo": "参数"
+  },
+  "Gallery": {
+    "allPhotosDisplayed": "已显示所有照片（{count} 张）",
+    "noPhotosFound": "未找到照片",
+    "switchingLayout": "正在切换布局..."
   }
 }
