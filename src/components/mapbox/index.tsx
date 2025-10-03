@@ -69,6 +69,7 @@ export default function MapBox({ hideControls, lang }: MapBoxProps) {
         properties: {
           id: index,
           url: coord.url,
+          compressedUrl: coord.compressedUrl,
           blurData: coord.blurData,
           width: coord.width,
           height: coord.height,
@@ -212,17 +213,20 @@ export default function MapBox({ hideControls, lang }: MapBoxProps) {
       number,
       number,
     ]
-    const { url, blurData, width, height } = feature.properties as {
-      url: string
-      blurData: string
-      width: number
-      height: number
-    }
+    const { url, compressedUrl, blurData, width, height } =
+      feature.properties as {
+        url: string
+        compressedUrl: string | null
+        blurData: string
+        width: number
+        height: number
+      }
 
     setPopupInfo({
       longitude,
       latitude,
       url,
+      compressedUrl,
       blurData,
       width,
       height,
@@ -266,10 +270,10 @@ export default function MapBox({ hideControls, lang }: MapBoxProps) {
           >
             <div className='rounded-md p-2 dark:bg-[#333333]'>
               <Image
-                src={popupInfo.url}
+                src={popupInfo.compressedUrl || popupInfo.url}
                 placeholder='blur'
                 blurDataURL={popupInfo.blurData ?? ''}
-                alt='地图照片'
+                alt='map photo'
                 width={popupInfo.width}
                 height={popupInfo.height}
               />

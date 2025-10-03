@@ -400,6 +400,7 @@ export const photoRouter = createTRPCRouter({
         longitude: photos.longitude,
         latitude: photos.latitude,
         url: photos.url,
+        compressedUrl: photos.compressedUrl,
         blurData: photos.blurDataUrl,
         width: photos.width,
         height: photos.height,
