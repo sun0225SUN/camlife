@@ -138,7 +138,9 @@ export function PhotoInfo() {
         model: Array.isArray(photoInfo.model)
           ? photoInfo.model.join(', ')
           : photoInfo.model || null,
-        lensModel: photoInfo.lensModel || null,
+        lensModel: Array.isArray(photoInfo.lensModel)
+          ? photoInfo.lensModel.join(', ')
+          : photoInfo.lensModel || null,
         focalLength: photoInfo.focalLength || null,
         focalLength35mm: photoInfo.focalLength35mm || null,
         fNumber: photoInfo.fNumber || null,
@@ -563,8 +565,8 @@ export function PhotoInfo() {
                       src={photoInfo.url}
                       alt='Original Image'
                       className='h-full w-full object-contain'
-                      width={photoInfo?.width}
-                      height={photoInfo?.height}
+                      width={photoInfo?.width || 1200}
+                      height={photoInfo?.height || 900}
                     />
                     <span className='absolute right-2 bottom-2 rounded-md bg-white/90 px-2 py-1 font-mono text-black text-xs backdrop-blur-sm transition-all hover:bg-white dark:bg-black/70 dark:text-white dark:hover:bg-black/90'>
                       {photoInfo?.fileSize
@@ -603,8 +605,8 @@ export function PhotoInfo() {
                       src={photoInfo.compressedUrl}
                       alt='Compressed Image'
                       className='h-full w-full object-contain'
-                      width={photoInfo?.width}
-                      height={photoInfo?.height}
+                      width={photoInfo?.width || 1200}
+                      height={photoInfo?.height || 900}
                     />
                     <span className='absolute right-2 bottom-2 rounded-md bg-white/90 px-2 py-1 font-mono text-black text-xs backdrop-blur-sm transition-all hover:bg-white dark:bg-black/70 dark:text-white dark:hover:bg-black/90'>
                       {photoInfo?.compressedSize
@@ -643,8 +645,8 @@ export function PhotoInfo() {
                       src={photoInfo.blurDataUrl}
                       alt='Blur Preview'
                       className='h-full w-full object-contain'
-                      width={photoInfo?.width}
-                      height={photoInfo?.height}
+                      width={photoInfo?.width || 1200}
+                      height={photoInfo?.height || 900}
                     />
                     <span className='absolute right-2 bottom-2 rounded-md bg-white/90 px-2 py-1 font-mono text-black text-xs backdrop-blur-sm transition-all hover:bg-white dark:bg-black/70 dark:text-white dark:hover:bg-black/90'>
                       {photoInfo?.blurDataUrl

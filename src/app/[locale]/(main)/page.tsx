@@ -1,19 +1,26 @@
-import { Suspense } from 'react'
-import { Fallback } from '@/components/common/fallback'
-import { BaseLayout } from '@/components/layout/base'
-import { EssentialPhotos } from '@/components/photos/essential'
-import { api, HydrateClient } from '@/trpc/server'
+'use client'
 
-export default async function HomePage() {
-  void (await api.photo.getEssentialPhotosList.prefetch())
+import { Gallery } from '@/components/gallery'
+import { BaseLayout } from '@/components/layout/base'
+import { PER_PAGE_PHOTOS_COUNT_INFINITE } from '@/constants'
+import { api } from '@/trpc/react'
+
+export default function EssentialPage() {
+  const essentialPhotosQuery =
+    api.photo.getEssentialPhotosInfinite.useInfiniteQuery(
+      {
+        limit: PER_PAGE_PHOTOS_COUNT_INFINITE,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000,
+      },
+    )
 
   return (
-    <HydrateClient>
-      <BaseLayout>
-        <Suspense fallback={<Fallback />}>
-          <EssentialPhotos />
-        </Suspense>
-      </BaseLayout>
-    </HydrateClient>
+    <BaseLayout>
+      <Gallery queryResult={essentialPhotosQuery} />
+    </BaseLayout>
   )
 }

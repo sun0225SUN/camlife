@@ -1,19 +1,29 @@
-import { Suspense } from 'react'
-import { Fallback } from '@/components/common/fallback'
-import { BaseLayout } from '@/components/layout/base'
-import { ShufflePhotos } from '@/components/photos/shuffle'
-import { api, HydrateClient } from '@/trpc/server'
+'use client'
 
-export default async function ShufflePage() {
-  void api.photo.getShuffledPhotosList.prefetch()
+import { Gallery } from '@/components/gallery'
+import { BaseLayout } from '@/components/layout/base'
+import { SHUFFLE_PHOTOS_COUNT } from '@/constants'
+import { api } from '@/trpc/react'
+
+export default function ShufflePage() {
+  const shufflePhotosQuery =
+    api.photo.getShuffledPhotosInfinite.useInfiniteQuery(
+      {
+        limit: SHUFFLE_PHOTOS_COUNT,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000,
+      },
+    )
 
   return (
-    <HydrateClient>
-      <BaseLayout>
-        <Suspense fallback={<Fallback />}>
-          <ShufflePhotos />
-        </Suspense>
-      </BaseLayout>
-    </HydrateClient>
+    <BaseLayout>
+      <Gallery
+        queryResult={shufflePhotosQuery}
+        inFinite
+      />
+    </BaseLayout>
   )
 }

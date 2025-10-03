@@ -47,9 +47,9 @@ export function ViewTabs() {
         locale === 'zh' && `${fontTabsZH.className} text-lg md:text-[23px]`,
         locale === 'en' && `${fontTabsEN.className} text-base md:text-[23px]`,
         isScrolled && [
-          'sticky top-0 h-16 bg-opacity-60 shadow-md backdrop-blur-md',
+          'sticky top-0 h-16 bg-white/80 shadow-lg backdrop-blur-xl',
           'transition-all duration-500 ease-in-out',
-          'dark:bg-opacity-60 dark:shadow-[0_4px_6px_-1px_rgba(255,255,255,0.1)]',
+          'dark:bg-black/80 dark:shadow-[0_4px_6px_-1px_rgba(255,255,255,0.1)]',
         ],
         'z-10 my-5 flex h-16 w-full items-center justify-between px-6 md:justify-start md:gap-5 md:px-12 md:text-2xl xl:px-48',
       ])}
@@ -68,6 +68,7 @@ export function ViewTabs() {
           className={cn(
             pathname !== item.path && 'opacity-30 hover:opacity-80',
             'cursor-pointer transition-all duration-300 hover:scale-105',
+            'text-gray-900 dark:text-white',
           )}
         >
           {item.label}

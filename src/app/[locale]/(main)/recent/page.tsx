@@ -1,19 +1,25 @@
-import { Suspense } from 'react'
-import { Fallback } from '@/components/common/fallback'
-import { BaseLayout } from '@/components/layout/base'
-import { RecentPhotos } from '@/components/photos/recent'
-import { api, HydrateClient } from '@/trpc/server'
+'use client'
 
-export default async function RecentPage() {
-  void api.photo.getPhotosList.prefetch()
+import { Gallery } from '@/components/gallery'
+import { BaseLayout } from '@/components/layout/base'
+import { PER_PAGE_PHOTOS_COUNT_INFINITE } from '@/constants'
+import { api } from '@/trpc/react'
+
+export default function RecentPage() {
+  const recentPhotosQuery = api.photo.getRecentPhotosInfinite.useInfiniteQuery(
+    {
+      limit: PER_PAGE_PHOTOS_COUNT_INFINITE,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000,
+    },
+  )
 
   return (
-    <HydrateClient>
-      <BaseLayout>
-        <Suspense fallback={<Fallback />}>
-          <RecentPhotos />
-        </Suspense>
-      </BaseLayout>
-    </HydrateClient>
+    <BaseLayout>
+      <Gallery queryResult={recentPhotosQuery} />
+    </BaseLayout>
   )
 }

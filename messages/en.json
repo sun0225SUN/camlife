@@ -64,6 +64,7 @@
     "rating": "Rating",
     "camera": "Camera",
     "lensModel": "Lens",
-    "time": "Time"
+    "time": "Time",
+    "exifInfo": "Exif"
   }
 }

@@ -237,20 +237,56 @@ export const photoRouter = createTRPCRouter({
       data: photosList,
     }
   }),
-  // get essential photos list（bg rating > 2）
-  getEssentialPhotosList: publicProcedure.query(async () => {
+  // get essential photos list with infinite scroll support
+  getEssentialPhotosInfinite: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(50).default(10),
+        cursor: z.string().optional(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const { limit, cursor } = input
+
+      // query limit + 1 records to check if there is more data
+      const photosList = await db
+        .select()
+        .from(photos)
+        .where(
+          sql`${photos.visibility} = 'public' ${
+            cursor
+              ? sql`AND (${photos.rating} < ${cursor.split(',')[0]}::integer OR (${photos.rating} = ${cursor.split(',')[0]}::integer AND ${photos.createdAt} < ${cursor.split(',')[1]}::timestamp))`
+              : sql``
+          }`,
+        )
+        .orderBy(desc(photos.rating), desc(photos.createdAt))
+        .limit(limit + 1)
+
+      let nextCursor: string | undefined
+      let hasMore = false
+
+      // if the number of returned records is greater than limit, there is more data
+      if (photosList.length > limit) {
+        hasMore = true
+        // remove the last record
+        photosList.pop()
+        // use the rating and createdAt of the last record as the next page cursor
+        const lastItem = photosList[photosList.length - 1]
+        nextCursor = `${lastItem?.rating},${lastItem?.createdAt.toISOString()}`
+      }
+
+      return {
+        items: photosList,
+        nextCursor: hasMore ? nextCursor : undefined,
+      }
+    }),
+  // get shuffled photos list
+  getShuffledPhotosList: publicProcedure.query(async () => {
     const photosList = await db
       .select()
       .from(photos)
-      .where(sql`${photos.rating} > 2`)
-      .orderBy(desc(photos.createdAt))
-    return {
-      data: photosList,
-    }
-  }),
-  // get shuffled photos list
-  getShuffledPhotosList: publicProcedure.query(async () => {
-    const photosList = await db.select().from(photos).orderBy(sql`RANDOM()`)
+      .where(eq(photos.visibility, 'public'))
+      .orderBy(sql`RANDOM()`)
     return {
       data: photosList,
     }
@@ -261,7 +297,7 @@ export const photoRouter = createTRPCRouter({
       .select()
       .from(photos)
       .where(
-        sql`${photos.latitude} IS NOT NULL AND ${photos.longitude} IS NOT NULL`,
+        sql`${photos.visibility} = 'public' AND ${photos.latitude} IS NOT NULL AND ${photos.longitude} IS NOT NULL`,
       )
       .orderBy(desc(photos.createdAt))
     return {
@@ -299,7 +335,8 @@ export const photoRouter = createTRPCRouter({
         .from(photos)
         .where(
           sql`
-            ${photos.latitude} IS NOT NULL
+            ${photos.visibility} = 'public'
+            AND ${photos.latitude} IS NOT NULL
             AND ${photos.longitude} IS NOT NULL
           `,
         )
@@ -325,7 +362,7 @@ export const photoRouter = createTRPCRouter({
       .select()
       .from(photos)
       .where(
-        sql`${photos.latitude} IS NULL OR ${photos.longitude} IS NULL OR ${photos.country} IS NOT NULL`,
+        sql`${photos.visibility} = 'public' AND (${photos.latitude} IS NULL OR ${photos.longitude} IS NULL OR ${photos.country} IS NOT NULL)`,
       )
       .orderBy(desc(photos.createdAt))
     return {
@@ -363,7 +400,8 @@ export const photoRouter = createTRPCRouter({
         .from(photos)
         .where(
           sql`
-            ${photos.latitude} IS NOT NULL 
+            ${photos.visibility} = 'public'
+            AND ${photos.latitude} IS NOT NULL 
             AND ${photos.longitude} IS NOT NULL
           `,
         )
@@ -383,16 +421,303 @@ export const photoRouter = createTRPCRouter({
         userLocation: { latitude, longitude },
       }
     }),
-  // get explore photos list (mix of different criteria)
-  getExplorePhotosList: publicProcedure.query(async () => {
-    const photosList = await db
-      .select()
-      .from(photos)
-      .orderBy(sql`${photos.rating} DESC, ${photos.createdAt} DESC`)
-    return {
-      data: photosList,
-    }
-  }),
+  // get explore photos list with infinite scroll support
+  getExplorePhotosInfinite: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(50).default(10),
+        cursor: z.string().optional(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const { limit, cursor } = input
+
+      // query limit + 1 records to check if there is more data
+      const photosList = await db
+        .select()
+        .from(photos)
+        .where(
+          sql`${photos.visibility} = 'public' ${
+            cursor
+              ? sql`AND (${photos.rating} < ${cursor.split(',')[0]}::integer OR (${photos.rating} = ${cursor.split(',')[0]}::integer AND ${photos.createdAt} < ${cursor.split(',')[1]}::timestamp))`
+              : sql``
+          }`,
+        )
+        .orderBy(desc(photos.rating), desc(photos.createdAt))
+        .limit(limit + 1)
+
+      let nextCursor: string | undefined
+      let hasMore = false
+
+      // if the number of returned records is greater than limit, there is more data
+      if (photosList.length > limit) {
+        hasMore = true
+        // remove the last record
+        photosList.pop()
+        // use the rating and createdAt of the last record as the next page cursor
+        const lastItem = photosList[photosList.length - 1]
+        nextCursor = `${lastItem?.rating},${lastItem?.createdAt.toISOString()}`
+      }
+
+      return {
+        items: photosList,
+        nextCursor: hasMore ? nextCursor : undefined,
+      }
+    }),
+  // get shuffled photos list with infinite scroll support
+  getShuffledPhotosInfinite: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(50).default(10),
+        cursor: z.string().optional(),
+      }),
+    )
+    .query(async () => {
+      // Get up to 20 random public photos, no pagination
+      const photosList = await db
+        .select()
+        .from(photos)
+        .where(eq(photos.visibility, 'public'))
+        .orderBy(sql`RANDOM()`)
+        .limit(20)
+
+      // Return as if it's a single page with no more data
+      return {
+        items: photosList,
+        nextCursor: undefined, // No pagination
+      }
+    }),
+  // get nearby photos list with infinite scroll support
+  getNearbyPhotosInfinite: publicProcedure
+    .input(
+      z.object({
+        latitude: z.number().min(-90).max(90),
+        longitude: z.number().min(-180).max(180),
+        limit: z.number().min(1).max(50).default(10),
+        cursor: z.string().optional(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const { latitude, longitude, limit, cursor } = input
+
+      // Parse cursor to get distance and createdAt
+      let cursorDistance: number | undefined
+      let cursorCreatedAt: string | undefined
+      if (cursor) {
+        const [distanceStr, createdAtStr] = cursor.split(',')
+        cursorDistance = distanceStr ? parseFloat(distanceStr) : undefined
+        cursorCreatedAt = createdAtStr || undefined
+      }
+
+      const photosList = await db
+        .select({
+          ...photoSelectFields,
+          distance: sql<number>`
+            ROUND(
+              6371 * acos(
+                cos(radians(${latitude})) *
+                cos(radians("photos"."latitude")) *
+                cos(radians("photos"."longitude") - radians(${longitude})) +
+                sin(radians(${latitude})) *
+                sin(radians("photos"."latitude"))
+              )::numeric, 2
+            )
+          `,
+        })
+        .from(photos)
+        .where(
+          sql`
+            ${photos.visibility} = 'public'
+            AND ${photos.latitude} IS NOT NULL
+            AND ${photos.longitude} IS NOT NULL
+            ${
+              cursor
+                ? sql`AND (
+              (6371 * acos(
+                cos(radians(${latitude})) *
+                cos(radians("photos"."latitude")) *
+                cos(radians("photos"."longitude") - radians(${longitude})) +
+                sin(radians(${latitude})) *
+                sin(radians("photos"."latitude"))
+              )) > ${cursorDistance}
+              OR (
+                (6371 * acos(
+                  cos(radians(${latitude})) *
+                  cos(radians("photos"."latitude")) *
+                  cos(radians("photos"."longitude") - radians(${longitude})) +
+                  sin(radians(${latitude})) *
+                  sin(radians("photos"."latitude"))
+                )) = ${cursorDistance}
+                AND ${photos.createdAt} < ${cursorCreatedAt}::timestamp
+              )
+            )`
+                : sql``
+            }
+          `,
+        )
+        .orderBy(
+          sql`
+            6371 * acos(
+              cos(radians(${latitude})) *
+              cos(radians("photos"."latitude")) *
+              cos(radians("photos"."longitude") - radians(${longitude})) +
+              sin(radians(${latitude})) *
+              sin(radians("photos"."latitude"))
+            )
+          `,
+          desc(photos.createdAt),
+        )
+        .limit(limit + 1)
+
+      let nextCursor: string | undefined
+      let hasMore = false
+
+      if (photosList.length > limit) {
+        hasMore = true
+        photosList.pop()
+        const lastItem = photosList[photosList.length - 1]
+        nextCursor = `${lastItem?.distance},${lastItem?.createdAt.toISOString()}`
+      }
+
+      return {
+        items: photosList,
+        nextCursor: hasMore ? nextCursor : undefined,
+      }
+    }),
+  // get faraway photos list with infinite scroll support
+  getFarawayPhotosInfinite: publicProcedure
+    .input(
+      z.object({
+        latitude: z.number().min(-90).max(90),
+        longitude: z.number().min(-180).max(180),
+        limit: z.number().min(1).max(50).default(10),
+        cursor: z.string().optional(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const { latitude, longitude, limit, cursor } = input
+
+      // Parse cursor to get distance and createdAt
+      let cursorDistance: number | undefined
+      let cursorCreatedAt: string | undefined
+      if (cursor) {
+        const [distanceStr, createdAtStr] = cursor.split(',')
+        cursorDistance = distanceStr ? parseFloat(distanceStr) : undefined
+        cursorCreatedAt = createdAtStr || undefined
+      }
+
+      const photosList = await db
+        .select({
+          ...photoSelectFields,
+          distance: sql<number>`
+            ROUND(
+              6371 * acos(
+                cos(radians(${latitude})) *
+                cos(radians("photos"."latitude")) *
+                cos(radians("photos"."longitude") - radians(${longitude})) +
+                sin(radians(${latitude})) *
+                sin(radians("photos"."latitude"))
+              )::numeric, 2
+            )
+          `,
+        })
+        .from(photos)
+        .where(
+          sql`
+            ${photos.visibility} = 'public'
+            AND ${photos.latitude} IS NOT NULL
+            AND ${photos.longitude} IS NOT NULL
+            ${
+              cursor
+                ? sql`AND (
+              (6371 * acos(
+                cos(radians(${latitude})) *
+                cos(radians("photos"."latitude")) *
+                cos(radians("photos"."longitude") - radians(${longitude})) +
+                sin(radians(${latitude})) *
+                sin(radians("photos"."latitude"))
+              )) < ${cursorDistance}
+              OR (
+                (6371 * acos(
+                  cos(radians(${latitude})) *
+                  cos(radians("photos"."latitude")) *
+                  cos(radians("photos"."longitude") - radians(${longitude})) +
+                  sin(radians(${latitude})) *
+                  sin(radians("photos"."latitude"))
+                )) = ${cursorDistance}
+                AND ${photos.createdAt} < ${cursorCreatedAt}::timestamp
+              )
+            )`
+                : sql``
+            }
+          `,
+        )
+        .orderBy(
+          sql`
+            6371 * acos(
+              cos(radians(${latitude})) *
+              cos(radians("photos"."latitude")) *
+              cos(radians("photos"."longitude") - radians(${longitude})) +
+              sin(radians(${latitude})) *
+              sin(radians("photos"."latitude"))
+            ) DESC
+          `,
+          desc(photos.createdAt),
+        )
+        .limit(limit + 1)
+
+      let nextCursor: string | undefined
+      let hasMore = false
+
+      if (photosList.length > limit) {
+        hasMore = true
+        photosList.pop()
+        const lastItem = photosList[photosList.length - 1]
+        nextCursor = `${lastItem?.distance},${lastItem?.createdAt.toISOString()}`
+      }
+
+      return {
+        items: photosList,
+        nextCursor: hasMore ? nextCursor : undefined,
+      }
+    }),
+  // get recent photos list with infinite scroll support
+  getRecentPhotosInfinite: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(50).default(10),
+        cursor: z.string().optional(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const { limit, cursor } = input
+
+      const photosList = await db
+        .select()
+        .from(photos)
+        .where(
+          sql`${photos.visibility} = 'public' ${
+            cursor ? sql`AND ${photos.createdAt} < ${cursor}::timestamp` : sql``
+          }`,
+        )
+        .orderBy(desc(photos.createdAt))
+        .limit(limit + 1)
+
+      let nextCursor: string | undefined
+      let hasMore = false
+
+      if (photosList.length > limit) {
+        hasMore = true
+        photosList.pop()
+        const lastItem = photosList[photosList.length - 1]
+        nextCursor = lastItem?.createdAt.toISOString()
+      }
+
+      return {
+        items: photosList,
+        nextCursor: hasMore ? nextCursor : undefined,
+      }
+    }),
   // get all coordinates for map display
   getAllCoordinates: publicProcedure.query(async () => {
     const coordinatesList = await db
@@ -407,7 +732,7 @@ export const photoRouter = createTRPCRouter({
       })
       .from(photos)
       .where(
-        sql`${photos.latitude} IS NOT NULL AND ${photos.longitude} IS NOT NULL`,
+        sql`${photos.visibility} = 'public' AND ${photos.latitude} IS NOT NULL AND ${photos.longitude} IS NOT NULL`,
       )
       .orderBy(desc(photos.createdAt))
 

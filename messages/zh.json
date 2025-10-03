@@ -63,6 +63,7 @@
     "rating": "评分",
     "camera": "相机",
     "lensModel": "镜头",
-    "time": "时间"
+    "time": "时间",
+    "exifInfo": "参数"
   }
 }

@@ -1,12 +1,24 @@
 'use client'
 
 import { GalleryThumbnails, LayoutGrid, LayoutPanelLeft } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { useView } from '@/stores/use-view'
 import type { ViewType } from '@/types'
 
 export function ViewSwitch() {
   const { layout, setLayout } = useView()
+
+  const params = useSearchParams()
+
+  const layoutFromUrl = params.get('layout')
+
+  useEffect(() => {
+    if (layoutFromUrl) {
+      setLayout(layoutFromUrl as ViewType)
+    }
+  }, [layoutFromUrl, setLayout])
 
   const handleViewChange = (view: ViewType) => {
     setLayout(view)
