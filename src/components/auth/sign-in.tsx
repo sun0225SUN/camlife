@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -63,6 +64,7 @@ export function SignIn() {
       }
 
       if (signInData) {
+        toast.success(t('signInSuccess'))
         router.push(DEFAULT_DASHBOARD_PAGE)
         router.refresh()
       }

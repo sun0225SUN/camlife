@@ -21,7 +21,7 @@ import { MapTools } from '@/components/mapbox/toolbar'
 import { MAP_CONFIG, MAP_STYLES } from '@/constants/mapbox'
 import { env } from '@/env'
 import { api } from '@/trpc/react'
-import type { PopupInfo } from '@/types/mapbox'
+import type { PopupInfo } from '@/types'
 
 interface MapBoxProps {
   lang?: string | null

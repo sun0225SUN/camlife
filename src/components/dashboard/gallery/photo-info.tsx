@@ -3,7 +3,7 @@
 import '@smastrom/react-rating/style.css'
 
 import { Rating } from '@smastrom/react-rating'
-import { ChevronDownIcon, Download } from 'lucide-react'
+import { ChevronDownIcon, Download, LoaderIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
@@ -666,6 +666,7 @@ export function PhotoInfo() {
               variant='outline'
               className='cursor-pointer'
               onClick={handleCancel}
+              disabled={isSaving}
             >
               Cancel
             </Button>
@@ -676,7 +677,16 @@ export function PhotoInfo() {
             onClick={handleSave}
             disabled={isSaving}
           >
-            {triggerType === 'file-upload' ? 'Save' : 'Update'}
+            {
+              <div className='flex items-center gap-1'>
+                {isSaving && <LoaderIcon className='animate-spin' />}
+                {triggerType === 'file-upload' ? (
+                  <span>Save</span>
+                ) : (
+                  <span>Update</span>
+                )}
+              </div>
+            }
           </Button>
         </DialogFooter>
       </DialogContent>

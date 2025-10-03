@@ -12,6 +12,7 @@ import {
 import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Avatar } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -69,6 +70,7 @@ export function NavUser({ name, email }: NavUserProps) {
 
     try {
       await signOut()
+      toast.success(t('Auth.signOutSuccess'))
       router.push(SIGN_IN_PAGE)
       router.refresh()
     } catch (error) {

@@ -40,7 +40,10 @@
     "passwordsDoNotMatch": "Passwords do not match",
     "signUpError": "Registration failed, please check your input",
     "signOut": "Sign Out",
-    "profile": "Profile"
+    "profile": "Profile",
+    "signInSuccess": "Login successful",
+    "signUpSuccess": "Registration successful",
+    "signOutSuccess": "Logout successful"
   },
   "View": {
     "essential": "Essential",

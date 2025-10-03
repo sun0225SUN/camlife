@@ -1,5 +1,5 @@
 import { Logo } from '@/components/common/logo'
-import { ToolBar, ToolsBarMobile } from '@/components/tooolbar/toolbar'
+import { ToolBar, ToolsBarMobile } from '@/components/toolbar'
 
 export function Header() {
   return (

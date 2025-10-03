@@ -18,7 +18,7 @@ export function NavLogo() {
               : '-translate-x-2 absolute scale-75 opacity-0',
           )}
         >
-          <Logo className='size-12' />
+          <Logo className='size-10' />
         </div>
         <div
           className={cn(

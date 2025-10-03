@@ -1,5 +1,5 @@
 import { Header } from '@/components/layout/header'
-import { ViewTabs } from '@/components/tooolbar/view-tabs'
+import { ViewTabs } from '@/components/toolbar/view-tabs'
 
 export function BaseLayout({ children }: { children: React.ReactNode }) {
   return (
