@@ -18,8 +18,8 @@ import {
 } from 'react-map-gl/mapbox'
 import { MapPoints } from '@/components/mapbox/map-points'
 import { MapTools } from '@/components/mapbox/toolbar'
-import { MAP_CONFIG, MAP_STYLES } from '@/constants/mapbox'
 import { env } from '@/env'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { api } from '@/trpc/react'
 import type { PopupInfo } from '@/types'
 
@@ -30,6 +30,8 @@ interface MapBoxProps {
 
 export default function MapBox({ hideControls, lang }: MapBoxProps) {
   const { resolvedTheme } = useTheme()
+
+  const isMobile = useIsMobile()
 
   const locale = useLocale()
 
@@ -44,10 +46,22 @@ export default function MapBox({ hideControls, lang }: MapBoxProps) {
 
   // map style
   const mapStyle = useMemo(() => {
-    return (
-      MAP_STYLES[resolvedTheme as keyof typeof MAP_STYLES] || MAP_STYLES.light
-    )
+    return resolvedTheme === 'dark'
+      ? 'mapbox://styles/sunguoqi/cm1xkp4hc000i01nthigphlmh'
+      : 'mapbox://styles/sunguoqi/cm1xkfhra014901qr0td1a0mz'
   }, [resolvedTheme])
+
+  // Create initial view state with mobile-specific zoom
+  const initialViewState = useMemo(
+    () => ({
+      longitude: 116.38,
+      latitude: 39.9,
+      zoom: isMobile ? -1.5 : 2,
+      pitch: 0,
+      bearing: 0,
+    }),
+    [isMobile],
+  )
 
   // geojson data
   const { geojsonData, validCoordinatesCount } = useMemo(() => {
@@ -115,12 +129,12 @@ export default function MapBox({ hideControls, lang }: MapBoxProps) {
     if (!isRotating || !mapInstanceRef.current) return
 
     const zoom = mapInstanceRef.current.getZoom()
-    if (zoom < MAP_CONFIG.ROTATION.ZOOM_THRESHOLD) {
+    if (zoom < 5) {
       const center = mapInstanceRef.current.getCenter()
-      center.lng -= MAP_CONFIG.ROTATION.LONGITUDE_STEP
+      center.lng -= 6
       mapInstanceRef.current.easeTo({
         center,
-        duration: MAP_CONFIG.ROTATION.DURATION,
+        duration: 1000,
         easing: (n) => n,
       })
     }
@@ -161,7 +175,7 @@ export default function MapBox({ hideControls, lang }: MapBoxProps) {
     if (isGlobe) {
       map.easeTo({
         ...currentView,
-        duration: MAP_CONFIG.PROJECTION_TRANSITION.DURATION,
+        duration: 600,
         easing,
       })
 
@@ -169,28 +183,22 @@ export default function MapBox({ hideControls, lang }: MapBoxProps) {
         map.setProjection({ name: 'mercator' })
         map.easeTo({
           ...currentView,
-          duration: MAP_CONFIG.PROJECTION_TRANSITION.MERCATOR_DURATION,
+          duration: 400,
           easing,
         })
         setIsGlobe(false)
-        setTimeout(
-          () => setIsTransitioning(false),
-          MAP_CONFIG.PROJECTION_TRANSITION.MERCATOR_DURATION,
-        )
-      }, MAP_CONFIG.PROJECTION_TRANSITION.DELAY)
+        setTimeout(() => setIsTransitioning(false), 400)
+      }, 300)
     } else {
       map.setProjection({ name: 'globe' })
       map.easeTo({
         ...currentView,
-        duration: MAP_CONFIG.PROJECTION_TRANSITION.DURATION,
+        duration: 600,
         easing,
       })
 
       setIsGlobe(true)
-      setTimeout(
-        () => setIsTransitioning(false),
-        MAP_CONFIG.PROJECTION_TRANSITION.DURATION,
-      )
+      setTimeout(() => setIsTransitioning(false), 600)
     }
   }, [isGlobe, isTransitioning])
 
@@ -246,7 +254,7 @@ export default function MapBox({ hideControls, lang }: MapBoxProps) {
       )}
       <MapboxMap
         mapLib={mapboxgl}
-        initialViewState={MAP_CONFIG.INITIAL_VIEW}
+        initialViewState={initialViewState}
         style={{ width: '100vw', height: '100vh' }}
         mapStyle={mapStyle}
         mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
@@ -254,6 +262,8 @@ export default function MapBox({ hideControls, lang }: MapBoxProps) {
         interactiveLayerIds={['point-hitbox', 'point']}
         onClick={handlePointClick}
         projection={{ name: isGlobe ? 'globe' : 'mercator' }}
+        minZoom={isMobile ? -2 : undefined}
+        maxZoom={isMobile ? 3 : undefined}
       >
         <MapPoints
           geojsonData={geojsonData}
@@ -266,7 +276,7 @@ export default function MapBox({ hideControls, lang }: MapBoxProps) {
             anchor='bottom'
             onClose={() => setPopupInfo(null)}
             closeOnClick={false}
-            offset={MAP_CONFIG.POPUP_OFFSET}
+            offset={[0, -15]}
           >
             <div className='rounded-md p-2 dark:bg-[#333333]'>
               <Image
@@ -285,18 +295,14 @@ export default function MapBox({ hideControls, lang }: MapBoxProps) {
             <NavigationControl
               position='bottom-right'
               style={{
-                marginBottom: MAP_CONFIG.CONTROLS_MARGIN.BOTTOM,
-                marginRight: hideControls
-                  ? MAP_CONFIG.CONTROLS_MARGIN.RIGHT_WITHOUT_CONTROLS
-                  : MAP_CONFIG.CONTROLS_MARGIN.RIGHT_WITH_CONTROLS,
+                marginBottom: '80px',
+                marginRight: hideControls ? '20px' : '50px',
               }}
             />
             <GeolocateControl
               position='bottom-right'
               style={{
-                marginRight: hideControls
-                  ? MAP_CONFIG.CONTROLS_MARGIN.RIGHT_WITHOUT_CONTROLS
-                  : MAP_CONFIG.CONTROLS_MARGIN.RIGHT_WITH_CONTROLS,
+                marginRight: hideControls ? '20px' : '50px',
               }}
             />
           </>

@@ -24,3 +24,11 @@
 .dark .mapboxgl-popup-tip {
   border-top-color: #333333;
 }
+
+.mapboxgl-ctrl-bottom-left {
+  display: none;
+}
+
+.mapboxgl-ctrl-group {
+  margin-right: 20px !important;
+}
