@@ -12,6 +12,76 @@ import {
 import { db } from '@/server/db'
 import { photos, photosInsertSchema } from '@/server/db/schema/photos'
 
+// common photo select fields
+const photoSelectFields = {
+  id: photos.id,
+  url: photos.url,
+  blurDataUrl: photos.blurDataUrl,
+  compressedUrl: photos.compressedUrl,
+  fileSize: photos.fileSize,
+  compressedSize: photos.compressedSize,
+  title: photos.title,
+  description: photos.description,
+  rating: photos.rating,
+  isFavorite: photos.isFavorite,
+  visibility: photos.visibility,
+  width: photos.width,
+  height: photos.height,
+  aspectRatio: photos.aspectRatio,
+  make: photos.make,
+  model: photos.model,
+  lensModel: photos.lensModel,
+  focalLength: photos.focalLength,
+  focalLength35mm: photos.focalLength35mm,
+  fNumber: photos.fNumber,
+  iso: photos.iso,
+  exposureTime: photos.exposureTime,
+  exposureCompensation: photos.exposureCompensation,
+  latitude: photos.latitude,
+  longitude: photos.longitude,
+  gpsAltitude: photos.gpsAltitude,
+  dateTimeOriginal: photos.dateTimeOriginal,
+  country: photos.country,
+  countryCode: photos.countryCode,
+  region: photos.region,
+  city: photos.city,
+  district: photos.district,
+  fullAddress: photos.fullAddress,
+  placeFormatted: photos.placeFormatted,
+  createdAt: photos.createdAt,
+  updatedAt: photos.updatedAt,
+}
+
+// updatable photo fields (for upsert operation)
+const updatablePhotoFields = (photo: z.infer<typeof photosInsertSchema>) => ({
+  title: photo.title,
+  description: photo.description,
+  rating: photo.rating,
+  isFavorite: photo.isFavorite,
+  visibility: photo.visibility,
+  latitude: photo.latitude,
+  longitude: photo.longitude,
+  gpsAltitude: photo.gpsAltitude,
+  dateTimeOriginal: photo.dateTimeOriginal,
+  country: photo.country,
+  countryCode: photo.countryCode,
+  region: photo.region,
+  city: photo.city,
+  district: photo.district,
+  fullAddress: photo.fullAddress,
+  placeFormatted: photo.placeFormatted,
+  make: photo.make,
+  model: photo.model,
+  lensModel: photo.lensModel,
+  focalLength: photo.focalLength,
+  focalLength35mm: photo.focalLength35mm,
+  fNumber: photo.fNumber,
+  iso: photo.iso,
+  exposureTime: photo.exposureTime,
+  exposureCompensation: photo.exposureCompensation,
+  updatedAt: new Date(),
+})
+
 export const photoRouter = createTRPCRouter({
   // get presigned url for upload
   getPresignedUrl: protectedProcedure
@@ -90,34 +160,7 @@ export const photoRouter = createTRPCRouter({
           .values(photo)
           .onConflictDoUpdate({
             target: photos.id,
-            set: {
-              title: photo.title,
-              description: photo.description,
-              rating: photo.rating,
-              isFavorite: photo.isFavorite,
-              visibility: photo.visibility,
-              latitude: photo.latitude,
-              longitude: photo.longitude,
-              gpsAltitude: photo.gpsAltitude,
-              dateTimeOriginal: photo.dateTimeOriginal,
-              country: photo.country,
-              countryCode: photo.countryCode,
-              region: photo.region,
-              city: photo.city,
-              district: photo.district,
-              fullAddress: photo.fullAddress,
-              placeFormatted: photo.placeFormatted,
-              make: photo.make,
-              model: photo.model,
-              lensModel: photo.lensModel,
-              focalLength: photo.focalLength,
-              focalLength35mm: photo.focalLength35mm,
-              fNumber: photo.fNumber,
-              iso: photo.iso,
-              exposureTime: photo.exposureTime,
-              exposureCompensation: photo.exposureCompensation,
-              updatedAt: new Date(),
-            },
+            set: updatablePhotoFields(photo),
           })
           .returning()
 
@@ -225,6 +268,57 @@ export const photoRouter = createTRPCRouter({
       data: photosList,
     }
   }),
+  // get nearby photos list based on user location
+  getNearbyPhotosByLocation: publicProcedure
+    .input(
+      z.object({
+        latitude: z.number().min(-90).max(90),
+        longitude: z.number().min(-180).max(180),
+        limit: z.number().min(1).max(100).default(50),
+      }),
+    )
+    .query(async ({ input }) => {
+      const { latitude, longitude, limit } = input
+
+      // Use Haversine formula in SQL to calculate distance
+      const photosList = await db
+        .select({
+          ...photoSelectFields,
+          distance: sql<number>`
+            ROUND(
+              6371 * acos(
+                cos(radians(${latitude})) *
+                cos(radians("photos"."latitude")) *
+                cos(radians("photos"."longitude") - radians(${longitude})) +
+                sin(radians(${latitude})) *
+                sin(radians("photos"."latitude"))
+              )::numeric, 2
+            )
+          `,
+        })
+        .from(photos)
+        .where(
+          sql`
+            ${photos.latitude} IS NOT NULL
+            AND ${photos.longitude} IS NOT NULL
+          `,
+        )
+        .orderBy(sql`
+          6371 * acos(
+            cos(radians(${latitude})) *
+            cos(radians("photos"."latitude")) *
+            cos(radians("photos"."longitude") - radians(${longitude})) +
+            sin(radians(${latitude})) *
+            sin(radians("photos"."latitude"))
+          )
+        `)
+        .limit(limit)
+
+      return {
+        data: photosList,
+        userLocation: { latitude, longitude },
+      }
+    }),
   // get faraway photos list (photos without GPS coordinates or from different countries)
   getFarawayPhotosList: publicProcedure.query(async () => {
     const photosList = await db
@@ -238,6 +332,57 @@ export const photoRouter = createTRPCRouter({
       data: photosList,
     }
   }),
+  // get faraway photos list based on user location (photos far from user)
+  getFarawayPhotosByLocation: publicProcedure
+    .input(
+      z.object({
+        latitude: z.number().min(-90).max(90),
+        longitude: z.number().min(-180).max(180),
+        limit: z.number().min(1).max(100).default(50),
+      }),
+    )
+    .query(async ({ input }) => {
+      const { latitude, longitude, limit } = input
+
+      // Get photos that are far from user location
+      const photosList = await db
+        .select({
+          ...photoSelectFields,
+          distance: sql<number>`
+            ROUND(
+              6371 * acos(
+                cos(radians(${latitude})) *
+                cos(radians("photos"."latitude")) *
+                cos(radians("photos"."longitude") - radians(${longitude})) +
+                sin(radians(${latitude})) *
+                sin(radians("photos"."latitude"))
+              )::numeric, 2
+            )
+          `,
+        })
+        .from(photos)
+        .where(
+          sql`
+            ${photos.latitude} IS NOT NULL 
+            AND ${photos.longitude} IS NOT NULL
+          `,
+        )
+        .orderBy(sql`
+          6371 * acos(
+            cos(radians(${latitude})) *
+            cos(radians("photos"."latitude")) *
+            cos(radians("photos"."longitude") - radians(${longitude})) +
+            sin(radians(${latitude})) *
+            sin(radians("photos"."latitude"))
+          ) DESC
+        `)
+        .limit(limit)
+
+      return {
+        data: photosList,
+        userLocation: { latitude, longitude },
+      }
+    }),
   // get explore photos list (mix of different criteria)
   getExplorePhotosList: publicProcedure.query(async () => {
     const photosList = await db
