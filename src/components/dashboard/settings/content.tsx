@@ -2,8 +2,8 @@
 
 import { ExternalLink, Eye, EyeOff, Github, Info } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,18 +15,11 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { appConfig } from '@/config/app'
-import {
-  ADDRESS_LANGUAGE,
-  COMPRESS_QUALITY,
-  DEFAULT_PHOTO_RATING,
-  ENABLE_FILE_COMPRESSION,
-  IMAGE_SIZE_LIMIT,
-  PER_PAGE_PHOTOS_COUNT_INFINITE,
-  SHUFFLE_PHOTOS_COUNT,
-} from '@/constants'
+import { api } from '@/trpc/react'
 
 interface SettingsContentProps {
   activeSection: string
@@ -35,32 +28,138 @@ interface SettingsContentProps {
 export function SettingsContent({ activeSection }: SettingsContentProps) {
   const t = useTranslations('Settings')
   const [showPassword, setShowPassword] = useState(false)
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
   })
-  const [profileData, setProfileData] = useState({
-    name: 'John Doe',
-    email: 'john@example.com',
-    avatar: '',
+
+  // Get settings data
+  const { data: siteSettings, isLoading: siteLoading } =
+    api.settings.getByCategory.useQuery('site')
+  const { data: appSettings, isLoading: appLoading } =
+    api.settings.getByCategory.useQuery('app')
+
+  // Update settings mutation
+  const updateSettingsMutation = api.settings.updateBatch.useMutation({
+    onSuccess: () => {
+      toast.success('Settings saved successfully')
+    },
+    onError: (error) => {
+      toast.error(`Failed to save: ${error.message}`)
+    },
   })
 
   const [siteData, setSiteData] = useState({
-    siteName: 'CamLife',
-    siteDescription: '一个专注于摄影分享和探索的平台',
-    siteKeywords: '摄影,照片,分享,探索,相机',
+    siteName: '',
+    siteDescription: '',
+    siteKeywords: '',
   })
 
   const [appConstantsData, setAppConstantsData] = useState({
-    imageSizeLimit: IMAGE_SIZE_LIMIT / (1024 * 1024), // Convert to MB
-    enableFileCompression: ENABLE_FILE_COMPRESSION,
-    compressQuality: COMPRESS_QUALITY,
-    defaultPhotoRating: DEFAULT_PHOTO_RATING,
-    addressLanguage: ADDRESS_LANGUAGE,
-    perPagePhotosCountInfinite: PER_PAGE_PHOTOS_COUNT_INFINITE,
-    shufflePhotosCount: SHUFFLE_PHOTOS_COUNT,
+    imageSizeLimit: 0,
+    enableFileCompression: false,
+    compressQuality: 0.6,
+    defaultPhotoRating: 3,
+    addressLanguage: 'zh',
+    perPagePhotosCountInfinite: 10,
+    shufflePhotosCount: 20,
   })
+
+  // Update state when data is loaded
+  useEffect(() => {
+    if (siteSettings) {
+      setSiteData({
+        siteName: siteSettings['site.name'] || 'CamLife',
+        siteDescription:
+          siteSettings['site.description'] ||
+          'A platform focused on photography sharing and exploration',
+        siteKeywords:
+          siteSettings['site.keywords'] ||
+          'photography,photos,sharing,exploration,camera',
+      })
+    }
+  }, [siteSettings])
+
+  useEffect(() => {
+    if (appSettings) {
+      setAppConstantsData({
+        imageSizeLimit: Number(appSettings['app.image_size_limit']) || 10,
+        enableFileCompression:
+          appSettings['app.enable_file_compression'] === 'true',
+        compressQuality: Number(appSettings['app.compress_quality']) || 0.6,
+        defaultPhotoRating:
+          Number(appSettings['app.default_photo_rating']) || 3,
+        addressLanguage: appSettings['app.address_language'] || 'zh',
+        perPagePhotosCountInfinite:
+          Number(appSettings['app.per_page_photos_count_infinite']) || 10,
+        shufflePhotosCount:
+          Number(appSettings['app.shuffle_photos_count']) || 20,
+      })
+    }
+  }, [appSettings])
+
+  const handleSaveSiteSettings = () => {
+    updateSettingsMutation.mutate([
+      { key: 'site.name', value: siteData.siteName },
+      { key: 'site.description', value: siteData.siteDescription },
+      { key: 'site.keywords', value: siteData.siteKeywords },
+    ])
+  }
+
+  const handleSaveAppSettings = () => {
+    updateSettingsMutation.mutate([
+      {
+        key: 'app.image_size_limit',
+        value: appConstantsData.imageSizeLimit.toString(),
+      },
+      {
+        key: 'app.enable_file_compression',
+        value: appConstantsData.enableFileCompression.toString(),
+      },
+      {
+        key: 'app.compress_quality',
+        value: appConstantsData.compressQuality.toString(),
+      },
+      {
+        key: 'app.default_photo_rating',
+        value: appConstantsData.defaultPhotoRating.toString(),
+      },
+      { key: 'app.address_language', value: appConstantsData.addressLanguage },
+      {
+        key: 'app.per_page_photos_count_infinite',
+        value: appConstantsData.perPagePhotosCountInfinite.toString(),
+      },
+      {
+        key: 'app.shuffle_photos_count',
+        value: appConstantsData.shufflePhotosCount.toString(),
+      },
+    ])
+  }
+
+  const handleSavePasswordSettings = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error('New password and confirm password do not match')
+      return
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters long')
+      return
+    }
+
+    setIsChangingPassword(true)
+
+    try {
+      // TODO: Implement change password API call
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      toast.info('Change password feature is not implemented yet')
+    } finally {
+      setIsChangingPassword(false)
+    }
+  }
 
   const renderAccountSettings = () => (
     <div className='space-y-6'>
@@ -72,61 +171,6 @@ export function SettingsContent({ activeSection }: SettingsContentProps) {
           Manage your profile and account information
         </p>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('profileName')}</CardTitle>
-          <CardDescription>{t('profileNameDescription')}</CardDescription>
-        </CardHeader>
-        <CardContent className='space-y-4'>
-          <div className='space-y-2'>
-            <Label htmlFor='profile-name'>{t('profileName')}</Label>
-            <Input
-              id='profile-name'
-              value={profileData.name}
-              onChange={(e) =>
-                setProfileData({ ...profileData, name: e.target.value })
-              }
-              placeholder='Enter your profile name'
-            />
-          </div>
-          <div className='space-y-2'>
-            <Label htmlFor='profile-email'>{t('email')}</Label>
-            <Input
-              id='profile-email'
-              type='email'
-              value={profileData.email}
-              onChange={(e) =>
-                setProfileData({ ...profileData, email: e.target.value })
-              }
-              placeholder='Enter your email address'
-            />
-          </div>
-          <div className='space-y-2'>
-            <Label htmlFor='profile-avatar'>{t('avatar')}</Label>
-            <Input
-              id='profile-avatar'
-              value={profileData.avatar}
-              onChange={(e) =>
-                setProfileData({ ...profileData, avatar: e.target.value })
-              }
-              placeholder='Enter avatar image URL'
-            />
-            <div className='mt-2 flex items-center space-x-4'>
-              <Avatar className='h-16 w-16'>
-                <AvatarImage src={profileData.avatar} />
-                <AvatarFallback>{profileData.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <p className='text-muted-foreground text-sm'>
-                Preview of your avatar
-              </p>
-            </div>
-          </div>
-          <div className='flex justify-end'>
-            <Button className='w-fit'>{t('save')}</Button>
-          </div>
-        </CardContent>
-      </Card>
 
       <Card>
         <CardHeader>
@@ -195,7 +239,13 @@ export function SettingsContent({ activeSection }: SettingsContentProps) {
             />
           </div>
           <div className='flex justify-end'>
-            <Button className='w-fit'>{t('save')}</Button>
+            <Button
+              className='w-16 cursor-pointer'
+              onClick={handleSavePasswordSettings}
+              disabled={isChangingPassword}
+            >
+              {isChangingPassword ? <Spinner /> : t('save')}
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -226,6 +276,7 @@ export function SettingsContent({ activeSection }: SettingsContentProps) {
               <Button
                 variant='outline'
                 size='sm'
+                className='min-w-[80px]'
               >
                 Revoke
               </Button>
@@ -298,7 +349,13 @@ export function SettingsContent({ activeSection }: SettingsContentProps) {
             </p>
           </div>
           <div className='flex justify-end'>
-            <Button className='w-fit'>{t('save')}</Button>
+            <Button
+              className='w-16 cursor-pointer'
+              onClick={handleSaveSiteSettings}
+              disabled={updateSettingsMutation.isPending || siteLoading}
+            >
+              {updateSettingsMutation.isPending ? <Spinner /> : t('save')}
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -343,7 +400,9 @@ export function SettingsContent({ activeSection }: SettingsContentProps) {
                 }
               />
               <span className='text-muted-foreground text-sm'>
-                {appConstantsData.enableFileCompression ? '启用' : '禁用'}
+                {appConstantsData.enableFileCompression
+                  ? 'Enabled'
+                  : 'Disabled'}
               </span>
             </div>
             <p className='text-muted-foreground text-sm'>
@@ -452,7 +511,13 @@ export function SettingsContent({ activeSection }: SettingsContentProps) {
             </p>
           </div>
           <div className='flex justify-end'>
-            <Button className='w-fit'>{t('save')}</Button>
+            <Button
+              className='w-16 cursor-pointer'
+              onClick={handleSaveAppSettings}
+              disabled={updateSettingsMutation.isPending || appLoading}
+            >
+              {updateSettingsMutation.isPending ? <Spinner /> : t('save')}
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -499,7 +564,7 @@ export function SettingsContent({ activeSection }: SettingsContentProps) {
                   </div>
                   <div>
                     <p className='font-medium text-muted-foreground text-xs'>
-                      GitHub 仓库
+                      GitHub Repository
                     </p>
                     <a
                       href={appConfig.repository.url}
@@ -524,14 +589,15 @@ export function SettingsContent({ activeSection }: SettingsContentProps) {
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'account':
-        return renderAccountSettings()
       case 'general':
         return renderGeneralSettings()
+      case 'account':
+        return renderAccountSettings()
+
       case 'about':
         return renderAboutSettings()
       default:
-        return renderAccountSettings()
+        return renderGeneralSettings()
     }
   }
 

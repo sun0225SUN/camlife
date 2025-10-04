@@ -1,4 +1,5 @@
 import { photoRouter } from '@/server/api/routers/photo'
+import { settingsRouter } from '@/server/api/routers/settings'
 import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc'
 
 /**
@@ -8,6 +9,7 @@ import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc'
  */
 export const appRouter = createTRPCRouter({
   photo: photoRouter,
+  settings: settingsRouter,
 })
 
 // export type definition of API

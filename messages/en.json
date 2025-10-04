@@ -73,8 +73,8 @@
   },
   "Settings": {
     "settings": "Settings",
-    "account": "Account Settings",
-    "general": "General Settings",
+    "account": "Account",
+    "general": "General",
     "privacy": "Privacy Settings",
     "notifications": "Notification Settings",
     "storage": "Storage Settings",

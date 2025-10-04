@@ -14,7 +14,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
 
 export default function SettingsPage() {
-  const [activeSection, setActiveSection] = useState('account')
+  const [activeSection, setActiveSection] = useState('general')
 
   return (
     <>

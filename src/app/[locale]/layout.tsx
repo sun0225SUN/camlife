@@ -12,6 +12,7 @@ import { ThemeProvider } from '@/components/theme/provider'
 import { Toaster } from '@/components/ui/sonner'
 import { geist } from '@/fonts'
 import { routing } from '@/i18n/routing'
+import { getSiteSEOData } from '@/lib/settings'
 import { cn } from '@/lib/utils'
 import { TRPCReactProvider } from '@/trpc/react'
 
@@ -20,10 +21,27 @@ interface Props {
   params: Promise<{ locale: string }>
 }
 
-export const metadata: Metadata = {
-  title: 'Camlife',
-  description: 'Capture life through the Camera.',
-  icons: [{ rel: 'icon', url: '/favicon.ico' }],
+export async function generateMetadata(): Promise<Metadata> {
+  const seoData = await getSiteSEOData()
+
+  return {
+    title: seoData.title,
+    description: seoData.description,
+    keywords: seoData.keywords,
+    icons: [{ rel: 'icon', url: seoData.favicon }],
+    openGraph: {
+      title: seoData.title,
+      description: seoData.description,
+      type: 'website',
+      ...(seoData.logo && { images: [{ url: seoData.logo }] }),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seoData.title,
+      description: seoData.description,
+      ...(seoData.logo && { images: [seoData.logo] }),
+    },
+  }
 }
 
 export default async function RootLayout({ children, params }: Props) {
