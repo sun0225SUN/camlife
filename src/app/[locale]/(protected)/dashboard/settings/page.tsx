@@ -22,7 +22,7 @@ export default function SettingsPage() {
         className={cn(
           'flex items-center gap-2',
           'sticky top-0 h-20 shrink-0',
-          'border-b bg-gradient-to-r from-background to-muted/20',
+          'z-[999] border-b bg-white/80 backdrop-blur-md dark:bg-black/50',
           'group-has-data-[collapsible=icon]/sidebar-wrapper:h-12',
         )}
       >

@@ -7,5 +7,6 @@ export const {
   signOut,
   updateUser,
   changeEmail,
+  changePassword,
   getSession,
 } = createAuthClient()

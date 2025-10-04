@@ -98,7 +98,7 @@ function StatsCard({
   trend,
 }: StatsCardProps) {
   return (
-    <Card>
+    <Card className='group transition-all duration-300 hover:shadow-lg'>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-3'>
         <CardTitle className='font-medium text-muted-foreground text-sm transition-colors group-hover:text-foreground'>
           {title}

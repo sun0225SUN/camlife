@@ -30,7 +30,8 @@
         }
       },
       "suspicious": {
-        "noUnknownAtRules": "off"
+        "noUnknownAtRules": "off",
+        "noArrayIndexKey": "off"
       },
       "correctness": {
         "noUnknownTypeSelector": "off",

@@ -1,6 +1,6 @@
 'use client'
 
-import { Camera } from 'lucide-react'
+import { Camera, CameraIcon } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
@@ -59,9 +59,9 @@ export function EquipmentsStats({ data, className }: CameraStatsProps) {
           className,
         )}
       >
-        <Card className='flex h-full flex-col border-0 shadow-none'>
-          <CardHeader className='flex-shrink-0 pb-4'>
-            <CardTitle className='flex items-center gap-2 text-base'>
+        <Card className='group transition-all duration-300 hover:shadow-lg'>
+          <CardHeader className='pb-4'>
+            <CardTitle className='flex items-center gap-2 font-semibold text-lg'>
               <Camera className='h-4 w-4 text-muted-foreground' />
               Camera
             </CardTitle>
@@ -102,10 +102,10 @@ export function EquipmentsStats({ data, className }: CameraStatsProps) {
           </CardContent>
         </Card>
 
-        <Card className='flex h-full flex-col border-0 shadow-none'>
-          <CardHeader className='flex-shrink-0 pb-4'>
-            <CardTitle className='flex items-center gap-2 text-base'>
-              <Camera className='h-4 w-4 text-muted-foreground' />
+        <Card className='group transition-all duration-300 hover:shadow-lg'>
+          <CardHeader className='pb-4'>
+            <CardTitle className='flex items-center gap-2 font-semibold text-lg'>
+              <CameraIcon className='h-4 w-4 text-muted-foreground' />
               Lens
             </CardTitle>
           </CardHeader>
