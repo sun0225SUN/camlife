@@ -2,14 +2,16 @@
 
 import { Gallery } from '@/components/gallery'
 import { BaseLayout } from '@/components/layout/base'
-import { SHUFFLE_PHOTOS_COUNT } from '@/constants'
+import { useAppSettings } from '@/hooks/use-settings'
 import { api } from '@/trpc/react'
 
 export default function ShufflePage() {
+  const { shufflePhotosCount } = useAppSettings()
+
   const shufflePhotosQuery =
     api.photo.getShuffledPhotosInfinite.useInfiniteQuery(
       {
-        limit: SHUFFLE_PHOTOS_COUNT,
+        limit: shufflePhotosCount,
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,

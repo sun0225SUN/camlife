@@ -2,12 +2,13 @@
 
 import { Gallery } from '@/components/gallery'
 import { BaseLayout } from '@/components/layout/base'
-import { PER_PAGE_PHOTOS_COUNT_INFINITE } from '@/constants'
 import { useGeolocation } from '@/hooks/use-geolocation'
+import { useAppSettings } from '@/hooks/use-settings'
 import { api } from '@/trpc/react'
 
 export default function NearbyPage() {
   const { latitude, longitude, error, loading: geoLoading } = useGeolocation()
+  const { perPagePhotosCountInfinite } = useAppSettings()
 
   const hasLocation = latitude !== null && longitude !== null
   const hasError = error !== null
@@ -16,7 +17,7 @@ export default function NearbyPage() {
     {
       latitude: latitude!,
       longitude: longitude!,
-      limit: PER_PAGE_PHOTOS_COUNT_INFINITE,
+      limit: perPagePhotosCountInfinite,
     },
     {
       enabled: hasLocation && !hasError,

@@ -10,12 +10,8 @@ import { useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
 import { Progress } from '@/components/ui/progress'
-import {
-  COMPRESS_QUALITY,
-  ENABLE_FILE_COMPRESSION,
-  IMAGE_SIZE_LIMIT,
-} from '@/constants'
 import { useConfetti } from '@/hooks/use-confetti'
+import { useAppSettings } from '@/hooks/use-settings'
 import { formatExifDateTime } from '@/lib/format'
 import { generateBlurData, getLocationFromCoordinates } from '@/lib/image'
 import { uploadFileWithProgress } from '@/lib/storage'
@@ -36,6 +32,14 @@ export function FileUpload() {
   const { setFirstPhotoUploaded, firstPhotoUploaded } = useCommonStore()
 
   const { playConfetti } = useConfetti()
+
+  // Get app settings
+  const {
+    imageSizeLimit,
+    enableFileCompression,
+    compressQuality,
+    addressLanguage,
+  } = useAppSettings()
 
   const randomId = nanoid()
 
@@ -60,7 +64,7 @@ export function FileUpload() {
     if (!file) return
 
     setFile(file)
-    setProgress(0) // 重置进度为0，防止使用内存中的进度
+    setProgress(0) // Reset progress to 0 to prevent using cached progress
     const { name, type: fileType, size: fileSize } = file
     const fileNameWithoutExt = name.substring(0, name.lastIndexOf('.'))
     const fileExt = name.substring(name.lastIndexOf('.'))
@@ -68,8 +72,8 @@ export function FileUpload() {
 
     console.info('--- 1. validate file size ---')
     setStep('upload')
-    if (fileSize > IMAGE_SIZE_LIMIT) {
-      toast.error(`File size exceeds ${IMAGE_SIZE_LIMIT / 1024 / 1024}MB limit`)
+    if (fileSize > imageSizeLimit) {
+      toast.error(`File size exceeds ${imageSizeLimit / 1024 / 1024}MB limit`)
       setFile(null)
       setStep(null)
       setProgress(0)
@@ -89,14 +93,14 @@ export function FileUpload() {
 
       console.info('--- 3. compress file and upload if enabled ---')
       let compressedData = { compressedUrl: '', compressedSize: 0 }
-      if (ENABLE_FILE_COMPRESSION) {
+      if (enableFileCompression) {
         setStep('compress')
         compressedData = await new Promise<{
           compressedUrl: string
           compressedSize: number
         }>((resolve, reject) => {
           new Compressor(file, {
-            quality: COMPRESS_QUALITY,
+            quality: compressQuality,
             success: async (compressedFile) => {
               try {
                 const compressedFileName = getCompressedFileName(fileName)
@@ -170,6 +174,7 @@ export function FileUpload() {
             Number(exifData.GPSLatitude?.description),
             Number(exifData.GPSLongitude?.description),
             3,
+            addressLanguage,
           )
         } catch (error) {
           console.error('get location failed: ', error)
@@ -248,7 +253,7 @@ export function FileUpload() {
 
       setFile(null)
       setStep(null)
-      setProgress(0) // 照片处理完成后重置进度为0
+      setProgress(0) // Reset progress to 0 after photo processing is complete
       setTriggerType('file-upload')
       setDialogOpen(true)
 
@@ -284,7 +289,7 @@ export function FileUpload() {
               </p>
               <p className='relative z-20 mt-2 font-normal font-sans text-base text-neutral-400 dark:text-neutral-400'>
                 Drag or drop your image here or click to upload, max size{' '}
-                {IMAGE_SIZE_LIMIT / 1024 / 1024}MB
+                {imageSizeLimit / 1024 / 1024}MB
               </p>
             </>
           )}

@@ -10,10 +10,10 @@ import { InfoItem } from '@/components/gallery/photo-info/item'
 import { PhotoLocation } from '@/components/gallery/photo-info/location'
 import { PhotoInfoMore } from '@/components/gallery/photo-info/more'
 import { PhotoRating } from '@/components/gallery/photo-info/photo-rating'
-import { PER_PAGE_PHOTOS_COUNT_INFINITE } from '@/constants'
 import { useIsClient } from '@/hooks/use-client'
 import { useImageDisplaySize } from '@/hooks/use-image-display-size'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { useAppSettings } from '@/hooks/use-settings'
 import { formatExifDateTime } from '@/lib/format/date-time'
 import type { Photo } from '@/server/db/schema/photos'
 
@@ -52,6 +52,9 @@ export function FeedGallery({
 
   const [lightboxOpen, setLightboxOpen] = useState(false)
 
+  // Get app settings
+  const { perPagePhotosCountInfinite } = useAppSettings()
+
   const { displaySize } = useImageDisplaySize({
     width: photoWidth,
     height: photoHeight,
@@ -72,7 +75,7 @@ export function FeedGallery({
               src={photo.compressedUrl || photo.url}
               fill
               alt={photo.title || 'Photo'}
-              priority={index < PER_PAGE_PHOTOS_COUNT_INFINITE}
+              priority={index < perPagePhotosCountInfinite}
               className='rounded-lg shadow-2xl'
               sizes={`(min-width: 1280px) min(${displaySize.width}px, calc(100vw - 384px)), (min-width: 768px) min(${displaySize.width}px, calc(100vw - 96px)), min(${displaySize.width}px, 100vw)`}
             />

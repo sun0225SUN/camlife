@@ -36,7 +36,7 @@ import {
 } from '@/components/ui/select'
 import { Snippet } from '@/components/ui/snippet'
 import { Textarea } from '@/components/ui/textarea'
-import { DEFAULT_PHOTO_RATING } from '@/constants'
+import { useAppSettings } from '@/hooks/use-settings'
 import { downloadImage } from '@/lib/image'
 import { getCompressedFileName } from '@/lib/utils'
 import { usePhotoStore } from '@/stores/photo'
@@ -57,6 +57,9 @@ export function PhotoInfo() {
   const { mutateAsync: upsertPhoto } = api.photo.upsertPhoto.useMutation()
 
   const { resolvedTheme } = useTheme()
+
+  // Get app settings
+  const { defaultPhotoRating } = useAppSettings()
 
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState<Date | undefined>(undefined)
@@ -118,7 +121,7 @@ export function PhotoInfo() {
         // Basic information - set default values
         title: photoInfo.title?.trim() || 'untitled',
         description: photoInfo.description?.trim() || 'No description',
-        rating: photoInfo.rating ?? DEFAULT_PHOTO_RATING,
+        rating: photoInfo.rating ?? defaultPhotoRating,
         isFavorite: photoInfo.isFavorite ?? false,
         visibility: (photoInfo.visibility as 'public' | 'private') || 'public',
 
@@ -297,7 +300,7 @@ export function PhotoInfo() {
                 <Label>Rating</Label>
                 <Rating
                   style={{ maxWidth: 150, width: '100%', minWidth: 120 }}
-                  value={photoInfo?.rating || DEFAULT_PHOTO_RATING}
+                  value={photoInfo?.rating || defaultPhotoRating}
                   onChange={(value: number) => {
                     if (!photoInfo) return
                     setPhotoInfo({ ...photoInfo, rating: value })

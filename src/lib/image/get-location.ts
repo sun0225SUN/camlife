@@ -12,18 +12,20 @@ const geocodingClient = mbxGeocoding({
  * @param latitude Latitude coordinate
  * @param longitude Longitude coordinate
  * @param level Address level, defaults to 0
+ * @param language Language code for address, defaults to ADDRESS_LANGUAGE constant
  * @returns Promise<ImageLocation> Location information
  */
 export async function getLocationFromCoordinates(
   latitude: number,
   longitude: number,
   level = 0,
+  language = ADDRESS_LANGUAGE,
 ): Promise<ImageLocation> {
   try {
     const response = await geocodingClient
       .reverseGeocode({
         query: [longitude, latitude],
-        language: [ADDRESS_LANGUAGE],
+        language: [language],
         types: [
           'country',
           'region',
