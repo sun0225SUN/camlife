@@ -29,11 +29,6 @@ export const ADDRESS_LANGUAGE = 'en'
 export const GITHUB_REPOSITORY_URL = 'https://github.com/sun0225SUN/camlife'
 
 /**
- * Max photos to display in gallery
- */
-export const PER_PAGE_PHOTOS_COUNT = 8
-
-/**
  * Max photos to display in infinite gallery
  */
 export const PER_PAGE_PHOTOS_COUNT_INFINITE = 10

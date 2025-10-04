@@ -1,6 +1,6 @@
 'use client'
 
-import { Home, Image, ListTodo, Settings } from 'lucide-react'
+import { Home, Image, Settings } from 'lucide-react'
 import { NavLogo } from '@/components/dashboard/sidebar/nav-logo'
 import { NavMain } from '@/components/dashboard/sidebar/nav-main'
 import { NavSettings } from '@/components/dashboard/sidebar/nav-settings'
@@ -18,7 +18,6 @@ import {
   DASHBOARD_GALLERY_PAGE,
   DASHBOARD_HOME_PAGE,
   DASHBOARD_SETTINGS_PAGE,
-  DASHBOARD_TODO_PAGE,
 } from '@/routes'
 
 interface AppSidebarProps {
@@ -36,13 +35,6 @@ const data = {
       name: 'Gallery',
       url: DASHBOARD_GALLERY_PAGE,
       icon: Image,
-    },
-  ],
-  ToolsMenu: [
-    {
-      name: 'Todo',
-      url: DASHBOARD_TODO_PAGE,
-      icon: ListTodo,
     },
   ],
   SettingsMenu: [

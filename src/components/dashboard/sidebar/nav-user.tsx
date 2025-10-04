@@ -6,7 +6,7 @@ import {
   Languages,
   LogOut,
   Palette,
-  SquareUserRound,
+  Settings,
   User,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -37,7 +37,7 @@ import { useRouter } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import { signOut } from '@/lib/auth/client'
 import { cn } from '@/lib/utils'
-import { DASHBOARD_PROFILE_PAGE, SIGN_IN_PAGE } from '@/routes'
+import { DASHBOARD_SETTINGS_PAGE, SIGN_IN_PAGE } from '@/routes'
 
 interface NavUserProps {
   name: string
@@ -82,11 +82,6 @@ export function NavUser({ name, email }: NavUserProps) {
     }
   }
 
-  // Profile
-  const handleProfile = () => {
-    router.push(DASHBOARD_PROFILE_PAGE)
-  }
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -127,19 +122,17 @@ export function NavUser({ name, email }: NavUserProps) {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem onClick={handleProfile}>
-              <SquareUserRound
+            <DropdownMenuItem
+              onClick={() => router.push(DASHBOARD_SETTINGS_PAGE)}
+            >
+              <Settings
                 size={22}
                 className='text-foreground'
               />
-              {t('Auth.profile')}
+              {t('Settings.settings')}
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
-
-            <p className='my-2 px-2 text-muted-foreground text-xs'>
-              {t('Theme.preferences')}
-            </p>
 
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className='flex cursor-pointer items-center gap-2'>

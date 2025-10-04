@@ -5,11 +5,7 @@ import { LoadingDot } from '@/components/common/loading-dot'
 import { api } from '@/trpc/react'
 
 export function BasicStates() {
-  const {
-    data: stats,
-    isLoading,
-    error,
-  } = api.photo.getDashboardStats.useQuery()
+  const { data: stats, isLoading } = api.photo.getDashboardStats.useQuery()
 
   if (isLoading)
     return (

@@ -7,7 +7,7 @@
 
   <img alt="GitHub License" src="https://img.shields.io/github/license/sun0225SUN/camlife">
   <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/sun0225SUN/camlife?style=flat">
-   <img alt="GitHub Repo forks" src="https://img.shields.io/github/forks/sun0225SUN/camlife?style=flat">
+  <img alt="GitHub Repo forks" src="https://img.shields.io/github/forks/sun0225SUN/camlife?style=flat">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/sun0225SUN/camlife">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/sun0225SUN/camlife">
   <img alt="Page views" src="https://komarev.com/ghpvc/?username=camlife&label=Views&color=orange&style=flat"/>
