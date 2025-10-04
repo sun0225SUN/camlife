@@ -11,8 +11,10 @@ export const auth = betterAuth({
   },
   user: {
     changeEmail: {
+      enabled: false,
+    },
+    changePassword: {
       enabled: true,
-      requireEmailVerification: true,
     },
   },
 })
