@@ -1,5 +1,6 @@
 'use client'
 
+import { Globe, MapPin } from 'lucide-react'
 import {
   Bar,
   BarChart,
@@ -113,7 +114,8 @@ export function GeographyStats({ data, className }: GeographyProps) {
       <div className={cn('grid grid-cols-1 gap-6 lg:grid-cols-2', className)}>
         <Card className='group transition-all duration-300 hover:shadow-lg'>
           <CardHeader className='pb-4'>
-            <CardTitle className='font-semibold text-lg'>
+            <CardTitle className='flex items-center gap-2 font-semibold text-lg'>
+              <Globe className='h-4 w-4 text-muted-foreground' />
               Country Distribution
             </CardTitle>
             <CardDescription className='text-sm'>
@@ -165,7 +167,8 @@ export function GeographyStats({ data, className }: GeographyProps) {
 
         <Card className='group transition-all duration-300 hover:shadow-lg'>
           <CardHeader className='pb-4'>
-            <CardTitle className='font-semibold text-lg'>
+            <CardTitle className='flex items-center gap-2 font-semibold text-lg'>
+              <MapPin className='h-4 w-4 text-muted-foreground' />
               City Distribution
             </CardTitle>
             <CardDescription className='text-sm'>

@@ -4,6 +4,7 @@ import { BasicStates } from '@/components/dashboard/analysis/basic'
 import { CommitGraph } from '@/components/dashboard/analysis/commit-graph'
 import { EquipmentsStats } from '@/components/dashboard/analysis/equipments'
 import { GeographyStats } from '@/components/dashboard/analysis/geography'
+import { DashboardSkeleton } from '@/components/dashboard/analysis/skeleton'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -30,7 +31,38 @@ export default function AnalysisPage() {
   const isLoading = statsLoading || activityLoading
   const hasError = statsError || activityError
 
-  if (isLoading) return null
+  if (isLoading) {
+    return (
+      <>
+        <header
+          className={cn(
+            'flex items-center gap-2',
+            'sticky top-0 z-[999] h-20 shrink-0',
+            'border-b bg-background',
+            'group-has-data-[collapsible=icon]/sidebar-wrapper:h-12',
+          )}
+        >
+          <div className='flex items-center gap-2 px-6'>
+            <SidebarTrigger className='-ml-1' />
+            <Separator
+              orientation='vertical'
+              className='mr-2 data-[orientation=vertical]:h-4'
+            />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbPage className='font-semibold text-lg'>
+                    Dashboard
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </header>
+        <DashboardSkeleton />
+      </>
+    )
+  }
 
   if (hasError) {
     return (
@@ -66,7 +98,7 @@ export default function AnalysisPage() {
         className={cn(
           'flex items-center gap-2',
           'sticky top-0 h-20 shrink-0',
-          'border-b bg-gradient-to-r from-background to-muted/20',
+          'z-[999] border-b bg-white/80 backdrop-blur-md dark:bg-black/50',
           'group-has-data-[collapsible=icon]/sidebar-wrapper:h-12',
         )}
       >
@@ -88,7 +120,7 @@ export default function AnalysisPage() {
         </div>
       </header>
 
-      <div className='flex flex-1 flex-col gap-6 p-6'>
+      <div className='flex flex-1 flex-col gap-8 p-6'>
         <BasicStates />
         <CommitGraph
           activityData={activityData}

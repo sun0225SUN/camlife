@@ -171,84 +171,93 @@ export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
   }
 
   return (
-    <TooltipProvider>
-      <div className='w-full rounded-xl border bg-card p-6'>
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className='w-full'
-        >
-          <TabsList
-            className={cn(
-              'flex w-full justify-start overflow-x-auto',
-              isLoading && 'opacity-0',
-            )}
+    <>
+      <div>
+        <h2 className='font-semibold text-2xl tracking-tight'>Activity</h2>
+        <p className='text-muted-foreground'>
+          Your photo shooting activity over time
+        </p>
+      </div>
+      <TooltipProvider>
+        <div className='w-full rounded-xl border bg-card p-6'>
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className='w-full'
           >
-            {activityData?.years?.map((year) => (
+            <TabsList
+              className={cn(
+                'flex w-full justify-start overflow-x-auto',
+                isLoading && 'opacity-0',
+              )}
+            >
+              {activityData?.years?.map((year) => (
+                <TabsTrigger
+                  key={year}
+                  value={year.toString()}
+                  className='cursor-pointer whitespace-nowrap'
+                >
+                  {year}
+                </TabsTrigger>
+              ))}
+
               <TabsTrigger
-                key={year}
-                value={year.toString()}
+                value='total'
                 className='cursor-pointer whitespace-nowrap'
               >
-                {year}
+                Total
               </TabsTrigger>
+            </TabsList>
+
+            {activityData?.years?.map((year) => (
+              <TabsContent
+                key={year}
+                value={year.toString()}
+                className='mt-4'
+              >
+                <div className='min-h-[300px] space-y-2 text-center'>
+                  <h3 className='mb-10 font-medium text-lg'>
+                    {year} Photo Activity (
+                    {activityData.yearlyData[year]?.totalPhotos || 0} photos)
+                  </h3>
+                  {activityData.yearlyData[year] &&
+                    renderHeatmap(activityData.yearlyData[year])}
+                </div>
+              </TabsContent>
             ))}
 
-            <TabsTrigger
-              value='total'
-              className='cursor-pointer whitespace-nowrap'
-            >
-              Total
-            </TabsTrigger>
-          </TabsList>
-
-          {activityData?.years?.map((year) => (
             <TabsContent
-              key={year}
-              value={year.toString()}
+              value='total'
               className='mt-4'
             >
-              <div className='min-h-[300px] space-y-2 text-center'>
-                <h3 className='mb-10 font-medium text-lg'>
-                  {year} Photo Activity (
-                  {activityData.yearlyData[year]?.totalPhotos || 0} photos)
-                </h3>
-                {activityData.yearlyData[year] &&
-                  renderHeatmap(activityData.yearlyData[year])}
+              <div className='min-h-[300px] space-y-8'>
+                {!isLoading &&
+                  activityData?.years?.length &&
+                  activityData.years.map((year) => (
+                    <div
+                      key={year}
+                      className='min-h-[300px] space-y-2 text-center'
+                    >
+                      <h3 className='mb-10 font-medium text-lg'>
+                        {year} Photo Activity (
+                        {activityData.yearlyData[year]?.totalPhotos || 0}{' '}
+                        photos)
+                      </h3>
+                      {activityData.yearlyData[year] &&
+                        renderHeatmap(activityData.yearlyData[year])}
+                    </div>
+                  ))}
+
+                {!isLoading && !activityData?.years?.length && (
+                  <div className='flex h-[300px] items-center justify-center text-muted-foreground'>
+                    No activity data available
+                  </div>
+                )}
               </div>
             </TabsContent>
-          ))}
-
-          <TabsContent
-            value='total'
-            className='mt-4'
-          >
-            <div className='min-h-[300px] space-y-8'>
-              {!isLoading &&
-                activityData?.years?.length &&
-                activityData.years.map((year) => (
-                  <div
-                    key={year}
-                    className='min-h-[300px] space-y-2 text-center'
-                  >
-                    <h3 className='mb-10 font-medium text-lg'>
-                      {year} Photo Activity (
-                      {activityData.yearlyData[year]?.totalPhotos || 0} photos)
-                    </h3>
-                    {activityData.yearlyData[year] &&
-                      renderHeatmap(activityData.yearlyData[year])}
-                  </div>
-                ))}
-
-              {!isLoading && !activityData?.years?.length && (
-                <div className='flex h-[300px] items-center justify-center text-muted-foreground'>
-                  No activity data available
-                </div>
-              )}
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </TooltipProvider>
+          </Tabs>
+        </div>
+      </TooltipProvider>
+    </>
   )
 }
