@@ -24,9 +24,6 @@ interface CommitGraphProps {
 export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
   const [activeTab, setActiveTab] = useState('total')
 
-  // Debug: 添加控制台输出来检查数据
-  console.log('CommitGraph - activityData:', activityData)
-  console.log('CommitGraph - isLoading:', isLoading)
   const [hoveredCell, setHoveredCell] = useState<{
     week: number
     day: number
@@ -91,14 +88,14 @@ export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
 
   const getColor = (count: number): string => {
     const colors: { [key: number]: string } = {
-      0: 'bg-white/50 dark:bg-white/20',
-      1: 'bg-green-200 dark:bg-green-800',
-      2: 'bg-green-400 dark:bg-green-700',
-      3: 'bg-green-600 dark:bg-green-600',
-      4: 'bg-green-700 dark:bg-green-500',
-      5: 'bg-green-800 dark:bg-green-400',
+      0: 'bg-gray-100 dark:bg-white/20',
+      1: 'bg-green-100 dark:bg-green-800',
+      2: 'bg-green-200 dark:bg-green-700',
+      3: 'bg-green-300 dark:bg-green-600',
+      4: 'bg-green-400 dark:bg-green-500',
+      5: 'bg-green-500 dark:bg-green-400',
     }
-    return colors[count] ?? 'bg-gray-300 dark:bg-gray-700'
+    return colors[count] ?? 'bg-gray-200 dark:bg-gray-700'
   }
 
   const renderHeatmap = (yearlyData: ActivityData['yearlyData'][number]) => {
@@ -190,12 +187,12 @@ export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
         <div className='mt-4 flex items-center justify-end gap-4 text-muted-foreground text-sm'>
           <span>Less</span>
           <div className='flex gap-1'>
-            <div className='h-3 w-3 rounded-sm bg-gray-300 dark:bg-gray-700' />
-            <div className='h-3 w-3 rounded-sm bg-green-200 dark:bg-green-800' />
-            <div className='h-3 w-3 rounded-sm bg-green-400 dark:bg-green-700' />
-            <div className='h-3 w-3 rounded-sm bg-green-600 dark:bg-green-600' />
-            <div className='h-3 w-3 rounded-sm bg-green-700 dark:bg-green-500' />
-            <div className='h-3 w-3 rounded-sm bg-green-800 dark:bg-green-400' />
+            <div className='h-3 w-3 rounded-sm bg-gray-100 dark:bg-white/20' />
+            <div className='h-3 w-3 rounded-sm bg-green-100 dark:bg-green-800' />
+            <div className='h-3 w-3 rounded-sm bg-green-200 dark:bg-green-700' />
+            <div className='h-3 w-3 rounded-sm bg-green-300 dark:bg-green-600' />
+            <div className='h-3 w-3 rounded-sm bg-green-400 dark:bg-green-500' />
+            <div className='h-3 w-3 rounded-sm bg-green-500 dark:bg-green-400' />
           </div>
           <span>More</span>
         </div>
