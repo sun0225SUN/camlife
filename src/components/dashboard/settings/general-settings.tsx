@@ -51,7 +51,7 @@ export function GeneralSettings({
 
   const [appConstantsData, setAppConstantsData] = useState({
     imageSizeLimit: 0,
-    enableFileCompression: false,
+    enableFileCompression: true,
     compressQuality: 0.6,
     defaultPhotoRating: 3,
     addressLanguage: 'zh',
@@ -79,7 +79,7 @@ export function GeneralSettings({
       setAppConstantsData({
         imageSizeLimit: Number(appSettings['app.image_size_limit']) || 10,
         enableFileCompression:
-          appSettings['app.enable_file_compression'] === 'true',
+          appSettings['app.enable_file_compression'] !== 'false',
         compressQuality: Number(appSettings['app.compress_quality']) || 0.6,
         defaultPhotoRating:
           Number(appSettings['app.default_photo_rating']) || 3,

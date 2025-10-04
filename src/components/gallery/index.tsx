@@ -29,6 +29,7 @@ interface GalleryProps {
 
 export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
   const t = useTranslations('gallery')
+  const tPhoto = useTranslations('photo')
 
   const { layout } = useView()
 
@@ -236,7 +237,7 @@ export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
 
       {!inFinite && !hasNextPage && photos.length > 0 && (
         <p className='mb-5 flex justify-center text-gray-500 text-sm dark:text-gray-400'>
-          {t('allPhotosDisplayed', { count: photos.length })}
+          {tPhoto('all-photos-displayed', { count: photos.length })}
         </p>
       )}
 
