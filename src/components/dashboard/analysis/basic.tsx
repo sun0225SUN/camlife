@@ -1,11 +1,13 @@
 'use client'
 
 import { Globe, Image, MapPin, TrendingUp } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { LoadingDot } from '@/components/common/loading-dot'
 import { api } from '@/trpc/react'
 
 export function BasicStates() {
   const { data: stats, isLoading } = api.photo.getDashboardStats.useQuery()
+  const t = useTranslations('common')
 
   if (isLoading)
     return (
@@ -18,9 +20,9 @@ export function BasicStates() {
     return (
       <div className='flex h-full items-center justify-center'>
         <div className='text-center'>
-          <p>No data available</p>
+          <p>{t('no-data-available')}</p>
           <p className='text-muted-foreground text-sm'>
-            Upload some photos to see statistics
+            {t('upload-photos-to-see-statistics')}
           </p>
         </div>
       </div>
@@ -29,45 +31,47 @@ export function BasicStates() {
   return (
     <>
       <div>
-        <h2 className='font-semibold text-2xl tracking-tight'>Overview</h2>
+        <h2 className='font-semibold text-2xl tracking-tight'>
+          {t('overview')}
+        </h2>
         <p className='text-muted-foreground'>
-          Your photo shooting activity overview
+          {t('photo-shooting-activity-overview')}
         </p>
       </div>
 
       <div className='grid auto-rows-min gap-6 md:grid-cols-2 lg:grid-cols-4'>
         <StatsCard
-          title='Total Photos'
+          title={t('total-photos')}
           value={stats.totalPhotos.toLocaleString()}
-          description='All public photos'
+          description={t('all-public-photos')}
           icon={Image}
           trend={{
             value: 12.5,
-            label: 'vs last month',
+            label: t('vs-last-month'),
             isPositive: true,
           }}
         />
         <StatsCard
-          title='This Month'
+          title={t('this-month')}
           value={stats.recentPhotos.toLocaleString()}
-          description='Last 30 days'
+          description={t('last-30-days')}
           icon={TrendingUp}
           trend={{
             value: 8.2,
-            label: 'vs last month',
+            label: t('vs-last-month'),
             isPositive: true,
           }}
         />
         <StatsCard
-          title='Countries'
+          title={t('countries')}
           value={stats.photosByCountry.length}
-          description='Different countries'
+          description={t('different-countries')}
           icon={Globe}
         />
         <StatsCard
-          title='Cities'
+          title={t('cities')}
           value={stats.photosByCity.length}
-          description='Different cities'
+          description={t('different-cities')}
           icon={MapPin}
         />
       </div>

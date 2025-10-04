@@ -71,7 +71,7 @@ export function NavUser({ name, email, image }: NavUserProps) {
 
     try {
       await signOut()
-      toast.success(t('Auth.signOutSuccess'))
+      toast.success(t('sign-out-success'))
       router.push(SIGN_IN_PAGE)
       router.refresh()
     } catch (error) {
@@ -148,7 +148,7 @@ export function NavUser({ name, email, image }: NavUserProps) {
                 size={22}
                 className='text-foreground'
               />
-              {t('Settings.settings')}
+              {t('settings.settings')}
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
@@ -156,7 +156,7 @@ export function NavUser({ name, email, image }: NavUserProps) {
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className='flex cursor-pointer items-center gap-2'>
                 <Palette size={16} />
-                <p>{t('Theme.theme')}</p>
+                <p>{t('theme.theme')}</p>
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
                 <DropdownMenuSubContent className='mb-4 ml-2 flex flex-col gap-1 p-2'>
@@ -167,7 +167,7 @@ export function NavUser({ name, email, image }: NavUserProps) {
                       theme === 'light' && 'bg-accent',
                     )}
                   >
-                    <span>{t('Theme.light')}</span>
+                    <span>{t('theme.light')}</span>
                     {theme === 'light' && <Check className='ml-2 size-4' />}
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -177,7 +177,7 @@ export function NavUser({ name, email, image }: NavUserProps) {
                       theme === 'dark' && 'bg-accent',
                     )}
                   >
-                    <span>{t('Theme.dark')}</span>
+                    <span>{t('theme.dark')}</span>
                     {theme === 'dark' && <Check className='ml-2 size-4' />}
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -187,7 +187,7 @@ export function NavUser({ name, email, image }: NavUserProps) {
                       theme === 'system' && 'bg-accent',
                     )}
                   >
-                    <span>{t('Theme.system')}</span>
+                    <span>{t('theme.system')}</span>
                     {theme === 'system' && <Check className='ml-2 size-4' />}
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
@@ -197,7 +197,7 @@ export function NavUser({ name, email, image }: NavUserProps) {
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className='flex cursor-pointer items-center gap-2'>
                 <Languages size={16} />
-                <p>{t('Language.language')}</p>
+                <p>{t('language.language')}</p>
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
                 <DropdownMenuSubContent className='mb-4 ml-2 flex flex-col gap-1 p-2'>
@@ -207,11 +207,10 @@ export function NavUser({ name, email, image }: NavUserProps) {
                       onClick={() => onSelectChange(locale)}
                       className={cn(
                         'flex cursor-pointer items-center justify-between rounded-sm px-2 py-1',
-                        theme === 'dark' &&
-                          'border-black/30 dark:border-white/50',
+                        currentLocale === locale && 'bg-accent',
                       )}
                     >
-                      <span>{t(`Language.${locale}`)}</span>
+                      <span>{t('language.language')}</span>
                       {currentLocale === locale && (
                         <Check className='ml-2 size-4' />
                       )}
@@ -232,7 +231,7 @@ export function NavUser({ name, email, image }: NavUserProps) {
                 size={22}
                 className='text-red-500 dark:text-red-400'
               />
-              {t('Auth.signOut')}
+              {t('auth.sign-out')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

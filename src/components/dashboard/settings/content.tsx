@@ -75,13 +75,7 @@ export function SettingsContent({
           />
         )
       case 'account':
-        return (
-          <AccountSettings
-            user={session?.user}
-            session={session?.session}
-            activeSessions={activeSessions}
-          />
-        )
+        return <AccountSettings user={session?.user} />
       case 'security':
         return (
           <SecuritySettings

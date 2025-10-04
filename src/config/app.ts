@@ -9,7 +9,7 @@ export const appConfig = {
 
   // Application metadata
   name: 'CamLife',
-  description: '一个专注于摄影分享和探索的平台',
+  description: 'A platform focused on photography sharing and exploration',
 
   // Developer information
   developer: {
@@ -26,7 +26,7 @@ export const appConfig = {
   // License information
   license: {
     type: 'GPL-3.0',
-    description: '项目开源许可证信息',
+    description: 'Project open source license information',
   },
 
   // Project tagline

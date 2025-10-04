@@ -14,13 +14,13 @@ import {
 import { appConfig } from '@/config/app'
 
 export function AboutSettings() {
-  const t = useTranslations('Settings')
+  const t = useTranslations('settings')
 
   return (
     <div className='space-y-6'>
       <div>
         <h2 className='font-semibold text-2xl tracking-tight'>{t('about')}</h2>
-        <p className='text-muted-foreground'>{t('aboutDescription')}</p>
+        <p className='text-muted-foreground'>{t('about-description')}</p>
       </div>
 
       <Card>
@@ -73,7 +73,7 @@ export function AboutSettings() {
               >
                 <Badge className='cursor-pointer border-gray-500 bg-transparent text-gray-500 hover:bg-gray-100'>
                   <Github className='mr-1 size-4' />
-                  <span>GitHub</span>
+                  <span>{t('github')}</span>
                 </Badge>
               </a>
             </div>

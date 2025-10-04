@@ -45,6 +45,7 @@ export function FeedGallery({
   photos,
   queryResult,
 }: FeedGalleryProps) {
+  const t = useTranslations('photo')
   const photoWidth = photo.width || 1200
   const photoHeight = photo.height || 900
   const isPortrait = photoHeight > photoWidth
@@ -74,7 +75,7 @@ export function FeedGallery({
               blurDataURL={photo.blurDataUrl}
               src={photo.compressedUrl || photo.url}
               fill
-              alt={photo.title || 'Photo'}
+              alt={photo.title || t('photo')}
               priority={index < perPagePhotosCountInfinite}
               className='rounded-lg shadow-2xl'
               sizes={`(min-width: 1280px) min(${displaySize.width}px, calc(100vw - 384px)), (min-width: 768px) min(${displaySize.width}px, calc(100vw - 96px)), min(${displaySize.width}px, 100vw)`}
@@ -115,7 +116,7 @@ export function FeedPhotoInfo({
   tempRating?: number
   onRatingChange: (rating: number | undefined) => void
 }) {
-  const t = useTranslations('PhotoInfo')
+  const t = useTranslations('photo')
   const isMobile = useIsMobile()
 
   if (isMobile) {
@@ -133,14 +134,14 @@ export function FeedPhotoInfo({
 
           <InfoItem title={t('camera')}>
             <div className='whitespace-nowrap text-xs uppercase'>
-              {photo.model ?? 'unknown'}
+              {photo.model ?? t('unknown')}
             </div>
           </InfoItem>
 
           {photo.lensModel && (
-            <InfoItem title={t('lensModel')}>
+            <InfoItem title={t('lens-model')}>
               <div className='whitespace-nowrap text-xs uppercase'>
-                {photo.lensModel ?? 'unknown'}
+                {photo.lensModel ?? t('unknown')}
               </div>
             </InfoItem>
           )}
@@ -153,7 +154,7 @@ export function FeedPhotoInfo({
                 ? formatExifDateTime(
                     photo.dateTimeOriginal.toString(),
                   )?.toLocaleString()
-                : 'unknown'}
+                : t('unknown')}
             </div>
           </InfoItem>
         </div>
@@ -177,14 +178,14 @@ export function FeedPhotoInfo({
 
         <InfoItem title={t('camera')}>
           <div className='whitespace-nowrap uppercase'>
-            {photo.model ?? 'unknown'}
+            {photo.model ?? t('unknown')}
           </div>
         </InfoItem>
 
         {photo.lensModel && (
-          <InfoItem title={t('lensModel')}>
+          <InfoItem title={t('lens-model')}>
             <div className='whitespace-nowrap uppercase'>
-              {photo.lensModel ?? 'unknown'}
+              {photo.lensModel ?? t('unknown')}
             </div>
           </InfoItem>
         )}
@@ -197,7 +198,7 @@ export function FeedPhotoInfo({
               ? formatExifDateTime(
                   photo.dateTimeOriginal.toString(),
                 )?.toLocaleString()
-              : 'unknown'}
+              : t('unknown')}
           </div>
         </InfoItem>
       </div>

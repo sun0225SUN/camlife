@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 import { DataTable } from '@/components/dashboard/gallery/data-table'
 import { FileUpload } from '@/components/dashboard/gallery/file-upload'
@@ -15,6 +16,8 @@ import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
 
 export default function GalleryPage() {
+  const t = useTranslations()
+
   const { state, isMobile } = useSidebar()
 
   const leftMargin = useMemo(() => {
@@ -47,7 +50,7 @@ export default function GalleryPage() {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbPage className='font-semibold text-lg'>
-                  Gallery
+                  {t('dashboard.gallery')}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -58,10 +61,10 @@ export default function GalleryPage() {
       <div className='flex h-full flex-col gap-6 p-6 pt-28'>
         <div>
           <h2 className='font-semibold text-2xl tracking-tight'>
-            Upload Photos
+            {t('gallery.upload-photos')}
           </h2>
           <p className='text-muted-foreground'>
-            Upload and manage your photo collection
+            {t('gallery.upload-and-manage-description')}
           </p>
         </div>
         <div className='rounded-md border border-border'>
@@ -70,10 +73,10 @@ export default function GalleryPage() {
 
         <div>
           <h2 className='font-semibold text-2xl tracking-tight'>
-            Photo Gallery
+            {t('gallery.photo-gallery')}
           </h2>
           <p className='text-muted-foreground'>
-            View and manage all your uploaded photos
+            {t('gallery.view-and-manage-description')}
           </p>
         </div>
         <DataTable />

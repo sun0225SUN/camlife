@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 import { BasicStates } from '@/components/dashboard/analysis/basic'
 import { CommitGraph } from '@/components/dashboard/analysis/commit-graph'
@@ -18,6 +19,8 @@ import { cn } from '@/lib/utils'
 import { api } from '@/trpc/react'
 
 export default function AnalysisPage() {
+  const t = useTranslations('common')
+
   const {
     data: stats,
     isLoading: statsLoading,
@@ -47,11 +50,13 @@ export default function AnalysisPage() {
     return (
       <div className='flex h-screen items-center justify-center'>
         <div className='text-center'>
-          <div className='mb-4 text-destructive'>Error loading dashboard</div>
+          <div className='mb-4 text-destructive'>
+            {t('error-loading-dashboard')}
+          </div>
           <div className='text-muted-foreground text-sm'>
             {statsError?.message ||
               activityError?.message ||
-              'Unknown error occurred'}
+              t('unknown-error-occurred')}
           </div>
         </div>
       </div>
@@ -62,9 +67,9 @@ export default function AnalysisPage() {
     return (
       <div className='flex h-screen items-center justify-center'>
         <div className='text-center'>
-          <div className='mb-4'>No data available</div>
+          <div className='mb-4'>{t('no-data-available')}</div>
           <div className='text-muted-foreground text-sm'>
-            Upload some photos to see your dashboard
+            {t('upload-photos-to-see-dashboard')}
           </div>
         </div>
       </div>
@@ -94,7 +99,7 @@ export default function AnalysisPage() {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbPage className='font-semibold text-lg'>
-                  Dashboard
+                  {t('dashboard')}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>

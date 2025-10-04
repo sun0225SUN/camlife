@@ -1,6 +1,7 @@
 'use client'
 
 import { Home, Image, Settings } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { NavLogo } from '@/components/dashboard/sidebar/nav-logo'
 import { NavMain } from '@/components/dashboard/sidebar/nav-main'
 import { NavSettings } from '@/components/dashboard/sidebar/nav-settings'
@@ -24,32 +25,34 @@ interface AppSidebarProps {
   session: Session
 }
 
-const data = {
-  MainMenu: [
-    {
-      name: 'Home',
-      url: DASHBOARD_HOME_PAGE,
-      icon: Home,
-    },
-    {
-      name: 'Gallery',
-      url: DASHBOARD_GALLERY_PAGE,
-      icon: Image,
-    },
-  ],
-  SettingsMenu: [
-    {
-      name: 'Settings',
-      url: DASHBOARD_SETTINGS_PAGE,
-      icon: Settings,
-    },
-  ],
-}
-
 export function AppSidebar({
   session,
   ...props
 }: React.ComponentProps<typeof Sidebar> & AppSidebarProps) {
+  const t = useTranslations('dashboard')
+
+  const data = {
+    MainMenu: [
+      {
+        name: t('home'),
+        url: DASHBOARD_HOME_PAGE,
+        icon: Home,
+      },
+      {
+        name: t('gallery'),
+        url: DASHBOARD_GALLERY_PAGE,
+        icon: Image,
+      },
+    ],
+    SettingsMenu: [
+      {
+        name: t('settings'),
+        url: DASHBOARD_SETTINGS_PAGE,
+        icon: Settings,
+      },
+    ],
+  }
+
   const pathname = usePathname()
 
   return (

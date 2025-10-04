@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 import type { TabConfig } from '@/types'
 
 export function ViewTabs() {
-  const t = useTranslations('View')
+  const t = useTranslations('view')
 
   const pathname = usePathname()
 

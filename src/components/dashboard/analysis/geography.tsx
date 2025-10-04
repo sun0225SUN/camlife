@@ -1,6 +1,7 @@
 'use client'
 
 import { Globe, MapPin } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import {
   Bar,
   BarChart,
@@ -63,13 +64,6 @@ interface GeographyProps {
   className?: string
 }
 
-const chartConfig = {
-  count: {
-    label: 'Photo Count',
-    color: 'var(--chart-1)',
-  },
-} satisfies ChartConfig
-
 const COLORS = [
   'var(--chart-1)',
   'var(--chart-2)',
@@ -84,6 +78,15 @@ const COLORS = [
 ]
 
 export function GeographyStats({ data, className }: GeographyProps) {
+  const t = useTranslations('common')
+
+  const chartConfig = {
+    count: {
+      label: t('photo-count'),
+      color: 'var(--chart-1)',
+    },
+  } satisfies ChartConfig
+
   const countryData: GeoDistributionData[] = data.photosByCountry
     .filter((item) => item.country !== null)
     .map((item) => ({
@@ -105,9 +108,9 @@ export function GeographyStats({ data, className }: GeographyProps) {
   return (
     <>
       <div>
-        <h2 className='font-semibold text-2xl tracking-tight'>Places</h2>
+        <h2 className='font-semibold text-2xl tracking-tight'>{t('places')}</h2>
         <p className='text-muted-foreground'>
-          Your photo shooting places distribution
+          {t('photo-shooting-places-distribution')}
         </p>
       </div>
 
@@ -121,10 +124,10 @@ export function GeographyStats({ data, className }: GeographyProps) {
           <CardHeader className='pb-4'>
             <CardTitle className='flex items-center gap-2 font-semibold text-lg'>
               <Globe className='h-4 w-4 text-muted-foreground' />
-              Country Distribution
+              {t('country-distribution')}
             </CardTitle>
             <CardDescription className='text-sm'>
-              Photo distribution by country
+              {t('photo-distribution-by-country')}
             </CardDescription>
           </CardHeader>
           <CardContent className='pt-0'>
@@ -161,9 +164,9 @@ export function GeographyStats({ data, className }: GeographyProps) {
             ) : (
               <div className='flex h-[300px] flex-col items-center justify-center text-center'>
                 <div className='mb-4 text-6xl'>🌍</div>
-                <h3 className='mb-2 font-semibold text-lg'>No Data</h3>
+                <h3 className='mb-2 font-semibold text-lg'>{t('no-data')}</h3>
                 <p className='mb-4 text-muted-foreground text-sm'>
-                  No photo location information available
+                  {t('no-photo-location-information-available')}
                 </p>
               </div>
             )}
@@ -174,10 +177,10 @@ export function GeographyStats({ data, className }: GeographyProps) {
           <CardHeader className='pb-4'>
             <CardTitle className='flex items-center gap-2 font-semibold text-lg'>
               <MapPin className='h-4 w-4 text-muted-foreground' />
-              City Distribution
+              {t('city-distribution')}
             </CardTitle>
             <CardDescription className='text-sm'>
-              Photo distribution by city
+              {t('photo-distribution-by-city')}
             </CardDescription>
           </CardHeader>
           <CardContent className='pt-0'>

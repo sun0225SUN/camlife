@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { LoadingDot } from '@/components/common/loading-dot'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -28,6 +29,7 @@ interface CommitGraphProps {
 }
 
 export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
+  const t = useTranslations('common')
   const [activeTab, setActiveTab] = useState('total')
 
   useEffect(() => {
@@ -79,33 +81,39 @@ export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
           <div className='mb-2 flex text-muted-foreground text-xs'>
             <div className='mr-2 w-6 flex-shrink-0'></div>
             <div className='scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted-foreground/20 flex min-w-0 flex-1 justify-between overflow-x-auto'>
-              <span className='flex-shrink-0'>Jan</span>
-              <span className='flex-shrink-0'>Feb</span>
-              <span className='flex-shrink-0'>Mar</span>
-              <span className='flex-shrink-0'>Apr</span>
-              <span className='flex-shrink-0'>May</span>
-              <span className='flex-shrink-0'>Jun</span>
-              <span className='flex-shrink-0'>Jul</span>
-              <span className='flex-shrink-0'>Aug</span>
-              <span className='flex-shrink-0'>Sep</span>
-              <span className='flex-shrink-0'>Oct</span>
-              <span className='flex-shrink-0'>Nov</span>
-              <span className='flex-shrink-0'>Dec</span>
+              <span className='flex-shrink-0'>{t('jan')}</span>
+              <span className='flex-shrink-0'>{t('feb')}</span>
+              <span className='flex-shrink-0'>{t('mar')}</span>
+              <span className='flex-shrink-0'>{t('apr')}</span>
+              <span className='flex-shrink-0'>{t('may')}</span>
+              <span className='flex-shrink-0'>{t('jun')}</span>
+              <span className='flex-shrink-0'>{t('jul')}</span>
+              <span className='flex-shrink-0'>{t('aug')}</span>
+              <span className='flex-shrink-0'>{t('sep')}</span>
+              <span className='flex-shrink-0'>{t('oct')}</span>
+              <span className='flex-shrink-0'>{t('nov')}</span>
+              <span className='flex-shrink-0'>{t('dec')}</span>
             </div>
           </div>
 
           <div className='scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted-foreground/20 flex w-full gap-1 overflow-x-auto'>
             <div className='mr-2 flex flex-shrink-0 flex-col gap-1'>
-              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(
-                (day, index) => (
-                  <div
-                    key={`day-${day}`}
-                    className='flex h-2 w-6 items-center text-muted-foreground text-xs sm:h-3 md:h-4 lg:h-5'
-                  >
-                    {index % 2 === 0 ? day : ''}
-                  </div>
-                ),
-              )}
+              {[
+                t('sun'),
+                t('mon'),
+                t('tue'),
+                t('wed'),
+                t('thu'),
+                t('fri'),
+                t('sat'),
+              ].map((day, index) => (
+                <div
+                  key={`day-${day}`}
+                  className='flex h-2 w-6 items-center text-muted-foreground text-xs sm:h-3 md:h-4 lg:h-5'
+                >
+                  {index % 2 === 0 ? day : ''}
+                </div>
+              ))}
             </div>
 
             <div className='flex min-w-0 flex-1 gap-1'>
@@ -140,7 +148,7 @@ export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
                           <div className='text-center'>
                             <div className='font-medium'>
                               {commitCount}{' '}
-                              {commitCount === 1 ? 'photo' : 'photos'}
+                              {commitCount === 1 ? t('photo') : t('photos')}
                             </div>
                             <div className='text-muted-foreground'>
                               {getDateString(i, j, yearlyData.startDate)}
@@ -156,7 +164,7 @@ export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
           </div>
 
           <div className='mt-4 flex items-center justify-end gap-4 text-muted-foreground text-sm'>
-            <span>Less</span>
+            <span>{t('less')}</span>
             <div className='flex gap-1'>
               <div className='h-3 w-3 rounded-sm bg-gray-100 dark:bg-white/20' />
               <div className='h-3 w-3 rounded-sm bg-green-100 dark:bg-green-800' />
@@ -165,7 +173,7 @@ export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
               <div className='h-3 w-3 rounded-sm bg-green-400 dark:bg-green-500' />
               <div className='h-3 w-3 rounded-sm bg-green-500 dark:bg-green-400' />
             </div>
-            <span>More</span>
+            <span>{t('more')}</span>
           </div>
         </div>
       </div>
@@ -200,7 +208,7 @@ export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
               value='total'
               className='cursor-pointer whitespace-nowrap'
             >
-              Total
+              {t('total')}
             </TabsTrigger>
           </TabsList>
 
@@ -212,8 +220,9 @@ export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
             >
               <div className='min-h-[300px] space-y-2 text-center'>
                 <h3 className='mb-10 font-medium text-lg'>
-                  {year} Photo Activity (
-                  {activityData.yearlyData[year]?.totalPhotos || 0} photos)
+                  {year} {t('photo-activity')} (
+                  {activityData.yearlyData[year]?.totalPhotos || 0}{' '}
+                  {t('photos')})
                 </h3>
                 {activityData.yearlyData[year] &&
                   renderHeatmap(activityData.yearlyData[year])}
@@ -234,8 +243,9 @@ export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
                     className='min-h-[300px] space-y-2 text-center'
                   >
                     <h3 className='mb-10 font-medium text-lg'>
-                      {year} Photo Activity (
-                      {activityData.yearlyData[year]?.totalPhotos || 0} photos)
+                      {year} {t('photo-activity')} (
+                      {activityData.yearlyData[year]?.totalPhotos || 0}{' '}
+                      {t('photos')})
                     </h3>
                     {activityData.yearlyData[year] &&
                       renderHeatmap(activityData.yearlyData[year])}
@@ -244,7 +254,7 @@ export function CommitGraph({ activityData, isLoading }: CommitGraphProps) {
 
               {!isLoading && !activityData?.years?.length && (
                 <div className='flex h-[300px] items-center justify-center text-muted-foreground'>
-                  No activity data available
+                  {t('no-activity-data-available')}
                 </div>
               )}
             </div>

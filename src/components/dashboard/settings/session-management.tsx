@@ -30,7 +30,7 @@ export function SessionManagement({
   session,
   activeSessions = [],
 }: SessionManagementProps) {
-  const t = useTranslations('Settings')
+  const t = useTranslations('settings')
 
   return (
     <div className='space-y-6'>
@@ -39,7 +39,7 @@ export function SessionManagement({
           {t('security')}
         </h2>
         <p className='text-muted-foreground'>
-          Manage your active sessions and security settings
+          {t('active-sessions-description')}
         </p>
       </div>
 

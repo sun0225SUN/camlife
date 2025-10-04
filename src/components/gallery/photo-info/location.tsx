@@ -22,7 +22,7 @@ interface PhotoLocationProps {
 }
 
 export function PhotoLocation({ photo }: PhotoLocationProps) {
-  const t = useTranslations('PhotoInfo')
+  const t = useTranslations('photo')
   const isMobile = useIsMobile()
 
   if (isMobile) {
@@ -58,25 +58,25 @@ export function PhotoLocation({ photo }: PhotoLocationProps) {
 }
 
 export function PhotoLocationTrigger({ photo }: PhotoLocationProps) {
-  const t = useTranslations('PhotoInfo')
+  const t = useTranslations('photo')
   return (
     <p className='max-w-100 overflow-x-hidden text-ellipsis whitespace-nowrap pl-1 text-center'>
       {photo.city && photo.region && photo.country
         ? `${photo.city} , ${photo.region} , ${photo.country}`
-        : t('locationNotAvailable')}
+        : t('location-not-available')}
     </p>
   )
 }
 
 export function PhotoLocationContent({ photo }: PhotoLocationProps) {
-  const t = useTranslations('PhotoInfo')
+  const t = useTranslations('photo')
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex flex-col items-center space-y-2'>
         <p className='max-w-60 overflow-hidden text-ellipsis whitespace-nowrap text-center font-medium text-lg'>
           {photo.city && photo.region && photo.country
             ? `${photo.city} , ${photo.region}`
-            : t('locationNotAvailable')}
+            : t('location-not-available')}
         </p>
         <LocationMap
           latitude={photo.latitude ?? 0}

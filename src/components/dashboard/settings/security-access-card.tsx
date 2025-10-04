@@ -2,6 +2,7 @@
 
 import { Dot, Laptop, Loader2, Smartphone } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { UAParser } from 'ua-parser-js'
@@ -30,6 +31,7 @@ export function SecurityAccessCard({
 }: SecurityAccessCardProps) {
   const router = useRouter()
   const [isTerminating, setIsTerminating] = useState<string>()
+  const t = useTranslations()
 
   // Debug logging
   console.log('SecurityAccessCard - session:', session)
@@ -50,13 +52,13 @@ export function SecurityAccessCard({
       } else {
         toast.success(
           isCurrentSession
-            ? 'Signed out successfully'
-            : 'Session terminated successfully',
+            ? t('common.signed-out-successfully')
+            : t('common.session-terminated-successfully'),
         )
       }
       router.refresh()
     } catch (_error) {
-      toast.error('Failed to revoke session')
+      toast.error(t('common.failed-to-revoke-session'))
     } finally {
       setIsTerminating(undefined)
     }
@@ -65,16 +67,18 @@ export function SecurityAccessCard({
   return (
     <div className='mt-6 space-y-8'>
       <div>
-        <h2 className='mb-2 font-semibold text-xl'>Active sessions</h2>
+        <h2 className='mb-2 font-semibold text-xl'>
+          {t('auth.active-sessions')}
+        </h2>
         <p className='mb-4 text-muted-foreground text-xs'>
-          Manage devices logged into your account
+          {t('auth.manage-devices')}
         </p>
 
         <div className='space-y-4'>
           {activeSessions.length === 0 ? (
             <div className='py-8 text-center'>
               <p className='text-muted-foreground text-sm'>
-                No active sessions found
+                {t('auth.no-active-sessions')}
               </p>
             </div>
           ) : (
@@ -112,7 +116,9 @@ export function SecurityAccessCard({
                         <div className='flex-1 space-y-1'>
                           <div className='flex items-center'>
                             <h3 className='font-medium'>
-                              {isMobile ? 'Mobile app' : `${browser} on ${os}`}
+                              {isMobile
+                                ? t('auth.mobile-app')
+                                : `${browser} on ${os}`}
                             </h3>
                             {isCurrentSession && (
                               <span className='ml-2 flex items-center text-green-600 text-xs'>
@@ -120,12 +126,12 @@ export function SecurityAccessCard({
                                   size={20}
                                   className='text-green-500'
                                 />
-                                Current session
+                                {t('auth.current-session')}
                               </span>
                             )}
                           </div>
                           <p className='text-muted-foreground text-xs'>
-                            {sessionItem.ipAddress || 'Unknown location'} •{' '}
+                            {sessionItem.ipAddress || t('unknown-location')} •{' '}
                             {new Date(
                               sessionItem.updatedAt,
                             ).toLocaleDateString()}
@@ -145,9 +151,9 @@ export function SecurityAccessCard({
                               className='animate-spin'
                             />
                           ) : isCurrentSession ? (
-                            'Sign Out'
+                            t('auth.sign-out')
                           ) : (
-                            'Terminate'
+                            t('auth.terminate')
                           )}
                         </Button>
                       </div>

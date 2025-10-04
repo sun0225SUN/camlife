@@ -61,7 +61,7 @@ export function SecuritySettings({
   activeSessions = [],
   onSessionsUpdate,
 }: SecuritySettingsProps) {
-  const t = useTranslations('Settings')
+  const t = useTranslations('settings')
   const router = useRouter()
 
   // Password change states
@@ -80,40 +80,40 @@ export function SecuritySettings({
 
   const handleSavePasswordSettings = async () => {
     if (!passwordData.currentPassword.trim()) {
-      toast.error('Current password is required')
+      toast.error(t('current-password-required'))
       return
     }
 
     if (!passwordData.newPassword.trim()) {
-      toast.error('New password is required')
+      toast.error(t('new-password-required'))
       return
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error('New password and confirm password do not match')
+      toast.error(t('passwords-do-not-match'))
       return
     }
 
     if (passwordData.newPassword.length < 8) {
-      toast.error('Password must be at least 8 characters long')
+      toast.error(t('password-length'))
       return
     }
 
     // Check for uppercase letter
     if (!/[A-Z]/.test(passwordData.newPassword)) {
-      toast.error('Password must contain at least one uppercase letter')
+      toast.error(t('password-uppercase'))
       return
     }
 
     // Check for lowercase letter
     if (!/[a-z]/.test(passwordData.newPassword)) {
-      toast.error('Password must contain at least one lowercase letter')
+      toast.error(t('password-lowercase'))
       return
     }
 
     // Check for number
     if (!/[0-9]/.test(passwordData.newPassword)) {
-      toast.error('Password must contain at least one number')
+      toast.error(t('password-number'))
       return
     }
 
@@ -126,13 +126,11 @@ export function SecuritySettings({
       })
 
       if (error) {
-        toast.error(error.message || 'Failed to change password')
+        toast.error(error.message || t('failed-to-update-password'))
         return
       }
 
-      toast.success(
-        'Password changed successfully. Please log in again with your new password.',
-      )
+      toast.success(t('password-updated-successfully'))
 
       // Clear the form
       setPasswordData({
@@ -145,7 +143,7 @@ export function SecuritySettings({
       await signOut()
       router.push('/sign-in')
     } catch (error) {
-      toast.error('An unexpected error occurred')
+      toast.error(t('unexpected-error'))
       console.error('Password change error:', error)
     } finally {
       setIsChangingPassword(false)
@@ -168,8 +166,8 @@ export function SecuritySettings({
       } else {
         toast.success(
           isCurrentSession
-            ? 'Signed out successfully'
-            : 'Session terminated successfully',
+            ? t('signed-out-successfully')
+            : t('session-terminated-successfully'),
         )
 
         // Refresh sessions list
@@ -183,7 +181,7 @@ export function SecuritySettings({
         }
       }
     } catch (_error) {
-      toast.error('Failed to revoke session')
+      toast.error(t('failed-to-revoke-session'))
     } finally {
       setIsTerminating(undefined)
     }
@@ -195,9 +193,7 @@ export function SecuritySettings({
         <h2 className='font-semibold text-2xl tracking-tight'>
           {t('security')}
         </h2>
-        <p className='text-muted-foreground'>
-          Manage your password and active sessions
-        </p>
+        <p className='text-muted-foreground'>{t('security-description')}</p>
       </div>
 
       {/* Password Change Section */}
@@ -205,15 +201,17 @@ export function SecuritySettings({
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
             <Shield className='h-5 w-5' />
-            Change Password
+            {t('change-password-title')}
           </CardTitle>
           <CardDescription>
-            Update your password to keep your account secure
+            {t('change-password-security-description')}
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
           <div className='space-y-2'>
-            <Label htmlFor='current-password'>Current Password</Label>
+            <Label htmlFor='current-password'>
+              {t('current-password-label')}
+            </Label>
             <div className='relative'>
               <Input
                 id='current-password'
@@ -225,7 +223,7 @@ export function SecuritySettings({
                     currentPassword: e.target.value,
                   })
                 }
-                placeholder='Enter current password'
+                placeholder={t('current-password-placeholder')}
               />
               <Button
                 type='button'
@@ -244,7 +242,7 @@ export function SecuritySettings({
           </div>
           <div className='space-y-2'>
             <div className='flex items-center gap-2'>
-              <Label htmlFor='new-password'>New Password</Label>
+              <Label htmlFor='new-password'>{t('new-password')}</Label>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -255,7 +253,9 @@ export function SecuritySettings({
                     className='max-w-xs'
                   >
                     <div className='space-y-2'>
-                      <p className='font-medium'>Password requirements:</p>
+                      <p className='font-medium'>
+                        {t('password-requirements')}:
+                      </p>
                       <ul className='space-y-1 text-sm'>
                         <li
                           className={`flex items-center gap-2 ${
@@ -271,7 +271,7 @@ export function SecuritySettings({
                                 : 'bg-gray-300'
                             }`}
                           />
-                          At least 8 characters
+                          {t('at-least-8-characters')}
                         </li>
                         <li
                           className={`flex items-center gap-2 ${
@@ -287,7 +287,7 @@ export function SecuritySettings({
                                 : 'bg-gray-300'
                             }`}
                           />
-                          One uppercase letter
+                          {t('one-uppercase-letter')}
                         </li>
                         <li
                           className={`flex items-center gap-2 ${
@@ -303,7 +303,7 @@ export function SecuritySettings({
                                 : 'bg-gray-300'
                             }`}
                           />
-                          One lowercase letter
+                          {t('one-lowercase-letter')}
                         </li>
                         <li
                           className={`flex items-center gap-2 ${
@@ -319,7 +319,7 @@ export function SecuritySettings({
                                 : 'bg-gray-300'
                             }`}
                           />
-                          One number
+                          {t('one-number')}
                         </li>
                       </ul>
                     </div>
@@ -338,7 +338,7 @@ export function SecuritySettings({
                     newPassword: e.target.value,
                   })
                 }
-                placeholder='Enter new password'
+                placeholder={t('new-password-placeholder')}
               />
               <Button
                 type='button'
@@ -356,7 +356,9 @@ export function SecuritySettings({
             </div>
           </div>
           <div className='space-y-2'>
-            <Label htmlFor='confirm-password'>Confirm Password</Label>
+            <Label htmlFor='confirm-password'>
+              {t('confirm-password-label')}
+            </Label>
             <div className='relative'>
               <Input
                 id='confirm-password'
@@ -368,7 +370,7 @@ export function SecuritySettings({
                     confirmPassword: e.target.value,
                   })
                 }
-                placeholder='Confirm new password'
+                placeholder={t('confirm-new-password-placeholder')}
               />
               <Button
                 type='button'
@@ -400,9 +402,9 @@ export function SecuritySettings({
       {/* Session Management Section */}
       <Card>
         <CardHeader>
-          <CardTitle>Active Sessions</CardTitle>
+          <CardTitle>{t('active-sessions-title')}</CardTitle>
           <CardDescription>
-            Manage devices logged into your account
+            {t('active-sessions-manage-description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -410,7 +412,7 @@ export function SecuritySettings({
             {activeSessions.length === 0 ? (
               <div className='py-8 text-center'>
                 <p className='text-muted-foreground text-sm'>
-                  No active sessions found
+                  {t('no-active-sessions-found')}
                 </p>
               </div>
             ) : (
@@ -447,7 +449,9 @@ export function SecuritySettings({
                         <div>
                           <div className='flex items-center gap-2'>
                             <h3 className='font-medium'>
-                              {isMobile ? 'Mobile app' : `${browser} on ${os}`}
+                              {isMobile
+                                ? t('mobile-app')
+                                : `${browser} on ${os}`}
                             </h3>
                             {isCurrentSession && (
                               <span className='ml-2 flex items-center text-green-600 text-xs'>
@@ -455,12 +459,12 @@ export function SecuritySettings({
                                   size={20}
                                   className='text-green-500'
                                 />
-                                Current session
+                                {t('current-session')}
                               </span>
                             )}
                           </div>
                           <p className='text-muted-foreground text-xs'>
-                            {sessionItem.ipAddress || 'Unknown location'} •{' '}
+                            {sessionItem.ipAddress || t('unknown-location')} •{' '}
                             {new Date(
                               sessionItem.updatedAt,
                             ).toLocaleDateString()}
@@ -477,9 +481,9 @@ export function SecuritySettings({
                         {isTerminating === sessionItem.id ? (
                           <Spinner className='h-4 w-4' />
                         ) : isCurrentSession ? (
-                          'Sign Out'
+                          t('sign-out')
                         ) : (
-                          'Terminate'
+                          t('terminate')
                         )}
                       </Button>
                     </div>

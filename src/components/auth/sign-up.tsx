@@ -26,7 +26,7 @@ import { signIn, signUp } from '@/lib/auth/client'
 import { DASHBOARD_HOME_PAGE, SIGN_IN_PAGE } from '@/routes'
 
 export function SignUp() {
-  const t = useTranslations('Auth')
+  const t = useTranslations('auth')
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const { theme } = useTheme()
@@ -36,19 +36,19 @@ export function SignUp() {
     .object({
       name: z
         .string()
-        .min(2, { message: t('usernameRequired') })
-        .max(50, { message: t('usernameRequired') }),
-      email: z.email({ message: t('emailInvalid') }),
+        .min(2, { message: t('username-required') })
+        .max(50, { message: t('username-required') }),
+      email: z.email({ message: t('email-invalid') }),
       password: z
         .string()
-        .min(8, { message: t('passwordRequirements.length') })
-        .regex(/[A-Z]/, { message: t('passwordRequirements.uppercase') })
-        .regex(/[a-z]/, { message: t('passwordRequirements.lowercase') })
-        .regex(/[0-9]/, { message: t('passwordRequirements.number') }),
+        .min(8, { message: t('password-length') })
+        .regex(/[A-Z]/, { message: t('password-uppercase') })
+        .regex(/[a-z]/, { message: t('password-lowercase') })
+        .regex(/[0-9]/, { message: t('password-number') }),
       confirmPassword: z.string(),
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: t('passwordsDoNotMatch'),
+      message: t('passwords-do-not-match'),
       path: ['confirmPassword'],
     })
 
@@ -76,13 +76,13 @@ export function SignUp() {
 
       if (error) {
         form.setError('root', {
-          message: error.message || t('signUpError'),
+          message: error.message || t('sign-up-error'),
         })
         return
       }
 
       if (signUpData) {
-        toast.success(t('signUpSuccess'))
+        toast.success(t('sign-up-success'))
         // auto sign in
         const { error: signInError } = await signIn.email({
           email: data.email,
@@ -98,7 +98,7 @@ export function SignUp() {
       }
     } catch (_err) {
       form.setError('root', {
-        message: t('networkError'),
+        message: t('network-error'),
       })
     } finally {
       setIsLoading(false)
@@ -132,7 +132,7 @@ export function SignUp() {
                       <FormControl>
                         <Input
                           type='text'
-                          placeholder={t('usernamePlaceholder')}
+                          placeholder={t('username-placeholder')}
                           className='h-10'
                           autoComplete='name'
                           {...field}
@@ -154,7 +154,7 @@ export function SignUp() {
                       <FormControl>
                         <Input
                           type='email'
-                          placeholder={t('emailPlaceholder')}
+                          placeholder={t('email-placeholder')}
                           className='h-10'
                           autoComplete='email'
                           {...field}
@@ -175,7 +175,7 @@ export function SignUp() {
                       </FormLabel>
                       <FormControl>
                         <PasswordInput
-                          placeholder={t('passwordPlaceholder')}
+                          placeholder={t('password-placeholder')}
                           autoComplete='new-password'
                           {...field}
                         />
@@ -191,11 +191,11 @@ export function SignUp() {
                   render={({ field }) => (
                     <FormItem className='flex flex-col gap-3'>
                       <FormLabel className='font-medium text-sm'>
-                        {t('confirmPassword')}
+                        {t('confirm-password')}
                       </FormLabel>
                       <FormControl>
                         <PasswordInput
-                          placeholder={t('confirmPasswordPlaceholder')}
+                          placeholder={t('confirm-password-placeholder')}
                           autoComplete='new-password'
                           {...field}
                         />
