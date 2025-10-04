@@ -55,7 +55,7 @@ export function EquipmentsStats({ data, className }: CameraStatsProps) {
 
       <div
         className={cn(
-          'grid h-full grid-cols-1 gap-6 lg:grid-cols-2',
+          'grid w-full max-w-full grid-cols-1 gap-6 lg:grid-cols-2',
           className,
         )}
       >
@@ -66,8 +66,8 @@ export function EquipmentsStats({ data, className }: CameraStatsProps) {
               Camera
             </CardTitle>
           </CardHeader>
-          <CardContent className='flex-1 pt-0'>
-            <div className='flex h-full flex-col justify-between'>
+          <CardContent className='pt-0'>
+            <div className='flex flex-col justify-between'>
               <div className='space-y-3'>
                 {cameraData.slice(0, 6).map((item, index) => {
                   const percentage = (item.count / totalPhotos) * 100
@@ -109,38 +109,36 @@ export function EquipmentsStats({ data, className }: CameraStatsProps) {
               Lens
             </CardTitle>
           </CardHeader>
-          <CardContent className='flex-1 pt-0'>
-            <div className='flex h-full flex-col justify-between'>
-              <div className='space-y-3'>
-                {lensData.slice(0, 6).map((item, index) => {
-                  const percentage = (item.count / totalPhotos) * 100
-                  return (
-                    <div
-                      key={item.lensModel}
-                      className='flex items-center justify-between rounded px-2 py-3 transition-colors hover:bg-muted/20'
-                    >
-                      <div className='flex min-w-0 flex-1 items-center gap-3'>
-                        <span className='w-6 text-right font-mono text-muted-foreground text-sm'>
-                          {String(index + 1).padStart(2, '0')}
-                        </span>
-                        <div className='min-w-0 flex-1'>
-                          <div className='truncate font-medium text-sm'>
-                            {item.lensModel}
-                          </div>
-                          <div className='text-muted-foreground text-xs'>
-                            {item.count} photos
-                          </div>
+          <CardContent className='pt-0'>
+            <div className='space-y-3'>
+              {lensData.slice(0, 6).map((item, index) => {
+                const percentage = (item.count / totalPhotos) * 100
+                return (
+                  <div
+                    key={item.lensModel}
+                    className='flex items-center justify-between rounded px-2 py-3 transition-colors hover:bg-muted/20'
+                  >
+                    <div className='flex min-w-0 flex-1 items-center gap-3'>
+                      <span className='w-6 text-right font-mono text-muted-foreground text-sm'>
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <div className='min-w-0 flex-1'>
+                        <div className='truncate font-medium text-sm'>
+                          {item.lensModel}
                         </div>
-                      </div>
-                      <div className='ml-3 text-right'>
-                        <div className='font-semibold text-sm'>
-                          {percentage.toFixed(1)}%
+                        <div className='text-muted-foreground text-xs'>
+                          {item.count} photos
                         </div>
                       </div>
                     </div>
-                  )
-                })}
-              </div>
+                    <div className='ml-3 text-right'>
+                      <div className='font-semibold text-sm'>
+                        {percentage.toFixed(1)}%
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </CardContent>
         </Card>

@@ -9,4 +9,7 @@ export const {
   changeEmail,
   changePassword,
   getSession,
+  listSessions,
+  revokeSession,
+  revokeOtherSessions,
 } = createAuthClient()

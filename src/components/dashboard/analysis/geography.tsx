@@ -111,7 +111,12 @@ export function GeographyStats({ data, className }: GeographyProps) {
         </p>
       </div>
 
-      <div className={cn('grid grid-cols-1 gap-6 lg:grid-cols-2', className)}>
+      <div
+        className={cn(
+          'grid w-full max-w-full grid-cols-1 gap-6 lg:grid-cols-2',
+          className,
+        )}
+      >
         <Card className='group transition-all duration-300 hover:shadow-lg'>
           <CardHeader className='pb-4'>
             <CardTitle className='flex items-center gap-2 font-semibold text-lg'>
