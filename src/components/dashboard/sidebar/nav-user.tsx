@@ -13,7 +13,7 @@ import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Avatar } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,9 +42,10 @@ import { DASHBOARD_SETTINGS_PAGE, SIGN_IN_PAGE } from '@/routes'
 interface NavUserProps {
   name: string
   email: string
+  image?: string
 }
 
-export function NavUser({ name, email }: NavUserProps) {
+export function NavUser({ name, email, image }: NavUserProps) {
   const t = useTranslations()
   const { isMobile } = useSidebar()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -91,8 +92,17 @@ export function NavUser({ name, email }: NavUserProps) {
               size='lg'
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
-              <Avatar className='flex h-8 w-8 items-center justify-center rounded-lg'>
-                <User size={22} />
+              <Avatar className='h-8 w-8'>
+                {image ? (
+                  <AvatarImage
+                    src={image}
+                    alt={name}
+                  />
+                ) : (
+                  <AvatarFallback>
+                    <User size={22} />
+                  </AvatarFallback>
+                )}
               </Avatar>
               <div className='grid flex-1 text-left text-sm leading-tight'>
                 <span className='truncate font-medium'>{name}</span>
@@ -110,8 +120,17 @@ export function NavUser({ name, email }: NavUserProps) {
           >
             <DropdownMenuLabel className='p-0 font-normal'>
               <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
-                <Avatar className='flex h-8 w-8 items-center justify-center rounded-lg'>
-                  <User size={22} />
+                <Avatar className='h-8 w-8'>
+                  {image ? (
+                    <AvatarImage
+                      src={image}
+                      alt={name}
+                    />
+                  ) : (
+                    <AvatarFallback>
+                      <User size={22} />
+                    </AvatarFallback>
+                  )}
                 </Avatar>
                 <div className='grid flex-1 text-left text-sm leading-tight'>
                   <span className='truncate font-medium'>{name}</span>

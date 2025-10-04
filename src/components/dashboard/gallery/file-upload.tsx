@@ -3,13 +3,14 @@
 import '@smastrom/react-rating/style.css'
 import Compressor from 'compressorjs'
 import ExifReader, { type Tags } from 'exifreader'
-import { LoaderIcon, Upload } from 'lucide-react'
+import { Upload } from 'lucide-react'
 import { motion } from 'motion/react'
 import { nanoid } from 'nanoid'
 import { useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
 import { Progress } from '@/components/ui/progress'
+import { Spinner } from '@/components/ui/spinner'
 import { useConfetti } from '@/hooks/use-confetti'
 import { useAppSettings } from '@/hooks/use-settings'
 import { formatExifDateTime } from '@/lib/format'
@@ -417,7 +418,7 @@ export function FileUpload() {
           {file && step && step !== 'upload' && (
             <div className='absolute inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm'>
               <div className='flex flex-col items-center gap-2'>
-                <LoaderIcon className='h-6 w-6 animate-spin' />
+                <Spinner className='h-6 w-6' />
                 <p className='font-medium text-sm'>
                   {step === 'compress' && 'Compressing file...'}
                   {step === 'blur' && 'Generating blur data...'}

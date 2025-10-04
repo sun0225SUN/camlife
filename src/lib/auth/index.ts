@@ -9,6 +9,12 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  user: {
+    changeEmail: {
+      enabled: true,
+      requireEmailVerification: true,
+    },
+  },
 })
 
 export type Session = typeof auth.$Infer.Session

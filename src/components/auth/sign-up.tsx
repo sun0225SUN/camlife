@@ -1,7 +1,6 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2Icon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
@@ -22,6 +21,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { MagicCard } from '@/components/ui/magic-card'
 import { PasswordInput } from '@/components/ui/password-input'
+import { Spinner } from '@/components/ui/spinner'
 import { signIn, signUp } from '@/lib/auth/client'
 import { DASHBOARD_HOME_PAGE, SIGN_IN_PAGE } from '@/routes'
 
@@ -216,11 +216,7 @@ export function SignUp() {
                   className='mt-4 h-10 w-full cursor-pointer'
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <Loader2Icon className='animate-spin' />
-                  ) : (
-                    t('sign-up')
-                  )}
+                  {isLoading ? <Spinner /> : t('sign-up')}
                 </Button>
               </form>
             </Form>

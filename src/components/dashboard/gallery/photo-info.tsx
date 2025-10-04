@@ -3,7 +3,7 @@
 import '@smastrom/react-rating/style.css'
 
 import { Rating } from '@smastrom/react-rating'
-import { ChevronDownIcon, Download, LoaderIcon } from 'lucide-react'
+import { ChevronDownIcon, Download } from 'lucide-react'
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
@@ -35,6 +35,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Snippet } from '@/components/ui/snippet'
+import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import { useAppSettings } from '@/hooks/use-settings'
 import { downloadImage } from '@/lib/image'
@@ -684,7 +685,7 @@ export function PhotoInfo() {
           >
             {
               <div className='flex items-center gap-1'>
-                {isSaving && <LoaderIcon className='animate-spin' />}
+                {isSaving && <Spinner />}
                 {triggerType === 'file-upload' ? (
                   <span>Save</span>
                 ) : (

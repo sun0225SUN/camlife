@@ -1,6 +1,7 @@
 'use client'
 
 import { ExternalLink, Eye, EyeOff, Github, Info } from 'lucide-react'
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -19,6 +20,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { appConfig } from '@/config/app'
+import { updateUser, useSession } from '@/lib/auth/client'
 import { api } from '@/trpc/react'
 
 interface SettingsContentProps {
@@ -27,12 +29,20 @@ interface SettingsContentProps {
 
 export function SettingsContent({ activeSection }: SettingsContentProps) {
   const t = useTranslations('Settings')
+  const { data: session } = useSession()
   const [showPassword, setShowPassword] = useState(false)
   const [isChangingPassword, setIsChangingPassword] = useState(false)
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false)
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
+  })
+
+  const [profileData, setProfileData] = useState({
+    name: '',
+    email: '',
+    image: '',
   })
 
   // Get settings data
@@ -81,6 +91,17 @@ export function SettingsContent({ activeSection }: SettingsContentProps) {
       })
     }
   }, [siteSettings])
+
+  // Initialize profile data from session
+  useEffect(() => {
+    if (session?.user) {
+      setProfileData({
+        name: session.user.name || '',
+        email: session.user.email || '',
+        image: session.user.image || '',
+      })
+    }
+  }, [session])
 
   useEffect(() => {
     if (appSettings) {
@@ -138,6 +159,35 @@ export function SettingsContent({ activeSection }: SettingsContentProps) {
     ])
   }
 
+  const handleSaveProfileSettings = async () => {
+    if (!profileData.name.trim()) {
+      toast.error('Name is required')
+      return
+    }
+
+    setIsUpdatingProfile(true)
+
+    try {
+      // Update name and image
+      const { error: updateError } = await updateUser({
+        name: profileData.name.trim(),
+        image: profileData.image.trim() || undefined,
+      })
+
+      if (updateError) {
+        toast.error(`Failed to update profile: ${updateError.message}`)
+        return
+      }
+
+      toast.success('Profile updated successfully')
+    } catch (error) {
+      toast.error('An unexpected error occurred')
+      console.error('Profile update error:', error)
+    } finally {
+      setIsUpdatingProfile(false)
+    }
+  }
+
   const handleSavePasswordSettings = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       toast.error('New password and confirm password do not match')
@@ -171,6 +221,85 @@ export function SettingsContent({ activeSection }: SettingsContentProps) {
           Manage your profile and account information
         </p>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Profile Information</CardTitle>
+          <CardDescription>
+            Update your personal information and profile picture
+          </CardDescription>
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          <div className='space-y-2'>
+            <Label htmlFor='profile-name'>Name</Label>
+            <Input
+              id='profile-name'
+              value={profileData.name}
+              onChange={(e) =>
+                setProfileData({ ...profileData, name: e.target.value })
+              }
+              placeholder='Enter your name'
+            />
+          </div>
+          <div className='space-y-2'>
+            <Label htmlFor='profile-email'>Email</Label>
+            <Input
+              id='profile-email'
+              type='email'
+              value={profileData.email}
+              readOnly
+              className='cursor-not-allowed bg-muted'
+              placeholder='Email address'
+            />
+            <p className='text-muted-foreground text-sm'>
+              Email address cannot be changed
+            </p>
+          </div>
+          <div className='space-y-2'>
+            <Label htmlFor='profile-image'>Profile Picture URL</Label>
+            <Input
+              id='profile-image'
+              value={profileData.image}
+              onChange={(e) =>
+                setProfileData({ ...profileData, image: e.target.value })
+              }
+              placeholder='Enter image URL'
+            />
+            <div className='flex items-center space-x-4'>
+              <div className='space-y-1'>
+                <Label className='text-muted-foreground text-sm'>Preview</Label>
+                <div className='relative h-16 w-16 overflow-hidden rounded-full border-2 border-border bg-muted'>
+                  {profileData.image ? (
+                    <Image
+                      src={profileData.image}
+                      alt='Profile preview'
+                      width={64}
+                      height={64}
+                      className='h-full w-full object-cover'
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                  ) : (
+                    <div className='flex h-full w-full items-center justify-center text-muted-foreground'>
+                      <span className='text-xs'>No Image</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='flex justify-end'>
+            <Button
+              className='w-16 cursor-pointer'
+              onClick={handleSaveProfileSettings}
+              disabled={isUpdatingProfile}
+            >
+              {isUpdatingProfile ? <Spinner /> : t('save')}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

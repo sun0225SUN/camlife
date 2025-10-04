@@ -74,6 +74,7 @@ export function AppSidebar({
         <NavUser
           name={session?.user.name}
           email={session?.user.email}
+          image={session?.user.image || undefined}
         />
       </SidebarFooter>
       <SidebarRail />
