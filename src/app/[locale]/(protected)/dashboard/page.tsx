@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo } from 'react'
 import { BasicStates } from '@/components/dashboard/analysis/basic'
 import { CommitGraph } from '@/components/dashboard/analysis/commit-graph'
 import { EquipmentsStats } from '@/components/dashboard/analysis/equipments'
@@ -12,7 +13,7 @@ import {
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb'
 import { Separator } from '@/components/ui/separator'
-import { SidebarTrigger } from '@/components/ui/sidebar'
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
 import { api } from '@/trpc/react'
 
@@ -31,38 +32,16 @@ export default function AnalysisPage() {
   const isLoading = statsLoading || activityLoading
   const hasError = statsError || activityError
 
-  if (isLoading) {
-    return (
-      <>
-        <header
-          className={cn(
-            'flex items-center gap-2',
-            'sticky top-0 z-[999] h-20 shrink-0',
-            'border-b bg-background',
-            'group-has-data-[collapsible=icon]/sidebar-wrapper:h-12',
-          )}
-        >
-          <div className='flex items-center gap-2 px-6'>
-            <SidebarTrigger className='-ml-1' />
-            <Separator
-              orientation='vertical'
-              className='mr-2 data-[orientation=vertical]:h-4'
-            />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage className='font-semibold text-lg'>
-                    Dashboard
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <DashboardSkeleton />
-      </>
-    )
-  }
+  const { state, isMobile } = useSidebar()
+
+  const leftMargin = useMemo(() => {
+    if (isMobile) return '0'
+    if (state === 'expanded') return '16rem'
+    if (state === 'collapsed') return '3rem'
+    return '0'
+  }, [state, isMobile])
+
+  if (isLoading) return <DashboardSkeleton />
 
   if (hasError) {
     return (
@@ -97,16 +76,19 @@ export default function AnalysisPage() {
       <header
         className={cn(
           'flex items-center gap-2',
-          'sticky top-0 h-20 shrink-0',
-          'z-[999] border-b bg-white/80 backdrop-blur-md dark:bg-black/50',
-          'group-has-data-[collapsible=icon]/sidebar-wrapper:h-12',
+          'fixed top-0 right-0 z-50 h-20',
+          'border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
         )}
+        style={{
+          left: leftMargin,
+          transition: 'left 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
       >
-        <div className='flex items-center gap-2 px-6'>
-          <SidebarTrigger className='-ml-1' />
+        <div className='flex cursor-pointer items-center gap-2 px-6'>
+          <SidebarTrigger className='-ml-1 cursor-pointer' />
           <Separator
             orientation='vertical'
-            className='mr-2 data-[orientation=vertical]:h-4'
+            className='mr-2 cursor-pointer data-[orientation=vertical]:h-4'
           />
           <Breadcrumb>
             <BreadcrumbList>
@@ -120,7 +102,7 @@ export default function AnalysisPage() {
         </div>
       </header>
 
-      <div className='flex flex-1 flex-col gap-8 p-6'>
+      <div className='mt-20 flex flex-1 flex-col gap-8 overflow-x-hidden p-4 sm:p-6'>
         <BasicStates />
         <CommitGraph
           activityData={activityData}

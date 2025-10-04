@@ -34,6 +34,7 @@ export function BasicStates() {
           Your photo shooting activity overview
         </p>
       </div>
+
       <div className='grid auto-rows-min gap-6 md:grid-cols-2 lg:grid-cols-4'>
         <StatsCard
           title='Total Photos'
