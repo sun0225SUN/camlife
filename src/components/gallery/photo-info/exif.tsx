@@ -23,20 +23,20 @@ interface PhotoExifProps {
 }
 
 export function PhotoExif({ photo }: PhotoExifProps) {
-  const t = useTranslations('PhotoInfo')
+  const t = useTranslations('photo')
   const isMobile = useIsMobile()
 
   if (isMobile) {
     return (
       <Drawer>
         <DrawerTrigger asChild>
-          <InfoItem title={t('exifInfo')}>
+          <InfoItem title={t('exif-info')}>
             <PhotoExifTrigger photo={photo} />
           </InfoItem>
         </DrawerTrigger>
         <DrawerContent className='max-h-[60vh] overflow-y-auto p-4'>
           <DrawerHeader>
-            <DrawerTitle>{t('exifInfo')}</DrawerTitle>
+            <DrawerTitle>{t('exif-info')}</DrawerTitle>
           </DrawerHeader>
           <PhotoExifContent photo={photo} />
         </DrawerContent>
@@ -47,7 +47,7 @@ export function PhotoExif({ photo }: PhotoExifProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <InfoItem title={t('exifInfo')}>
+        <InfoItem title={t('exif-info')}>
           <PhotoExifTrigger photo={photo} />
         </InfoItem>
       </PopoverTrigger>
@@ -97,20 +97,21 @@ export function PhotoExifTrigger({ photo }: PhotoExifProps) {
 }
 
 export function PhotoExifContent({ photo }: PhotoExifProps) {
+  const t = useTranslations('photo')
   return (
     <div className='grid w-full grid-cols-2 gap-4'>
       <ExifCard
-        title='Focal Length'
+        title={t('focal-length')}
         value={photo.focalLength35mm ? `${photo.focalLength35mm}mm` : 'unknown'}
         icon={<Telescope className='size-7' />}
       />
       <ExifCard
-        title='Aperture'
+        title={t('aperture')}
         value={photo.fNumber ? `ƒ/${photo.fNumber}` : 'unknown'}
         icon={<Aperture className='size-7' />}
       />
       <ExifCard
-        title='Shutter Speed'
+        title={t('exposure-time')}
         value={
           photo.exposureTime
             ? formatExposureTime(photo.exposureTime)

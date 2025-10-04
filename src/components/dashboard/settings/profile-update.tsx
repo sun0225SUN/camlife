@@ -27,7 +27,7 @@ interface ProfileUpdateProps {
 }
 
 export function ProfileUpdate({ user }: ProfileUpdateProps) {
-  const t = useTranslations('Settings')
+  const t = useTranslations('settings')
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false)
   const [profileData, setProfileData] = useState({
     name: '',
@@ -48,7 +48,7 @@ export function ProfileUpdate({ user }: ProfileUpdateProps) {
 
   const handleSaveProfileSettings = async () => {
     if (!profileData.name.trim()) {
-      toast.error('Name is required')
+      toast.error(t('name-required'))
       return
     }
 
@@ -66,9 +66,9 @@ export function ProfileUpdate({ user }: ProfileUpdateProps) {
         return
       }
 
-      toast.success('Profile updated successfully')
+      toast.success(t('profile-updated-successfully'))
     } catch (error) {
-      toast.error('An unexpected error occurred')
+      toast.error(t('unexpected-error'))
       console.error('Profile update error:', error)
     } finally {
       setIsUpdatingProfile(false)
@@ -78,55 +78,57 @@ export function ProfileUpdate({ user }: ProfileUpdateProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Profile Information</CardTitle>
+        <CardTitle>{t('profile-information')}</CardTitle>
         <CardDescription>
-          Update your personal information and profile picture
+          {t('profile-information-description')}
         </CardDescription>
       </CardHeader>
       <CardContent className='space-y-4'>
         <div className='space-y-2'>
-          <Label htmlFor='profile-name'>Name</Label>
+          <Label htmlFor='profile-name'>{t('name')}</Label>
           <Input
             id='profile-name'
             value={profileData.name}
             onChange={(e) =>
               setProfileData({ ...profileData, name: e.target.value })
             }
-            placeholder='Enter your name'
+            placeholder={t('enter-your-name')}
           />
         </div>
         <div className='space-y-2'>
-          <Label htmlFor='profile-email'>Email</Label>
+          <Label htmlFor='profile-email'>{t('email-address')}</Label>
           <Input
             id='profile-email'
             type='email'
             value={profileData.email}
             readOnly
             className='cursor-not-allowed bg-muted'
-            placeholder='Email address'
+            placeholder={t('email-address')}
           />
           <p className='text-muted-foreground text-sm'>
-            Email address cannot be changed
+            {t('email-cannot-be-changed')}
           </p>
         </div>
         <div className='space-y-2'>
-          <Label htmlFor='profile-image'>Profile Picture URL</Label>
+          <Label htmlFor='profile-image'>{t('profile-picture-url')}</Label>
           <Input
             id='profile-image'
             value={profileData.image}
             onChange={(e) =>
               setProfileData({ ...profileData, image: e.target.value })
             }
-            placeholder='Enter image URL'
+            placeholder={t('enter-image-url')}
           />
           <div className='flex items-center space-x-4'>
             <div className='space-y-1'>
-              <Label className='text-muted-foreground text-sm'>Preview</Label>
+              <Label className='text-muted-foreground text-sm'>
+                {t('preview')}
+              </Label>
               <div className='relative h-16 w-16 overflow-hidden rounded-full border-2 border-border bg-muted'>
                 {profileData.image ? (
                   <Image
                     src={profileData.image}
-                    alt='Profile preview'
+                    alt={t('profile-preview')}
                     width={64}
                     height={64}
                     className='h-full w-full object-cover'
@@ -136,7 +138,7 @@ export function ProfileUpdate({ user }: ProfileUpdateProps) {
                   />
                 ) : (
                   <div className='flex h-full w-full items-center justify-center text-muted-foreground'>
-                    <span className='text-xs'>No Image</span>
+                    <span className='text-xs'>{t('no-image')}</span>
                   </div>
                 )}
               </div>

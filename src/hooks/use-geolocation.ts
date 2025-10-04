@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface GeolocationState {
@@ -23,6 +24,7 @@ const defaultOptions: GeolocationOptions = {
 }
 
 export function useGeolocation(options: GeolocationOptions = {}) {
+  const t = useTranslations('common')
   const [state, setState] = useState<GeolocationState>({
     latitude: null,
     longitude: null,
@@ -38,7 +40,7 @@ export function useGeolocation(options: GeolocationOptions = {}) {
     if (!navigator.geolocation) {
       setState((prev) => ({
         ...prev,
-        error: 'Geolocation is not supported by this browser',
+        error: t('geolocation-not-supported'),
         loading: false,
       }))
       return
@@ -59,17 +61,17 @@ export function useGeolocation(options: GeolocationOptions = {}) {
         })
       },
       (error) => {
-        let errorMessage = 'Unknown error occurred'
+        let errorMessage = t('unknown-error-occurred')
 
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'User denied the request for Geolocation'
+            errorMessage = t('user-denied-geolocation')
             break
           case error.POSITION_UNAVAILABLE:
-            errorMessage = 'Location information is unavailable'
+            errorMessage = t('location-information-unavailable')
             break
           case error.TIMEOUT:
-            errorMessage = 'The request to get user location timed out'
+            errorMessage = t('location-request-timed-out')
             break
         }
 
@@ -83,7 +85,7 @@ export function useGeolocation(options: GeolocationOptions = {}) {
       },
       opts,
     )
-  }, [])
+  }, [t])
 
   useEffect(() => {
     getCurrentPosition()

@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { SettingsContent } from '@/components/dashboard/settings/content'
 import { SettingsSidebar } from '@/components/dashboard/settings/sidebar'
@@ -25,6 +26,7 @@ interface Session {
 }
 
 export default function SettingsPage() {
+  const t = useTranslations('dashboard')
   const [activeSection, setActiveSection] = useState('general')
   const [activeSessions, setActiveSessions] = useState<Session[]>([])
   const { data: session } = useSession()
@@ -77,7 +79,7 @@ export default function SettingsPage() {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbPage className='font-semibold text-lg'>
-                  Settings
+                  {t('settings')}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>

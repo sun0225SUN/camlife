@@ -36,7 +36,7 @@ export function SettingsSidebar({
   activeSection = 'general',
   onSectionChange,
 }: SettingsSidebarProps) {
-  const t = useTranslations('Settings')
+  const t = useTranslations('settings')
 
   return (
     <div className='flex h-full w-64 flex-col border-border border-r bg-background pt-4'>

@@ -5,6 +5,7 @@ import '@smastrom/react-rating/style.css'
 import { Rating } from '@smastrom/react-rating'
 import { ChevronDownIcon, Download } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -56,6 +57,7 @@ export function PhotoInfo() {
   const utils = api.useUtils()
   const { mutateAsync: deleteFile } = api.photo.deleteFile.useMutation()
   const { mutateAsync: upsertPhoto } = api.photo.upsertPhoto.useMutation()
+  const t = useTranslations()
 
   const { resolvedTheme } = useTheme()
 
@@ -104,7 +106,7 @@ export function PhotoInfo() {
 
   const handleSave = async () => {
     if (!photoInfo) {
-      toast.error('No photo information to save')
+      toast.error(t('photo.no-photo-information-to-save'))
       return
     }
 
@@ -121,7 +123,7 @@ export function PhotoInfo() {
 
         // Basic information - set default values
         title: photoInfo.title?.trim() || 'untitled',
-        description: photoInfo.description?.trim() || 'No description',
+        description: photoInfo.description?.trim() || t('photo.no-description'),
         rating: photoInfo.rating ?? defaultPhotoRating,
         isFavorite: photoInfo.isFavorite ?? false,
         visibility: (photoInfo.visibility as 'public' | 'private') || 'public',
@@ -169,9 +171,9 @@ export function PhotoInfo() {
       const result = await upsertPhoto({ photo: photoData })
 
       if (result.isUpdate) {
-        toast.success('Photo updated successfully!')
+        toast.success(t('photo.photo-updated-successfully'))
       } else {
-        toast.success('Photo created successfully!')
+        toast.success(t('photo.photo-created-successfully'))
       }
 
       // invalidate photos list
@@ -181,7 +183,7 @@ export function PhotoInfo() {
       setTriggerType(null)
     } catch (error) {
       console.error('Failed to save photo:', error)
-      toast.error('Failed to save photo, please try again')
+      toast.error(t('photo.failed-to-save-photo'))
     } finally {
       setIsSaving(false)
     }
@@ -197,14 +199,14 @@ export function PhotoInfo() {
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle>Photo Info</DialogTitle>
+          <DialogTitle>{t('photo.details')}</DialogTitle>
           <DialogDescription />
         </DialogHeader>
 
         <div className='flex flex-1 flex-col gap-8 overflow-y-auto px-1 py-4 lg:grid lg:grid-cols-[1fr_384px] lg:gap-12'>
           <div className='flex flex-1 flex-col space-y-5'>
             <div className='space-y-2'>
-              <Label>Title</Label>
+              <Label>{t('gallery.title')}</Label>
               <Input
                 value={photoInfo?.title ?? ''}
                 onChange={(e) => {
@@ -212,14 +214,14 @@ export function PhotoInfo() {
                   setPhotoInfo({ ...photoInfo, title: e.target.value })
                 }}
                 autoFocus={false}
-                placeholder='photo title'
+                placeholder={t('gallery.title')}
               />
             </div>
 
             <div className='space-y-2'>
-              <Label>Description</Label>
+              <Label>{t('gallery.description')}</Label>
               <Textarea
-                placeholder='photo description'
+                placeholder={t('gallery.description')}
                 value={photoInfo?.description ?? ''}
                 onChange={(e) => {
                   if (!photoInfo) return
@@ -230,7 +232,7 @@ export function PhotoInfo() {
 
             <div className='grid grid-cols-1 gap-6 sm:grid-cols-3'>
               <div className='space-y-2'>
-                <Label>Capture Time</Label>
+                <Label>{t('photo.time')}</Label>
                 <div className='flex gap-4'>
                   <Popover
                     open={open}
@@ -242,7 +244,9 @@ export function PhotoInfo() {
                         id='date-picker'
                         className={`w-32 justify-between font-normal ${!date ? 'text-muted-foreground' : ''}`}
                       >
-                        {date ? date.toLocaleDateString() : 'Select date'}
+                        {date
+                          ? date.toLocaleDateString()
+                          : t('photo.select-date')}
                         <ChevronDownIcon className='h-4 w-4' />
                       </Button>
                     </PopoverTrigger>
@@ -277,7 +281,7 @@ export function PhotoInfo() {
                 </div>
               </div>
               <div className='space-y-2'>
-                <Label>Visibility</Label>
+                <Label>{t('gallery.visibility')}</Label>
                 <Select
                   value={photoInfo?.visibility || 'public'}
                   onValueChange={(value) => {
@@ -289,16 +293,20 @@ export function PhotoInfo() {
                   }}
                 >
                   <SelectTrigger className='w-full'>
-                    <SelectValue placeholder='Select visibility' />
+                    <SelectValue placeholder={t('photo.select-visibility')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='public'>Public</SelectItem>
-                    <SelectItem value='private'>Private</SelectItem>
+                    <SelectItem value='public'>
+                      {t('gallery.public')}
+                    </SelectItem>
+                    <SelectItem value='private'>
+                      {t('gallery.private')}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className='space-y-2'>
-                <Label>Rating</Label>
+                <Label>{t('gallery.rating')}</Label>
                 <Rating
                   style={{ maxWidth: 150, width: '100%', minWidth: 120 }}
                   value={photoInfo?.rating || defaultPhotoRating}
@@ -324,7 +332,7 @@ export function PhotoInfo() {
 
             <div className='grid grid-cols-1 gap-6 sm:grid-cols-3'>
               <div className='space-y-2'>
-                <Label>Camera Make</Label>
+                <Label>{t('gallery.make')}</Label>
                 <Input
                   value={
                     Array.isArray(photoInfo?.make)
@@ -335,12 +343,12 @@ export function PhotoInfo() {
                     if (!photoInfo) return
                     setPhotoInfo({ ...photoInfo, make: e.target.value })
                   }}
-                  placeholder='Unknown'
+                  placeholder={t('photo.unknown')}
                 />
               </div>
 
               <div className='space-y-2'>
-                <Label>Camera Model</Label>
+                <Label>{t('gallery.model')}</Label>
                 <Input
                   value={
                     Array.isArray(photoInfo?.model)
@@ -351,24 +359,24 @@ export function PhotoInfo() {
                     if (!photoInfo) return
                     setPhotoInfo({ ...photoInfo, model: e.target.value })
                   }}
-                  placeholder='Unknown'
+                  placeholder={t('photo.unknown')}
                 />
               </div>
 
               <div className='space-y-2'>
-                <Label>Lens Model</Label>
+                <Label>{t('photo.lens-model')}</Label>
                 <Input
                   value={photoInfo?.lensModel || ''}
                   onChange={(e) => {
                     if (!photoInfo) return
                     setPhotoInfo({ ...photoInfo, lensModel: e.target.value })
                   }}
-                  placeholder='Unknown'
+                  placeholder={t('photo.unknown')}
                 />
               </div>
 
               <div className='space-y-2'>
-                <Label>Focal Length (mm)</Label>
+                <Label>{t('photo.focal-length')}</Label>
                 <Input
                   type='number'
                   value={photoInfo?.focalLength || ''}
@@ -381,12 +389,12 @@ export function PhotoInfo() {
                         : undefined,
                     })
                   }}
-                  placeholder='Unknown'
+                  placeholder={t('photo.unknown')}
                 />
               </div>
 
               <div className='space-y-2'>
-                <Label>35mm Equivalent (mm)</Label>
+                <Label>{t('photo.focal-length')} (35mm)</Label>
                 <Input
                   type='number'
                   value={photoInfo?.focalLength35mm || ''}
@@ -399,12 +407,12 @@ export function PhotoInfo() {
                         : undefined,
                     })
                   }}
-                  placeholder='Unknown'
+                  placeholder={t('photo.unknown')}
                 />
               </div>
 
               <div className='space-y-2'>
-                <Label>Aperture (f/)</Label>
+                <Label>{t('photo.aperture')}</Label>
                 <Input
                   type='number'
                   step='0.1'
@@ -418,12 +426,12 @@ export function PhotoInfo() {
                         : undefined,
                     })
                   }}
-                  placeholder='Unknown'
+                  placeholder={t('photo.unknown')}
                 />
               </div>
 
               <div className='space-y-2'>
-                <Label>ISO</Label>
+                <Label>{t('photo.iso')}</Label>
                 <Input
                   type='number'
                   value={photoInfo?.iso || ''}
@@ -434,12 +442,12 @@ export function PhotoInfo() {
                       iso: e.target.value ? Number(e.target.value) : undefined,
                     })
                   }}
-                  placeholder='ISO Value'
+                  placeholder={t('photo.iso')}
                 />
               </div>
 
               <div className='space-y-2'>
-                <Label>Shutter Speed (1/s)</Label>
+                <Label>{t('photo.exposure-time')}</Label>
                 <Input
                   type='number'
                   value={
@@ -456,7 +464,7 @@ export function PhotoInfo() {
                         : undefined,
                     })
                   }}
-                  placeholder='Shutter Speed (1/s)'
+                  placeholder={t('photo.shutter-speed-placeholder')}
                 />
               </div>
 
@@ -475,16 +483,16 @@ export function PhotoInfo() {
                         : undefined,
                     })
                   }}
-                  placeholder='Unknown'
+                  placeholder={t('photo.unknown')}
                 />
               </div>
             </div>
 
             <div className='grid grid-cols-1 gap-6 sm:grid-cols-3'>
               <div className='space-y-2'>
-                <Label>Latitude</Label>
+                <Label>{t('photo.latitude')}</Label>
                 <Input
-                  value={photoInfo?.latitude || 'Unknown'}
+                  value={photoInfo?.latitude || t('photo.unknown')}
                   onChange={(e) => {
                     if (!photoInfo) return
                     setPhotoInfo({
@@ -495,9 +503,9 @@ export function PhotoInfo() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label>Longitude</Label>
+                <Label>{t('photo.longitude')}</Label>
                 <Input
-                  value={photoInfo?.longitude || 'Unknown'}
+                  value={photoInfo?.longitude || t('photo.unknown')}
                   onChange={(e) => {
                     if (!photoInfo) return
                     setPhotoInfo({
@@ -510,7 +518,7 @@ export function PhotoInfo() {
               <div className='space-y-2'>
                 <Label>Altitude</Label>
                 <Input
-                  value={photoInfo?.gpsAltitude || 'Unknown'}
+                  value={photoInfo?.gpsAltitude || t('photo.unknown')}
                   onChange={(e) => {
                     if (!photoInfo) return
                     setPhotoInfo({
@@ -523,9 +531,9 @@ export function PhotoInfo() {
             </div>
 
             <div className='space-y-2'>
-              <Label>Address</Label>
+              <Label>{t('photo.location')}</Label>
               <Input
-                value={photoInfo?.fullAddress || 'Unknown'}
+                value={photoInfo?.fullAddress || t('photo.unknown')}
                 onChange={(e) => {
                   if (!photoInfo) return
                   setPhotoInfo({
@@ -547,7 +555,9 @@ export function PhotoInfo() {
             {photoInfo?.url && (
               <div className='flex flex-col gap-3'>
                 <div className='flex items-center justify-between'>
-                  <p className='font-medium text-sm'>Original</p>
+                  <p className='font-medium text-sm'>
+                    {t('photo.original-image')}
+                  </p>
                   <Button
                     onClick={() => {
                       if (photoInfo.url) {
@@ -567,7 +577,7 @@ export function PhotoInfo() {
                   <div className='relative h-[180px] w-full overflow-hidden'>
                     <Image
                       src={photoInfo.url}
-                      alt='Original Image'
+                      alt={t('photo.original-image')}
                       className='h-full w-full object-contain'
                       width={photoInfo?.width || 1200}
                       height={photoInfo?.height || 900}
@@ -575,19 +585,21 @@ export function PhotoInfo() {
                     <span className='absolute right-2 bottom-2 rounded-md bg-white/90 px-2 py-1 font-mono text-black text-xs backdrop-blur-sm transition-all hover:bg-white dark:bg-black/70 dark:text-white dark:hover:bg-black/90'>
                       {photoInfo?.fileSize
                         ? `${(photoInfo.fileSize / 1024 / 1024).toFixed(2)} MB`
-                        : 'Unknown'}
+                        : t('photo.unknown')}
                     </span>
                   </div>
                 </div>
 
-                <Snippet text={photoInfo?.url || 'Null Content'} />
+                <Snippet text={photoInfo?.url || t('photo.null-content')} />
               </div>
             )}
 
             {photoInfo?.compressedUrl && (
               <div className='mt-5 flex flex-col gap-3'>
                 <div className='flex items-center justify-between'>
-                  <p className='font-medium text-sm'>Compressed</p>
+                  <p className='font-medium text-sm'>
+                    {t('photo.compressed-image')}
+                  </p>
                   <Button
                     variant='outline'
                     size='sm'
@@ -607,7 +619,7 @@ export function PhotoInfo() {
                   <div className='relative h-[180px] w-full overflow-hidden'>
                     <Image
                       src={photoInfo.compressedUrl}
-                      alt='Compressed Image'
+                      alt={t('photo.compressed-image')}
                       className='h-full w-full object-contain'
                       width={photoInfo?.width || 1200}
                       height={photoInfo?.height || 900}
@@ -615,19 +627,23 @@ export function PhotoInfo() {
                     <span className='absolute right-2 bottom-2 rounded-md bg-white/90 px-2 py-1 font-mono text-black text-xs backdrop-blur-sm transition-all hover:bg-white dark:bg-black/70 dark:text-white dark:hover:bg-black/90'>
                       {photoInfo?.compressedSize
                         ? `${(photoInfo.compressedSize / 1024 / 1024).toFixed(2)} MB`
-                        : 'Unknown'}
+                        : t('photo.unknown')}
                     </span>
                   </div>
                 </div>
 
-                <Snippet text={photoInfo?.compressedUrl || 'Null Content'} />
+                <Snippet
+                  text={photoInfo?.compressedUrl || t('photo.null-content')}
+                />
               </div>
             )}
 
             {photoInfo?.blurDataUrl && (
               <div className='mt-5 flex flex-col gap-3'>
                 <div className='flex items-center justify-between'>
-                  <p className='font-medium text-sm'>BlurHash</p>
+                  <p className='font-medium text-sm'>
+                    {t('photo.blur-preview')}
+                  </p>
                   <Button
                     variant='outline'
                     size='sm'
@@ -647,7 +663,7 @@ export function PhotoInfo() {
                   <div className='relative h-[180px] w-full overflow-hidden'>
                     <Image
                       src={photoInfo.blurDataUrl}
-                      alt='Blur Preview'
+                      alt={t('photo.blur-preview')}
                       className='h-full w-full object-contain'
                       width={photoInfo?.width || 1200}
                       height={photoInfo?.height || 900}
@@ -655,12 +671,14 @@ export function PhotoInfo() {
                     <span className='absolute right-2 bottom-2 rounded-md bg-white/90 px-2 py-1 font-mono text-black text-xs backdrop-blur-sm transition-all hover:bg-white dark:bg-black/70 dark:text-white dark:hover:bg-black/90'>
                       {photoInfo?.blurDataUrl
                         ? `${(photoInfo.blurDataUrl.length / 1024).toFixed(2)} KB`
-                        : 'Unknown'}
+                        : t('photo.unknown')}
                     </span>
                   </div>
                 </div>
 
-                <Snippet text={photoInfo?.blurDataUrl || 'Null Content'} />
+                <Snippet
+                  text={photoInfo?.blurDataUrl || t('photo.null-content')}
+                />
               </div>
             )}
           </div>
@@ -674,7 +692,7 @@ export function PhotoInfo() {
               onClick={handleCancel}
               disabled={isSaving}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
           </DialogClose>
           <Button
@@ -686,10 +704,13 @@ export function PhotoInfo() {
             {
               <div className='flex items-center gap-1'>
                 {isSaving && <Spinner />}
-                {triggerType === 'file-upload' ? (
-                  <span>Save</span>
-                ) : (
-                  <span>Update</span>
+
+                {!isSaving && triggerType === 'file-upload' && (
+                  <span>{t('common.save')}</span>
+                )}
+
+                {!isSaving && triggerType !== 'file-upload' && (
+                  <span>{t('common.update')}</span>
                 )}
               </div>
             }

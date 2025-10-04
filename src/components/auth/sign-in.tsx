@@ -26,15 +26,15 @@ import { signIn } from '@/lib/auth/client'
 import { DASHBOARD_HOME_PAGE } from '@/routes'
 
 export function SignIn() {
-  const t = useTranslations('Auth')
+  const t = useTranslations('auth')
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const { theme } = useTheme()
   const gradientColor = theme === 'dark' ? '#262626' : '#D9D9D955'
 
   const signInSchema = z.object({
-    email: z.email({ message: t('emailInvalid') }),
-    password: z.string().min(1, { message: t('passwordRequired') }),
+    email: z.email({ message: t('email-invalid') }),
+    password: z.string().min(1, { message: t('password-required') }),
   })
 
   type SignInFormData = z.infer<typeof signInSchema>
@@ -58,19 +58,19 @@ export function SignIn() {
 
       if (error) {
         form.setError('root', {
-          message: t('signInError'),
+          message: t('sign-in-error'),
         })
         return
       }
 
       if (signInData) {
-        toast.success(t('signInSuccess'))
+        toast.success(t('sign-in-success'))
         router.push(DASHBOARD_HOME_PAGE)
         router.refresh()
       }
     } catch (_err) {
       form.setError('root', {
-        message: t('networkError'),
+        message: t('network-error'),
       })
     } finally {
       setIsLoading(false)
@@ -104,7 +104,7 @@ export function SignIn() {
                       <FormControl>
                         <Input
                           type='email'
-                          placeholder={t('emailPlaceholder')}
+                          placeholder={t('email-placeholder')}
                           className='h-10'
                           autoComplete='email'
                           {...field}
@@ -125,7 +125,7 @@ export function SignIn() {
                       </FormLabel>
                       <FormControl>
                         <PasswordInput
-                          placeholder={t('passwordPlaceholder')}
+                          placeholder={t('password-placeholder')}
                           autoComplete='current-password'
                           {...field}
                         />

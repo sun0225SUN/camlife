@@ -1,6 +1,7 @@
 'use client'
 
 import { Camera, CameraIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
@@ -36,6 +37,7 @@ interface CameraStatsProps {
 }
 
 export function EquipmentsStats({ data, className }: CameraStatsProps) {
+  const t = useTranslations()
   const cameraData = (data.cameraStats || []).filter(
     (item) => item.make && item.model,
   )
@@ -47,9 +49,11 @@ export function EquipmentsStats({ data, className }: CameraStatsProps) {
   return (
     <>
       <div>
-        <h2 className='font-semibold text-2xl tracking-tight'>Equipment</h2>
+        <h2 className='font-semibold text-2xl tracking-tight'>
+          {t('common.equipment')}
+        </h2>
         <p className='text-muted-foreground'>
-          Your photo shooting equipment distribution
+          {t('common.photo-shooting-equipment-distribution')}
         </p>
       </div>
 
@@ -63,7 +67,7 @@ export function EquipmentsStats({ data, className }: CameraStatsProps) {
           <CardHeader className='pb-4'>
             <CardTitle className='flex items-center gap-2 font-semibold text-lg'>
               <Camera className='h-4 w-4 text-muted-foreground' />
-              Camera
+              {t('photo.camera')}
             </CardTitle>
           </CardHeader>
           <CardContent className='pt-0'>
@@ -85,7 +89,7 @@ export function EquipmentsStats({ data, className }: CameraStatsProps) {
                             {item.make} {item.model}
                           </div>
                           <div className='text-muted-foreground text-xs'>
-                            {item.count} photos
+                            {item.count} {t('common.photos')}
                           </div>
                         </div>
                       </div>
@@ -106,7 +110,7 @@ export function EquipmentsStats({ data, className }: CameraStatsProps) {
           <CardHeader className='pb-4'>
             <CardTitle className='flex items-center gap-2 font-semibold text-lg'>
               <CameraIcon className='h-4 w-4 text-muted-foreground' />
-              Lens
+              {t('photo.lens-model')}
             </CardTitle>
           </CardHeader>
           <CardContent className='pt-0'>
@@ -127,7 +131,7 @@ export function EquipmentsStats({ data, className }: CameraStatsProps) {
                           {item.lensModel}
                         </div>
                         <div className='text-muted-foreground text-xs'>
-                          {item.count} photos
+                          {item.count} {t('common.photos')}
                         </div>
                       </div>
                     </div>

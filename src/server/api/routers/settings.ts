@@ -125,21 +125,42 @@ export const settingsRouter = createTRPCRouter({
       const results = []
 
       for (const { key, value } of input) {
-        console.log(`📝 Updating setting: ${key} = ${value}`)
-        const updatedSetting = await db
-          .update(settings)
-          .set({
+        console.log(`📝 Upserting setting: ${key} = ${value}`)
+
+        // Determine category from key
+        const category = key.startsWith('site.')
+          ? 'site'
+          : key.startsWith('app.')
+            ? 'app'
+            : key.startsWith('user.')
+              ? 'user'
+              : key.startsWith('system.')
+                ? 'system'
+                : 'system'
+
+        // Use upsert (INSERT ... ON CONFLICT ... DO UPDATE)
+        const upsertedSetting = await db
+          .insert(settings)
+          .values({
+            key,
+            category,
             value,
             updatedAt: new Date(),
           })
-          .where(eq(settings.key, key))
+          .onConflictDoUpdate({
+            target: settings.key,
+            set: {
+              value,
+              updatedAt: new Date(),
+            },
+          })
           .returning()
 
-        results.push(updatedSetting[0])
-        console.log(`✅ Setting updated successfully:`, updatedSetting[0])
+        results.push(upsertedSetting[0])
+        console.log(`✅ Setting upserted successfully:`, upsertedSetting[0])
       }
 
-      console.log('🎉 Batch update completed:', results)
+      console.log('🎉 Batch upsert completed:', results)
       return results
     }),
 

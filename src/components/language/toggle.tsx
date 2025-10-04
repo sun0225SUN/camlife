@@ -18,7 +18,7 @@ interface LanguageToggleProps {
 }
 
 export function LanguageToggle({ className }: LanguageToggleProps) {
-  const t = useTranslations('Language')
+  const t = useTranslations('language')
   const { locale: currentLocale, onSelectChange } = useLanguageToggle()
   const [isOpen, setIsOpen] = useState(false)
 

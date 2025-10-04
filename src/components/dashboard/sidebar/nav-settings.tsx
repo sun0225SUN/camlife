@@ -2,6 +2,7 @@
 
 import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -21,9 +22,11 @@ interface NavSettingsProps {
 }
 
 export function NavSettings({ pathname, projects }: NavSettingsProps) {
+  const t = useTranslations('dashboard')
+
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Settings</SidebarGroupLabel>
+      <SidebarGroupLabel>{t('settings')}</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem

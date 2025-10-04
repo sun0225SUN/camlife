@@ -25,7 +25,7 @@ import {
 import { changePassword, signOut } from '@/lib/auth/client'
 
 export function PasswordUpdate() {
-  const t = useTranslations('Settings')
+  const t = useTranslations('settings')
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
@@ -39,40 +39,40 @@ export function PasswordUpdate() {
 
   const handleSavePasswordSettings = async () => {
     if (!passwordData.currentPassword.trim()) {
-      toast.error('Current password is required')
+      toast.error(t('current-password-required'))
       return
     }
 
     if (!passwordData.newPassword.trim()) {
-      toast.error('New password is required')
+      toast.error(t('new-password-required'))
       return
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error('New password and confirm password do not match')
+      toast.error(t('passwords-do-not-match'))
       return
     }
 
     if (passwordData.newPassword.length < 8) {
-      toast.error('Password must be at least 8 characters long')
+      toast.error(t('password-length'))
       return
     }
 
     // Check for uppercase letter
     if (!/[A-Z]/.test(passwordData.newPassword)) {
-      toast.error('Password must contain at least one uppercase letter')
+      toast.error(t('password-uppercase'))
       return
     }
 
     // Check for lowercase letter
     if (!/[a-z]/.test(passwordData.newPassword)) {
-      toast.error('Password must contain at least one lowercase letter')
+      toast.error(t('password-lowercase'))
       return
     }
 
     // Check for number
     if (!/[0-9]/.test(passwordData.newPassword)) {
-      toast.error('Password must contain at least one number')
+      toast.error(t('password-number'))
       return
     }
 
@@ -85,13 +85,11 @@ export function PasswordUpdate() {
       })
 
       if (error) {
-        toast.error(error.message || 'Failed to change password')
+        toast.error(error.message || t('failed-to-update-password'))
         return
       }
 
-      toast.success(
-        'Password changed successfully. Please log in again with your new password.',
-      )
+      toast.success(t('password-updated-successfully'))
 
       // Clear the form
       setPasswordData({
@@ -104,7 +102,7 @@ export function PasswordUpdate() {
       await signOut()
       router.push('/sign-in')
     } catch (error) {
-      toast.error('An unexpected error occurred')
+      toast.error(t('unexpected-error'))
       console.error('Password change error:', error)
     } finally {
       setIsChangingPassword(false)
@@ -114,12 +112,12 @@ export function PasswordUpdate() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t('changePassword')}</CardTitle>
-        <CardDescription>{t('changePasswordDescription')}</CardDescription>
+        <CardTitle>{t('change-password')}</CardTitle>
+        <CardDescription>{t('change-password-description')}</CardDescription>
       </CardHeader>
       <CardContent className='space-y-4'>
         <div className='space-y-2'>
-          <Label htmlFor='current-password'>Current Password</Label>
+          <Label htmlFor='current-password'>{t('current-password')}</Label>
           <div className='relative'>
             <Input
               id='current-password'
@@ -131,7 +129,7 @@ export function PasswordUpdate() {
                   currentPassword: e.target.value,
                 })
               }
-              placeholder='Enter current password'
+              placeholder={t('current-password-placeholder')}
             />
             <Button
               type='button'
@@ -150,7 +148,7 @@ export function PasswordUpdate() {
         </div>
         <div className='space-y-2'>
           <div className='flex items-center gap-2'>
-            <Label htmlFor='new-password'>New Password</Label>
+            <Label htmlFor='new-password'>{t('new-password')}</Label>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -161,7 +159,7 @@ export function PasswordUpdate() {
                   className='max-w-xs'
                 >
                   <div className='space-y-2'>
-                    <p className='font-medium'>Password requirements:</p>
+                    <p className='font-medium'>{t('password-requirements')}:</p>
                     <ul className='space-y-1 text-sm'>
                       <li
                         className={`flex items-center gap-2 ${
@@ -177,7 +175,7 @@ export function PasswordUpdate() {
                               : 'bg-gray-300'
                           }`}
                         />
-                        At least 8 characters
+                        {t('at-least-8-characters')}
                       </li>
                       <li
                         className={`flex items-center gap-2 ${
@@ -193,7 +191,7 @@ export function PasswordUpdate() {
                               : 'bg-gray-300'
                           }`}
                         />
-                        One uppercase letter
+                        {t('one-uppercase-letter')}
                       </li>
                       <li
                         className={`flex items-center gap-2 ${
@@ -209,7 +207,7 @@ export function PasswordUpdate() {
                               : 'bg-gray-300'
                           }`}
                         />
-                        One lowercase letter
+                        {t('one-lowercase-letter')}
                       </li>
                       <li
                         className={`flex items-center gap-2 ${
@@ -225,7 +223,7 @@ export function PasswordUpdate() {
                               : 'bg-gray-300'
                           }`}
                         />
-                        One number
+                        {t('one-number')}
                       </li>
                     </ul>
                   </div>
@@ -244,7 +242,7 @@ export function PasswordUpdate() {
                   newPassword: e.target.value,
                 })
               }
-              placeholder='Enter new password'
+              placeholder={t('new-password-placeholder')}
             />
             <Button
               type='button'
@@ -262,7 +260,7 @@ export function PasswordUpdate() {
           </div>
         </div>
         <div className='space-y-2'>
-          <Label htmlFor='confirm-password'>Confirm Password</Label>
+          <Label htmlFor='confirm-password'>{t('confirm-password')}</Label>
           <div className='relative'>
             <Input
               id='confirm-password'
@@ -274,7 +272,7 @@ export function PasswordUpdate() {
                   confirmPassword: e.target.value,
                 })
               }
-              placeholder='Confirm new password'
+              placeholder={t('confirm-new-password-placeholder')}
             />
             <Button
               type='button'

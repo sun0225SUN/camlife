@@ -31,15 +31,15 @@ export function GeneralSettings({
   siteLoading = false,
   appLoading = false,
 }: GeneralSettingsProps) {
-  const t = useTranslations('Settings')
+  const t = useTranslations('settings')
 
   // Update settings mutation
   const updateSettingsMutation = api.settings.updateBatch.useMutation({
     onSuccess: () => {
-      toast.success('Settings saved successfully')
+      toast.success(t('settings-saved-successfully'))
     },
     onError: (error) => {
-      toast.error(`Failed to save: ${error.message}`)
+      toast.error(`${t('failed-to-save')}: ${error.message}`)
     },
   })
 
@@ -51,7 +51,7 @@ export function GeneralSettings({
 
   const [appConstantsData, setAppConstantsData] = useState({
     imageSizeLimit: 0,
-    enableFileCompression: false,
+    enableFileCompression: true,
     compressQuality: 0.6,
     defaultPhotoRating: 3,
     addressLanguage: 'zh',
@@ -79,7 +79,7 @@ export function GeneralSettings({
       setAppConstantsData({
         imageSizeLimit: Number(appSettings['app.image_size_limit']) || 10,
         enableFileCompression:
-          appSettings['app.enable_file_compression'] === 'true',
+          appSettings['app.enable_file_compression'] !== 'false',
         compressQuality: Number(appSettings['app.compress_quality']) || 0.6,
         defaultPhotoRating:
           Number(appSettings['app.default_photo_rating']) || 3,
@@ -137,58 +137,58 @@ export function GeneralSettings({
           {t('general')}
         </h2>
         <p className='text-muted-foreground'>
-          General application settings and preferences
+          {t('general-application-settings')}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('siteSettings')}</CardTitle>
-          <CardDescription>{t('siteSettingsDescription')}</CardDescription>
+          <CardTitle>{t('site-settings')}</CardTitle>
+          <CardDescription>{t('site-settings-description')}</CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
           <div className='space-y-2'>
-            <Label htmlFor='site-name'>{t('siteName')}</Label>
+            <Label htmlFor='site-name'>{t('site-name')}</Label>
             <Input
               id='site-name'
               value={siteData.siteName}
               onChange={(e) =>
                 setSiteData({ ...siteData, siteName: e.target.value })
               }
-              placeholder='Enter site name'
+              placeholder={t('enter-site-name')}
             />
             <p className='text-muted-foreground text-sm'>
-              {t('siteNameDescription')}
+              {t('site-name-description')}
             </p>
           </div>
           <div className='space-y-2'>
-            <Label htmlFor='site-description'>{t('siteDescription')}</Label>
+            <Label htmlFor='site-description'>{t('site-description')}</Label>
             <Textarea
               id='site-description'
               value={siteData.siteDescription}
               onChange={(e) =>
                 setSiteData({ ...siteData, siteDescription: e.target.value })
               }
-              placeholder='Enter site description'
+              placeholder={t('enter-site-description')}
               rows={3}
             />
             <p className='text-muted-foreground text-sm'>
-              {t('siteDescriptionDescription')}
+              {t('site-description-description')}
             </p>
           </div>
           <div className='space-y-2'>
-            <Label htmlFor='site-keywords'>{t('siteKeywords')}</Label>
+            <Label htmlFor='site-keywords'>{t('site-keywords')}</Label>
             <Textarea
               id='site-keywords'
               value={siteData.siteKeywords}
               onChange={(e) =>
                 setSiteData({ ...siteData, siteKeywords: e.target.value })
               }
-              placeholder='Enter keywords separated by commas'
+              placeholder={t('enter-site-keywords')}
               rows={2}
             />
             <p className='text-muted-foreground text-sm'>
-              {t('siteKeywordsDescription')}
+              {t('site-keywords-description')}
             </p>
           </div>
           <div className='flex justify-end'>
@@ -205,12 +205,12 @@ export function GeneralSettings({
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('appConstants')}</CardTitle>
-          <CardDescription>{t('appConstantsDescription')}</CardDescription>
+          <CardTitle>{t('app-constants')}</CardTitle>
+          <CardDescription>{t('app-constants-description')}</CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
           <div className='space-y-2'>
-            <Label htmlFor='image-size-limit'>{t('imageSizeLimit')}</Label>
+            <Label htmlFor='image-size-limit'>{t('image-size-limit')}</Label>
             <Input
               id='image-size-limit'
               type='number'
@@ -221,15 +221,15 @@ export function GeneralSettings({
                   imageSizeLimit: Number(e.target.value) || 0,
                 })
               }
-              placeholder='Enter image size limit in MB'
+              placeholder={t('enter-image-size-limit')}
             />
             <p className='text-muted-foreground text-sm'>
-              {t('imageSizeLimitDescription')}
+              {t('image-size-limit-description')}
             </p>
           </div>
           <div className='space-y-2'>
             <Label htmlFor='enable-compression'>
-              {t('enableFileCompression')}
+              {t('enable-file-compression')}
             </Label>
             <div className='flex items-center space-x-2'>
               <Switch
@@ -244,16 +244,16 @@ export function GeneralSettings({
               />
               <span className='text-muted-foreground text-sm'>
                 {appConstantsData.enableFileCompression
-                  ? 'Enabled'
-                  : 'Disabled'}
+                  ? t('enabled')
+                  : t('disabled')}
               </span>
             </div>
             <p className='text-muted-foreground text-sm'>
-              {t('enableFileCompressionDescription')}
+              {t('enable-file-compression-description')}
             </p>
           </div>
           <div className='space-y-2'>
-            <Label htmlFor='compress-quality'>{t('compressQuality')}</Label>
+            <Label htmlFor='compress-quality'>{t('compress-quality')}</Label>
             <Input
               id='compress-quality'
               type='number'
@@ -267,14 +267,14 @@ export function GeneralSettings({
                   compressQuality: Number(e.target.value) || 0.6,
                 })
               }
-              placeholder='Enter compression quality (0.1-1.0)'
+              placeholder={t('enter-compression-quality')}
             />
             <p className='text-muted-foreground text-sm'>
-              {t('compressQualityDescription')}
+              {t('compress-quality-description')}
             </p>
           </div>
           <div className='space-y-2'>
-            <Label htmlFor='default-rating'>{t('defaultPhotoRating')}</Label>
+            <Label htmlFor='default-rating'>{t('default-photo-rating')}</Label>
             <Input
               id='default-rating'
               type='number'
@@ -287,14 +287,14 @@ export function GeneralSettings({
                   defaultPhotoRating: Number(e.target.value) || 3,
                 })
               }
-              placeholder='Enter default photo rating (1-5)'
+              placeholder={t('enter-default-photo-rating')}
             />
             <p className='text-muted-foreground text-sm'>
-              {t('defaultPhotoRatingDescription')}
+              {t('default-photo-rating-description')}
             </p>
           </div>
           <div className='space-y-2'>
-            <Label htmlFor='address-language'>{t('addressLanguage')}</Label>
+            <Label htmlFor='address-language'>{t('address-language')}</Label>
             <Input
               id='address-language'
               value={appConstantsData.addressLanguage || ''}
@@ -304,16 +304,16 @@ export function GeneralSettings({
                   addressLanguage: e.target.value,
                 })
               }
-              placeholder='Enter address language code (e.g., en, zh)'
+              placeholder={t('enter-address-language-code')}
             />
             <p className='text-muted-foreground text-sm'>
-              {t('addressLanguageDescription')}
+              {t('address-language-description')}
             </p>
           </div>
 
           <div className='space-y-2'>
             <Label htmlFor='infinite-photos-per-page'>
-              {t('perPagePhotosCountInfinite')}
+              {t('per-page-photos-count-infinite')}
             </Label>
             <Input
               id='infinite-photos-per-page'
@@ -326,15 +326,15 @@ export function GeneralSettings({
                   perPagePhotosCountInfinite: Number(e.target.value) || 10,
                 })
               }
-              placeholder='Enter infinite scroll photos per page count'
+              placeholder={t('enter-infinite-scroll-photos-count')}
             />
             <p className='text-muted-foreground text-sm'>
-              {t('perPagePhotosCountInfiniteDescription')}
+              {t('per-page-photos-count-infinite-description')}
             </p>
           </div>
           <div className='space-y-2'>
             <Label htmlFor='shuffle-photos-count'>
-              {t('shufflePhotosCount')}
+              {t('shuffle-photos-count')}
             </Label>
             <Input
               id='shuffle-photos-count'
@@ -347,10 +347,10 @@ export function GeneralSettings({
                   shufflePhotosCount: Number(e.target.value) || 20,
                 })
               }
-              placeholder='Enter shuffle photos count'
+              placeholder={t('enter-shuffle-photos-count')}
             />
             <p className='text-muted-foreground text-sm'>
-              {t('shufflePhotosCountDescription')}
+              {t('shuffle-photos-count-description')}
             </p>
           </div>
           <div className='flex justify-end'>

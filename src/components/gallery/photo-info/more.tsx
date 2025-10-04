@@ -1,4 +1,5 @@
 import { Ellipsis } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { PhotoExifContent } from '@/components/gallery/photo-info/exif'
 import { InfoItem } from '@/components/gallery/photo-info/item'
 import { PhotoLocationContent } from '@/components/gallery/photo-info/location'
@@ -23,6 +24,7 @@ interface PhotoInfoMoreProps {
 
 export function PhotoInfoMore({ photo }: PhotoInfoMoreProps) {
   const isMobile = useIsMobile()
+  const t = useTranslations('photo')
 
   if (isMobile) {
     return (
@@ -34,7 +36,7 @@ export function PhotoInfoMore({ photo }: PhotoInfoMoreProps) {
         </DrawerTrigger>
         <DrawerContent className='max-h-[60vh] p-4'>
           <DrawerHeader>
-            <DrawerTitle>Details</DrawerTitle>
+            <DrawerTitle>{t('details')}</DrawerTitle>
           </DrawerHeader>
           <PhotoInfoMoreContent photo={photo} />
         </DrawerContent>

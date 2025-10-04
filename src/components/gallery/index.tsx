@@ -28,7 +28,8 @@ interface GalleryProps {
 }
 
 export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
-  const t = useTranslations('Gallery')
+  const t = useTranslations('gallery')
+  const tPhoto = useTranslations('photo')
 
   const { layout } = useView()
 
@@ -129,7 +130,7 @@ export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
   if (!photos || photos.length === 0) {
     return (
       <div className='flex h-[60vh] w-full items-center justify-center'>
-        <p>No photos found</p>
+        <p>{t('no-photos-found')}</p>
       </div>
     )
   }
@@ -236,7 +237,7 @@ export function Gallery({ queryResult, inFinite = false }: GalleryProps) {
 
       {!inFinite && !hasNextPage && photos.length > 0 && (
         <p className='mb-5 flex justify-center text-gray-500 text-sm dark:text-gray-400'>
-          {t('allPhotosDisplayed', { count: photos.length })}
+          {tPhoto('all-photos-displayed', { count: photos.length })}
         </p>
       )}
 

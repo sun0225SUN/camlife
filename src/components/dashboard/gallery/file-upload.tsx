@@ -6,6 +6,7 @@ import ExifReader, { type Tags } from 'exifreader'
 import { Upload } from 'lucide-react'
 import { motion } from 'motion/react'
 import { nanoid } from 'nanoid'
+import { useTranslations } from 'next-intl'
 import { useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
@@ -24,6 +25,7 @@ import type { FileUploadStep, ImageLocation } from '@/types'
 
 export function FileUpload() {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const t = useTranslations('gallery')
 
   const [file, setFile] = useState<File | null>(null)
   const [step, setStep] = useState<FileUploadStep | null>(null)
@@ -74,7 +76,9 @@ export function FileUpload() {
     console.info('--- 1. validate file size ---')
     setStep('upload')
     if (fileSize > imageSizeLimit) {
-      toast.error(`File size exceeds ${imageSizeLimit / 1024 / 1024}MB limit`)
+      toast.error(
+        `${t('file-size-exceeds')} ${imageSizeLimit / 1024 / 1024}MB ${t('limit')}`,
+      )
       setFile(null)
       setStep(null)
       setProgress(0)
@@ -106,7 +110,7 @@ export function FileUpload() {
               try {
                 const compressedFileName = getCompressedFileName(fileName)
                 if (!compressedFileName) {
-                  throw new Error('Failed to generate compressed file name')
+                  throw new Error(t('failed-to-generate-compressed-file-name'))
                 }
 
                 const {
@@ -131,7 +135,7 @@ export function FileUpload() {
                 resolve(result)
               } catch (error) {
                 console.error('compress file upload failed: ', error)
-                toast.error('compress file upload failed')
+                toast.error(t('compress-file-upload-failed'))
                 reject(error)
               }
             },
@@ -151,7 +155,7 @@ export function FileUpload() {
         console.log('blur data generation completed')
       } catch (error) {
         console.error('generate blur data url failed: ', error)
-        toast.error('generate blur data url failed')
+        toast.error(t('generate-blur-data-url-failed'))
       }
 
       console.info('--- 5. parse exif data ---')
@@ -163,7 +167,7 @@ export function FileUpload() {
         console.log('exif data parsing completed')
       } catch (error) {
         console.error('parse exif data failed: ', error)
-        toast.error('parse exif data failed')
+        toast.error(t('parse-exif-data-failed'))
       }
 
       console.info('--- 6. get photo location ---')
@@ -179,7 +183,7 @@ export function FileUpload() {
           )
         } catch (error) {
           console.error('get location failed: ', error)
-          toast.error('get location failed')
+          toast.error(t('get-location-failed'))
         }
       }
 
@@ -286,11 +290,10 @@ export function FileUpload() {
           {!file && (
             <>
               <p className='relative z-20 font-bold font-sans text-base text-neutral-700 dark:text-neutral-300'>
-                Upload Your Image
+                {t('upload-your-image')}
               </p>
               <p className='relative z-20 mt-2 font-normal font-sans text-base text-neutral-400 dark:text-neutral-400'>
-                Drag or drop your image here or click to upload, max size{' '}
-                {imageSizeLimit / 1024 / 1024}MB
+                {t('drag-or-drop-image')} {imageSizeLimit / 1024 / 1024}MB
               </p>
             </>
           )}
@@ -388,7 +391,7 @@ export function FileUpload() {
                     animate={{ opacity: 1 }}
                     className='flex flex-col items-center text-neutral-600'
                   >
-                    Drop it
+                    {t('drop-it')}
                     <Upload className='h-4 w-4 text-neutral-600 dark:text-neutral-400' />
                   </motion.p>
                 ) : (
@@ -420,10 +423,10 @@ export function FileUpload() {
               <div className='flex flex-col items-center gap-2'>
                 <Spinner className='h-6 w-6' />
                 <p className='font-medium text-sm'>
-                  {step === 'compress' && 'Compressing file...'}
-                  {step === 'blur' && 'Generating blur data...'}
-                  {step === 'exif' && 'Parsing exif data...'}
-                  {step === 'location' && 'Getting location...'}
+                  {step === 'compress' && t('compressing-file')}
+                  {step === 'blur' && t('generating-blur-data')}
+                  {step === 'exif' && t('parsing-exif-data')}
+                  {step === 'location' && t('getting-location')}
                 </p>
               </div>
             </div>
