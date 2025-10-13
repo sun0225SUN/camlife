@@ -30,6 +30,7 @@ import { cn } from '@/lib/utils'
 interface GeoDistributionData {
   name: string
   count: number
+  [key: string]: unknown
 }
 
 interface DashboardStats {
@@ -147,7 +148,7 @@ export function GeographyStats({ data, className }: GeographyProps) {
                       outerRadius={80}
                       innerRadius={0}
                       label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(0)}%`
+                        `${name} ${((percent as number) * 100).toFixed(0)}%`
                       }
                     >
                       {countryData.map((entry, index) => (
