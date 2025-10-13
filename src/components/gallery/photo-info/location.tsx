@@ -116,9 +116,7 @@ function CoordinateCard({ label, formattedValue }: CoordinateCardProps) {
           <div className='text-gray-500 text-xs dark:text-gray-400'>
             {label}
           </div>
-          <div className='font-medium text-2xl text-gray-900 dark:text-gray-100'>
-            {formattedValue}
-          </div>
+          <div className='font-medium text-lg'>{formattedValue}</div>
         </div>
       </div>
     </div>

@@ -71,7 +71,7 @@ export function NavUser({ name, email, image }: NavUserProps) {
 
     try {
       await signOut()
-      toast.success(t('sign-out-success'))
+      toast.success(t('auth.sign-out-success'))
       router.push(SIGN_IN_PAGE)
       router.refresh()
     } catch (error) {
@@ -210,7 +210,7 @@ export function NavUser({ name, email, image }: NavUserProps) {
                         currentLocale === locale && 'bg-accent',
                       )}
                     >
-                      <span>{t('language.language')}</span>
+                      <span>{t(`language.${locale}`)}</span>
                       {currentLocale === locale && (
                         <Check className='ml-2 size-4' />
                       )}
