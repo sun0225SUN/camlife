@@ -77,6 +77,13 @@
                     <sub><b>Guoqi Sun</b></sub>
                 </a>
             </td>
+            <td align="center">
+                <a href="https://github.com/SunXin121">
+                    <img src="https://avatars.githubusercontent.com/u/111034439?v=4" width="100;" alt="SunXin121"/>
+                    <br />
+                    <sub><b>Sun Xin</b></sub>
+                </a>
+            </td>
 		</tr>
 	<tbody>
 </table>
