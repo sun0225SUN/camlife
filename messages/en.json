@@ -278,7 +278,12 @@
     "original-image": "Original Image",
     "null-content": "Null Content",
     "compressed-image": "Compressed Image",
-    "blur-preview": "Blur Preview"
+    "blur-preview": "Blur Preview",
+    "use-current-location": "Use current location",
+    "using-current-location": "Getting current location...",
+    "fill-address-from-coordinates": "Fill address from coordinates",
+    "filling-address": "Filling address...",
+    "click-map-to-set-location": "Click map or drag marker to set location"
   },
   "settings": {
     "settings": "Settings",

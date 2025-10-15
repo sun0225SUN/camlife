@@ -21,6 +21,9 @@ interface locationMapProps {
   longitude: number
   width: string
   height: string
+  editable?: boolean
+  onChange?: (coords: { latitude: number; longitude: number }) => void
+  zoom?: number
 }
 
 export function LocationMap({
@@ -28,6 +31,9 @@ export function LocationMap({
   longitude,
   width,
   height,
+  editable = false,
+  onChange,
+  zoom,
 }: locationMapProps) {
   const { resolvedTheme } = useTheme()
   const locale = useLocale()
@@ -54,16 +60,30 @@ export function LocationMap({
   return (
     <MapGL
       mapLib={mapboxgl}
-      initialViewState={{ longitude, latitude, zoom: 14 }}
+      initialViewState={{ longitude, latitude, zoom: zoom ?? 14 }}
       mapStyle={mapStyle}
       mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
       ref={mapRef}
       style={{ width, height }}
+      onClick={(e: any) => {
+        if (!editable) return
+        const { lng, lat } = e.lngLat || {}
+        if (typeof lng === 'number' && typeof lat === 'number') {
+          onChange?.({ latitude: lat, longitude: lng })
+        }
+      }}
     >
       <FullscreenControl position='bottom-right' />
       <Marker
         longitude={longitude}
         latitude={latitude}
+        draggable={editable}
+        onDragEnd={(e: any) => {
+          const { lng, lat } = e.lngLat || {}
+          if (typeof lng === 'number' && typeof lat === 'number') {
+            onChange?.({ latitude: lat, longitude: lng })
+          }
+        }}
       >
         <div style={{ position: 'relative' }}>
           <div
