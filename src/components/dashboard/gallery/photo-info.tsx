@@ -39,7 +39,7 @@ import { Snippet } from '@/components/ui/snippet'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import { useAppSettings } from '@/hooks/use-settings'
-import { downloadImage } from '@/lib/image'
+import { downloadImage, getLocationFromCoordinates } from '@/lib/image'
 import { getCompressedFileName } from '@/lib/utils'
 import { usePhotoStore } from '@/stores/photo'
 import { api } from '@/trpc/react'
@@ -62,12 +62,14 @@ export function PhotoInfo() {
   const { resolvedTheme } = useTheme()
 
   // Get app settings
-  const { defaultPhotoRating } = useAppSettings()
+  const { defaultPhotoRating, addressLanguage } = useAppSettings()
 
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [time, setTime] = useState<string>('10:30:00')
   const [isSaving, setIsSaving] = useState(false)
+  const [isGeoLoading, setIsGeoLoading] = useState(false)
+  const [isReverseGeocoding, setIsReverseGeocoding] = useState(false)
 
   useEffect(() => {
     if (photoInfo?.dateTimeOriginal) {
@@ -189,6 +191,62 @@ export function PhotoInfo() {
     }
   }
 
+  const handleUseCurrentLocation = async () => {
+    if (!photoInfo) return
+    if (!navigator.geolocation) {
+      toast.error(t('common.geolocation-not-supported'))
+      return
+    }
+    setIsGeoLoading(true)
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords
+        setPhotoInfo({ ...photoInfo, latitude, longitude })
+        setIsGeoLoading(false)
+      },
+      (err) => {
+        console.error('geolocation error', err)
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            toast.error(t('common.user-denied-geolocation'))
+            break
+          case err.POSITION_UNAVAILABLE:
+            toast.error(t('common.location-information-unavailable'))
+            break
+          case err.TIMEOUT:
+            toast.error(t('common.location-request-timed-out'))
+            break
+          default:
+            toast.error(t('common.unknown-error-occurred'))
+        }
+        setIsGeoLoading(false)
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 },
+    )
+  }
+
+  const handleReverseGeocode = async () => {
+    if (!photoInfo?.latitude || !photoInfo?.longitude) {
+      toast.error(t('photo.location-not-available'))
+      return
+    }
+    setIsReverseGeocoding(true)
+    try {
+      const location = await getLocationFromCoordinates(
+        photoInfo.latitude,
+        photoInfo.longitude,
+        3,
+        addressLanguage,
+      )
+      setPhotoInfo({ ...photoInfo, ...location })
+    } catch (e) {
+      console.error('reverse geocode failed', e)
+      toast.error(t('gallery.get-location-failed'))
+    } finally {
+      setIsReverseGeocoding(false)
+    }
+  }
+
   return (
     <Dialog
       open={dialogOpen}
@@ -196,7 +254,7 @@ export function PhotoInfo() {
     >
       <DialogContent
         className='!max-w-7xl !max-h-[90vh] flex flex-col'
-        onOpenAutoFocus={(e) => e.preventDefault()}
+        onOpenAutoFocus={(e: any) => e.preventDefault()}
       >
         <DialogHeader>
           <DialogTitle>{t('photo.details')}</DialogTitle>
@@ -492,12 +550,18 @@ export function PhotoInfo() {
               <div className='space-y-2'>
                 <Label>{t('photo.latitude')}</Label>
                 <Input
-                  value={photoInfo?.latitude || t('photo.unknown')}
+                  type='number'
+                  inputMode='decimal'
+                  value={
+                    photoInfo?.latitude === undefined || photoInfo?.latitude === null
+                      ? ''
+                      : String(photoInfo.latitude)
+                  }
                   onChange={(e) => {
                     if (!photoInfo) return
                     setPhotoInfo({
                       ...photoInfo,
-                      latitude: Number(e.target.value),
+                      latitude: e.target.value === '' ? undefined : Number(e.target.value),
                     })
                   }}
                 />
@@ -505,12 +569,18 @@ export function PhotoInfo() {
               <div className='space-y-2'>
                 <Label>{t('photo.longitude')}</Label>
                 <Input
-                  value={photoInfo?.longitude || t('photo.unknown')}
+                  type='number'
+                  inputMode='decimal'
+                  value={
+                    photoInfo?.longitude === undefined || photoInfo?.longitude === null
+                      ? ''
+                      : String(photoInfo.longitude)
+                  }
                   onChange={(e) => {
                     if (!photoInfo) return
                     setPhotoInfo({
                       ...photoInfo,
-                      longitude: Number(e.target.value),
+                      longitude: e.target.value === '' ? undefined : Number(e.target.value),
                     })
                   }}
                 />
@@ -518,12 +588,18 @@ export function PhotoInfo() {
               <div className='space-y-2'>
                 <Label>Altitude</Label>
                 <Input
-                  value={photoInfo?.gpsAltitude || t('photo.unknown')}
+                  type='number'
+                  inputMode='decimal'
+                  value={
+                    photoInfo?.gpsAltitude === undefined || photoInfo?.gpsAltitude === null
+                      ? ''
+                      : String(photoInfo.gpsAltitude)
+                  }
                   onChange={(e) => {
                     if (!photoInfo) return
                     setPhotoInfo({
                       ...photoInfo,
-                      gpsAltitude: Number(e.target.value),
+                      gpsAltitude: e.target.value === '' ? undefined : Number(e.target.value),
                     })
                   }}
                 />
@@ -531,7 +607,45 @@ export function PhotoInfo() {
             </div>
 
             <div className='space-y-2'>
-              <Label>{t('photo.location')}</Label>
+              <div className='flex items-center justify-between'>
+                <Label>{t('photo.location')}</Label>
+                <div className='flex items-center gap-2'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    size='sm'
+                    className='cursor-pointer'
+                    onClick={handleUseCurrentLocation}
+                    disabled={isGeoLoading}
+                  >
+                    {isGeoLoading ? (
+                      <div className='flex items-center gap-1'>
+                        <Spinner className='h-3.5 w-3.5' />
+                        <span>{t('photo.using-current-location')}</span>
+                      </div>
+                    ) : (
+                      <span>{t('photo.use-current-location')}</span>
+                    )}
+                  </Button>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    size='sm'
+                    className='cursor-pointer'
+                    onClick={handleReverseGeocode}
+                    disabled={isReverseGeocoding}
+                  >
+                    {isReverseGeocoding ? (
+                      <div className='flex items-center gap-1'>
+                        <Spinner className='h-3.5 w-3.5' />
+                        <span>{t('photo.filling-address')}</span>
+                      </div>
+                    ) : (
+                      <span>{t('photo.fill-address-from-coordinates')}</span>
+                    )}
+                  </Button>
+                </div>
+              </div>
               <Input
                 value={photoInfo?.fullAddress || t('photo.unknown')}
                 onChange={(e) => {
@@ -543,11 +657,20 @@ export function PhotoInfo() {
                 }}
               />
               <LocationMap
-                latitude={photoInfo?.latitude || 0}
-                longitude={photoInfo?.longitude || 0}
+                latitude={photoInfo?.latitude ?? 0}
+                longitude={photoInfo?.longitude ?? 0}
                 width='100%'
                 height='200px'
+                zoom={photoInfo?.latitude && photoInfo?.longitude ? 14 : 2}
+                editable
+                onChange={(coords) => {
+                  if (!photoInfo) return
+                  setPhotoInfo({ ...photoInfo, ...coords })
+                }}
               />
+              <p className='text-muted-foreground text-xs'>
+                {t('photo.click-map-to-set-location')}
+              </p>
             </div>
           </div>
 

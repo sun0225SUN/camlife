@@ -279,7 +279,12 @@
     "original-image": "原始图片",
     "null-content": "空内容",
     "compressed-image": "压缩图片",
-    "blur-preview": "模糊预览"
+    "blur-preview": "模糊预览",
+    "use-current-location": "使用当前位置",
+    "using-current-location": "正在获取当前位置...",
+    "fill-address-from-coordinates": "根据经纬度填充地址",
+    "filling-address": "正在填充地址...",
+    "click-map-to-set-location": "在地图上点击或拖动标记以设置位置"
   },
   "settings": {
     "settings": "设置",
