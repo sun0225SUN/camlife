@@ -89,6 +89,11 @@
 </table>
 <!-- readme: collaborators,contributors -end -->
 
+## 🍭 Community
+
+- [Discord](https://discord.com/invite/fxARGMmg)
+- [Telegram](https://t.me/sunguoqi)
+
 ## 💡 Inspired Projects
 
 - [Camarts](https://camarts.app)
@@ -317,7 +322,7 @@ This project is licensed under the [GNU General Public License v3.0](LICENSE).
 
 Contributions are welcome! Feel free to open issues and pull requests.
 
-## 💖 Support
+## 💖 Sponsors
 
 If you find this project helpful, please give it a ⭐️ on GitHub!
 

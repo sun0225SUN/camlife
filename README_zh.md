@@ -82,6 +82,11 @@
 </table>
 <!-- readme: collaborators,contributors -end -->
 
+## 🍭 交流群
+
+- [Discord](https://discord.com/invite/fxARGMmg)
+- [Telegram](https://t.me/sunguoqi)
+
 ## 💡 启发项目
 
 - [Camarts](https://camarts.app)
@@ -307,7 +312,7 @@ bun run dev
 
 欢迎贡献！请随时提交问题和拉取请求。
 
-## 💖 支持
+## 💖 赞助
 
 如果您觉得这个项目有帮助，请在 GitHub 上给它一个 ⭐️！
 
