@@ -1,10 +1,9 @@
 'use client'
 
-import { Home, Image, Settings } from 'lucide-react'
+import { Hammer, Home, Image, Settings } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { NavGroup } from '@/components/dashboard/sidebar/nav-group'
 import { NavLogo } from '@/components/dashboard/sidebar/nav-logo'
-import { NavMain } from '@/components/dashboard/sidebar/nav-main'
-import { NavSettings } from '@/components/dashboard/sidebar/nav-settings'
 import { NavUser } from '@/components/dashboard/sidebar/nav-user'
 import {
   Sidebar,
@@ -19,6 +18,7 @@ import {
   DASHBOARD_GALLERY_PAGE,
   DASHBOARD_HOME_PAGE,
   DASHBOARD_SETTINGS_PAGE,
+  TOOLS_PAGE,
 } from '@/routes'
 
 interface AppSidebarProps {
@@ -51,6 +51,13 @@ export function AppSidebar({
         icon: Settings,
       },
     ],
+    ToolsMenu: [
+      {
+        name: t('tools'),
+        url: TOOLS_PAGE,
+        icon: Hammer,
+      },
+    ],
   }
 
   const pathname = usePathname()
@@ -64,13 +71,20 @@ export function AppSidebar({
         <NavLogo />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain
+        <NavGroup
           projects={data.MainMenu}
           pathname={pathname}
+          labelKey='menu'
         />
-        <NavSettings
+        <NavGroup
           projects={data.SettingsMenu}
           pathname={pathname}
+          labelKey='settings'
+        />
+        <NavGroup
+          projects={data.ToolsMenu}
+          pathname={pathname}
+          labelKey='tools'
         />
       </SidebarContent>
       <SidebarFooter>

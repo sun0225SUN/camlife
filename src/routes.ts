@@ -7,3 +7,5 @@ export const DASHBOARD_HOME_PAGE = '/dashboard'
 export const DASHBOARD_GALLERY_PAGE = '/dashboard/gallery'
 export const DASHBOARD_SETTINGS_PAGE = '/dashboard/settings'
 export const DASHBOARD_PLAYGROUND_PAGE = '/playground'
+
+export const TOOLS_PAGE = 'https://tools.camlife.app'

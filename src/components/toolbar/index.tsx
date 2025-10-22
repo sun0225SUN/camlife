@@ -1,6 +1,6 @@
 'use client'
 
-import { Github, Map as MapIcon } from 'lucide-react'
+import { Github, Hammer, Map as MapIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { LanguageToggle } from '@/components/language/toggle'
@@ -11,7 +11,7 @@ import { useIsClient } from '@/hooks/use-client'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useScroll } from '@/hooks/use-scroll'
 import { cn } from '@/lib/utils'
-import { EXPLORE_MAP_PAGE } from '@/routes'
+import { EXPLORE_MAP_PAGE, TOOLS_PAGE } from '@/routes'
 
 export function ToolBar() {
   const isClient = useIsClient()
@@ -51,8 +51,6 @@ export function ToolBar() {
           />
         </Link>
 
-        <LanguageToggle className='size-6 transition-all duration-300 hover:scale-105' />
-
         <Link href={GITHUB_REPOSITORY_URL}>
           <Github
             className='size-6 cursor-pointer transition-all duration-300 hover:scale-105'
@@ -60,6 +58,16 @@ export function ToolBar() {
             absoluteStrokeWidth
           />
         </Link>
+
+        <Link href={TOOLS_PAGE}>
+          <Hammer
+            className='size-6 cursor-pointer transition-all duration-300 hover:scale-105'
+            strokeWidth={2.25}
+            absoluteStrokeWidth
+          />
+        </Link>
+
+        <LanguageToggle className='size-6 transition-all duration-300 hover:scale-105' />
 
         <ThemeToggle className='size-6 transition-all duration-300 hover:scale-105' />
       </div>

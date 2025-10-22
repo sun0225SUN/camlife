@@ -234,7 +234,8 @@
     "home": "Home",
     "gallery": "Gallery",
     "settings": "Settings",
-    "menu": "Menu"
+    "menu": "Menu",
+    "tools": "Tools"
   },
   "navigation": {
     "essential": "Essential",

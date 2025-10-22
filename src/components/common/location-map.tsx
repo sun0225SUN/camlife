@@ -65,6 +65,7 @@ export function LocationMap({
       mapboxAccessToken={env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
       ref={mapRef}
       style={{ width, height }}
+      // biome-ignore lint/suspicious/noExplicitAny: need to be any
       onClick={(e: any) => {
         if (!editable) return
         const { lng, lat } = e.lngLat || {}
@@ -78,6 +79,7 @@ export function LocationMap({
         longitude={longitude}
         latitude={latitude}
         draggable={editable}
+        // biome-ignore lint/suspicious/noExplicitAny:  need to be any
         onDragEnd={(e: any) => {
           const { lng, lat } = e.lngLat || {}
           if (typeof lng === 'number' && typeof lat === 'number') {

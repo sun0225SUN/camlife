@@ -140,12 +140,6 @@
     "nearby": "附近",
     "faraway": "远方"
   },
-  "dashboard": {
-    "home": "首页",
-    "gallery": "相册",
-    "settings": "设置",
-    "menu": "菜单"
-  },
   "gallery": {
     "upload-photos": "上传照片",
     "upload-and-manage-description": "上传和管理您的照片收藏",
@@ -157,7 +151,6 @@
     "all-public-photos": "所有公开照片",
     "this-month": "本月",
     "last-30-days": "最近30天",
-    "details": "详情",
     "title": "标题",
     "description": "描述",
     "make": "品牌",
@@ -236,6 +229,13 @@
     "no-active-sessions": "未找到活跃会话",
     "mobile-app": "移动应用",
     "current-session": "当前会话"
+  },
+  "dashboard": {
+    "home": "首页",
+    "gallery": "相册",
+    "settings": "设置",
+    "menu": "菜单",
+    "tools": "工具"
   },
   "navigation": {
     "essential": "精选",

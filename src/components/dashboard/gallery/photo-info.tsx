@@ -254,6 +254,7 @@ export function PhotoInfo() {
     >
       <DialogContent
         className='!max-w-7xl !max-h-[90vh] flex flex-col'
+        // biome-ignore lint/suspicious/noExplicitAny: need to be any
         onOpenAutoFocus={(e: any) => e.preventDefault()}
       >
         <DialogHeader>
@@ -553,7 +554,8 @@ export function PhotoInfo() {
                   type='number'
                   inputMode='decimal'
                   value={
-                    photoInfo?.latitude === undefined || photoInfo?.latitude === null
+                    photoInfo?.latitude === undefined ||
+                    photoInfo?.latitude === null
                       ? ''
                       : String(photoInfo.latitude)
                   }
@@ -561,7 +563,10 @@ export function PhotoInfo() {
                     if (!photoInfo) return
                     setPhotoInfo({
                       ...photoInfo,
-                      latitude: e.target.value === '' ? undefined : Number(e.target.value),
+                      latitude:
+                        e.target.value === ''
+                          ? undefined
+                          : Number(e.target.value),
                     })
                   }}
                 />
@@ -572,7 +577,8 @@ export function PhotoInfo() {
                   type='number'
                   inputMode='decimal'
                   value={
-                    photoInfo?.longitude === undefined || photoInfo?.longitude === null
+                    photoInfo?.longitude === undefined ||
+                    photoInfo?.longitude === null
                       ? ''
                       : String(photoInfo.longitude)
                   }
@@ -580,7 +586,10 @@ export function PhotoInfo() {
                     if (!photoInfo) return
                     setPhotoInfo({
                       ...photoInfo,
-                      longitude: e.target.value === '' ? undefined : Number(e.target.value),
+                      longitude:
+                        e.target.value === ''
+                          ? undefined
+                          : Number(e.target.value),
                     })
                   }}
                 />
@@ -591,7 +600,8 @@ export function PhotoInfo() {
                   type='number'
                   inputMode='decimal'
                   value={
-                    photoInfo?.gpsAltitude === undefined || photoInfo?.gpsAltitude === null
+                    photoInfo?.gpsAltitude === undefined ||
+                    photoInfo?.gpsAltitude === null
                       ? ''
                       : String(photoInfo.gpsAltitude)
                   }
@@ -599,7 +609,10 @@ export function PhotoInfo() {
                     if (!photoInfo) return
                     setPhotoInfo({
                       ...photoInfo,
-                      gpsAltitude: e.target.value === '' ? undefined : Number(e.target.value),
+                      gpsAltitude:
+                        e.target.value === ''
+                          ? undefined
+                          : Number(e.target.value),
                     })
                   }}
                 />
