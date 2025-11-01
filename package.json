@@ -63,7 +63,7 @@
     "exifreader": "^4.32.0",
     "gsap": "^3.13.0",
     "lefthook": "^2.0.0",
-    "lucide-react": "^0.546.0",
+    "lucide-react": "^0.552.0",
     "mapbox-gl": "^3.15.0",
     "motion": "^12.23.24",
     "nanoid": "^5.1.6",
