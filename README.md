@@ -91,8 +91,7 @@
 
 ## 🍭 Community
 
-- [Discord](https://discord.com/invite/fxARGMmg)
-- [Telegram](https://t.me/sunguoqi)
+- [Telegram](https://t.me/guoqisun)
 
 ## 💡 Inspired Projects
 

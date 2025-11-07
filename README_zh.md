@@ -84,8 +84,7 @@
 
 ## 🍭 交流群
 
-- [Discord](https://discord.com/invite/fxARGMmg)
-- [Telegram](https://t.me/sunguoqi)
+- [Telegram](https://t.me/guoqisun)
 
 ## 💡 启发项目
 
